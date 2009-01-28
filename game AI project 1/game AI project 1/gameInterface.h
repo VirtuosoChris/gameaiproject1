@@ -23,8 +23,7 @@ class Agent:public Entity{
 
 class Wall{
 
-double width;
-geometry::Line2D wall;
+geometry::Line2D wall[4];
 
 public:
 	Wall(geometry::Line2D,double);
