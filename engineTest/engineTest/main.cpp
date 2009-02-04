@@ -61,7 +61,7 @@ int main(int argc, char** argv){
  scene::ICameraSceneNode *camera = 
 	 smgr->addCameraSceneNodeFPS();
 
- camera->setPosition(core::vector3df(25,35,25));
+ camera->setPosition(core::vector3df(25,30,25));
 
  
  scene::ITriangleSelector*  selector = NULL;
@@ -73,9 +73,9 @@ int main(int argc, char** argv){
  scene::ISceneNodeAnimator *nodeAnimator = 
 	smgr->createCollisionResponseAnimator(selector,//geometry for collision 
 	camera, //scene node to apply collision to
-	core::vector3df(30,35,30),//collision volume radii
+	core::vector3df(30,30,30),//collision volume radii
 	core::vector3df(0,-10,0),//gravity 
-	core::vector3df(0,35,0)); //collision volume position
+	core::vector3df(0,30,0)); //collision volume position
 
 if(!nodeAnimator)return 1;
 
@@ -84,24 +84,62 @@ if(!nodeAnimator)return 1;
  nodeAnimator->drop();
 
  nodeAnimator = smgr->createCollisionResponseAnimator(selector, meshNode, 
-	core::vector3df(30,1,30),//collision volume radii
+	core::vector3df(30,8,30),//collision volume radii
 	core::vector3df(0,-10,0),//gravity 
 	core::vector3df(0,20,0)); //collision volume position
  
  meshNode->addAnimator(nodeAnimator);
  nodeAnimator->drop();
 
+ scene::IBillboardSceneNode *billboard = smgr->addBillboardSceneNode();
+ billboard->setMaterialType(video::EMT_TRANSPARENT_ADD_COLOR);
+ billboard->setMaterialTexture(0,driver->getTexture("../media/particle.bmp"));
+ billboard->setMaterialFlag(video::EMF_LIGHTING, false);
+ billboard->setMaterialFlag(video::EMF_ZBUFFER,false);
+ billboard->setSize(core::dimension2d<f32>(20.0f, 20.0f));
+
+
+ core::line3d<f32> line;
  
+ core::vector3df intersection;
+ core::triangle3df triangle;
  
+ if(selector == NULL)return 1;
+ 
+
+
+
  //while the user doesn't close the window
 	 while(device->run()){
 		 
+ static float rot= 0;
+ rot+=1;
+ meshNode->setRotation(core::vector3df(0.0f,rot,0.0f));
+
+
+
+		billboard->setVisible(true);
+		 if(smgr->getSceneCollisionManager()->getCollisionPoint(line, selector,intersection, triangle))
+			billboard->setPosition(intersection);
+		 else{
+			 billboard->setVisible(false);
+		 }
+
+
 		 //begin drawing a frame
 		 driver->beginScene(true, true, video::SColor(255,100,101,140));
 			smgr->drawAll();  //draw 3d objects
 			guienv->drawAll();//draw gui components
 		
 		 driver->endScene();//end drawing
+
+
+		 line.start = camera->getPosition();
+		 line.end = line.start + (camera->getTarget() - line.start).normalize() * 5000.0f;
+ 
+		 
+ 
+ 
 	 	 
 	 }
 
