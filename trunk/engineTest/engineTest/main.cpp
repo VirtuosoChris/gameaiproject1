@@ -9,11 +9,41 @@
 
 using namespace irr;
 
+class IER: public irr::IEventReceiver{
+
+	
+private:
+	bool keyPressed[irr::KEY_KEY_CODES_COUNT];
+
+public:
+	 virtual bool OnEvent(const SEvent& event1){
+		switch(event1.EventType){
+		
+			case irr::EET_KEY_INPUT_EVENT:
+				keyPressed[event1.KeyInput.Key] =  event1.KeyInput.PressedDown;		
+			default:
+				
+				;
+		}
+		return false;
+	}
+
+	IER(){
+		for(int i = 0; i < irr::KEY_KEY_CODES_COUNT;i++){
+			keyPressed[i] = false;
+		}
+	}
+
+
+};
+
+
 int main(int argc, char** argv){
 
-
+ //core::stringw str ;
 	//create the irrlicht device
-	IrrlichtDevice *device = createDevice(video::EDT_OPENGL, core::dimension2d<s32>(1280,1024), 32, true, true, true, NULL);
+IER irs;
+	IrrlichtDevice *device = createDevice(video::EDT_OPENGL, core::dimension2d<s32>(1280,1024), 32, true, true, true, &irs);
 	if(device==NULL)return 1;
 
 	//set the title of the window
@@ -27,9 +57,7 @@ int main(int argc, char** argv){
 	scene::ISceneManager* smgr = device->getSceneManager();
 	gui::IGUIEnvironment* guienv = device->getGUIEnvironment();
 
-	 //add static text to the window
-	//guienv->addStaticText(L"Irrlicht Test MD2 Render",core::rect<s32>(10,10,260,22), true);
-
+	 
 	 //create an animated mesh object from an md2 file
 	scene::IAnimatedMesh* mesh = smgr->getMesh("../media/sydney.md2");
 	if(!mesh)return 1;
@@ -47,9 +75,13 @@ int main(int argc, char** argv){
  //load the pk3 file containing the .bsp map file into the engine file system
  device->getFileSystem()->addZipFileArchive("../media/map-20kdm2.pk3");
  
+ //device->getFileSystem()->addZipFileArchive("../media/simpsons.pk3");
+
  //get the mesh from the map bsp file
  scene::IAnimatedMesh *map  = smgr->getMesh("20kdm2.bsp");
-   if(!map)return 1;
+ //scene::IAnimatedMesh *map  = smgr->getMesh("simpsons_q3.bsp");  
+ 
+ if(!map)return 1;
  //a scene node for the map
  scene::ISceneNode *mapNode = NULL;
  mapNode = smgr->addOctTreeSceneNode(map->getMesh(0), 0, -1, 1024);
@@ -57,6 +89,8 @@ int main(int argc, char** argv){
 
  //translate the map a bit since it wasn't modeled around the origin
  mapNode->setPosition(core::vector3df(-1300,-144,-1249));
+//mapNode->setPosition(core::vector3df(500,100,100));
+
 
  scene::ICameraSceneNode *camera = 
 	 smgr->addCameraSceneNodeFPS();
@@ -84,12 +118,17 @@ if(!nodeAnimator)return 1;
  nodeAnimator->drop();
 
  nodeAnimator = smgr->createCollisionResponseAnimator(selector, meshNode, 
-	core::vector3df(30,8,30),//collision volume radii
+	core::vector3df(30,30,30),//collision volume radii
 	core::vector3df(0,-10,0),//gravity 
-	core::vector3df(0,20,0)); //collision volume position
+	core::vector3df(0,30,0)); //collision volume position
  
  meshNode->addAnimator(nodeAnimator);
+ meshNode->setScale(core::vector3df(1.5f,1.5f,1.5f));
  nodeAnimator->drop();
+
+
+
+
 
  scene::IBillboardSceneNode *billboard = smgr->addBillboardSceneNode();
  billboard->setMaterialType(video::EMT_TRANSPARENT_ADD_COLOR);
@@ -107,6 +146,7 @@ if(!nodeAnimator)return 1;
  if(selector == NULL)return 1;
  
 
+// gui::IGUIStaticText ist =  guienv->addStaticText(str.c_str(),core::rect<s32>(10,10,260,22), true);
 
 
  //while the user doesn't close the window
@@ -114,9 +154,12 @@ if(!nodeAnimator)return 1;
 		 
  static float rot= 0;
  rot+=1;
- meshNode->setRotation(core::vector3df(0.0f,rot,0.0f));
-
-
+ //meshNode->setRotation(core::vector3df(0.0f,rot,0.0f));
+ 
+      core::vector3df nodePos = meshNode->getPosition();
+      nodePos.Z += 1.0f;
+	  meshNode->setPosition(nodePos);
+//
 
 		billboard->setVisible(true);
 		 if(smgr->getSceneCollisionManager()->getCollisionPoint(line, selector,intersection, triangle))
@@ -137,9 +180,14 @@ if(!nodeAnimator)return 1;
 		 line.start = camera->getPosition();
 		 line.end = line.start + (camera->getTarget() - line.start).normalize() * 5000.0f;
  
-		 
- 
- 
+		 //add static text to the window
+	//	 core::stringw str = "Position:";
+	//	 str +=camera->getPosition().X;
+	//	 str +=":";
+	//	 str +=camera->getPosition().Y;
+	//	 str +=":";
+	//	 str+=camera->getPosition().Z;
+	//	 ist.setText(str.c_str());
 	 	 
 	 }
 
