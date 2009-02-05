@@ -1,11 +1,12 @@
 #include <irrlicht.h>
 #include <set>
+#include "messagehandler.h"
 
 enum Message_Type {MSG_ACTIVATE, MSG_ROTATE_LEFT, MSG_ROTATE_RIGHT, MSG_MOVE_FORWARD, MSG_MOVE_BACKWARD};
 		 
-class GameEntity;
-class MessageHandler;
-class  Message;
+//class GameEntity;
+//class MessageHandler;
+//class  Message;
 
 static const  float OFFSET_TIME_MILLIS= 10.0;//why can't i initialize this inside a class? wtf
 
@@ -45,26 +46,7 @@ class GameEntity{
 };
 
 
-
-class MessageHandler{
- 
- std::set<Message> messageQueue;
- 
- MessageHandler();
- ~MessageHandler();
-
- void deliverMessage(Message* m);
-	 	
- public: 
-	 
-	 void postMessage(Message_Type type, double delay, GameEntity *sender, GameEntity *receiver);
-
-	 static MessageHandler *getInstance(){
+static MessageHandler* MessageHandler::getInstance(){
 		 static MessageHandler instance;
 		 return &instance;
 	 }
-
-
-	 int update(); 
-			
-};
