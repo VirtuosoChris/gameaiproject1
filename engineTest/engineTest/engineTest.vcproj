@@ -165,6 +165,10 @@
 				RelativePath=".\main.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\MessageHandler.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
