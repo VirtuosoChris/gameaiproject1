@@ -5,7 +5,8 @@
 
 
 #include <set>
-#include "messagehandler.h"
+#include "MessageHandler.h"
+#include "GameEntity.h"
 
 		 
 MessageHandler::MessageHandler(){
