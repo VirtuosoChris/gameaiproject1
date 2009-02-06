@@ -1,5 +1,7 @@
 //do destructors/constructors
 //singleton stuff; copy constructor, assignment
+//implementations
+//agent class
 
 #ifndef IRRLICHT
 #include <irrlicht.h>
