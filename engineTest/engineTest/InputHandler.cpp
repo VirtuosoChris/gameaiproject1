@@ -30,7 +30,7 @@ bool InputHandler::OnEvent(const irr::SEvent& event1){
 
 
 
-//returns 
+//returns the instance of the InputHandler class
 InputHandler* InputHandler::getInstance(){
 static InputHandler instance;
 return &instance;
