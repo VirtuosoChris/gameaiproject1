@@ -15,9 +15,14 @@ InputHandler::~InputHandler(){}
 
 //function called when input event is fired
 bool InputHandler::OnEvent(const irr::SEvent& event1){
-		switch(event1.EventType){
+		
+	
+
+	switch(event1.EventType){
 		
 			case irr::EET_KEY_INPUT_EVENT:
+
+				if(event1.KeyInput.Key == irr::KEY_ESCAPE)exit(0);
 				keyPressed[event1.KeyInput.Key] =  event1.KeyInput.PressedDown;	
 				break;
 			default:

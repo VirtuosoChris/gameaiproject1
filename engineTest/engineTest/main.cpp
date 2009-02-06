@@ -7,6 +7,10 @@
 #include <irrlicht.h>
 #endif
 
+#include "InputHandler.h"
+
+#include "Agent.h"
+
 #ifdef _IRR_WINDOWS_
 #pragma comment(lib, "Irrlicht.lib")
 #pragma comment(linker, "/subsystem:windows /ENTRY:mainCRTStartup")
@@ -15,79 +19,49 @@
 
 using namespace irr;
 
-class IER: public irr::IEventReceiver{
-
-	
-private:
-	bool keyPressed[irr::KEY_KEY_CODES_COUNT];
-
-public:
-	 virtual bool OnEvent(const SEvent& event1){
-		switch(event1.EventType){
-		
-			case irr::EET_KEY_INPUT_EVENT:
-				keyPressed[event1.KeyInput.Key] =  event1.KeyInput.PressedDown;	
-
-				if(event1.KeyInput.Key == irr::KEY_ESCAPE)exit(0);
-			default:
-				
-				;
-		}
-		return false;
-	}
-
-	IER(){
-		for(int i = 0; i < irr::KEY_KEY_CODES_COUNT;i++){
-			keyPressed[i] = false;
-		}
-	}
-
-
-};
 
 
 int main(int argc, char** argv){
 
- //core::stringw str ;
-	//create the irrlicht device
-IER irs;
-	IrrlichtDevice *device = createDevice(video::EDT_OPENGL, core::dimension2d<s32>(1280,1024), 32, true, true, true, &irs);
-	if(device==NULL)return 1;
+ //create the irrlicht device
+ IrrlichtDevice *device = createDevice(video::EDT_OPENGL, core::dimension2d<s32>(1280,1024), 32, true, true, false, InputHandler::getInstance());
+ if(device==NULL)return 1;
 
-	//set the title of the window
-	device->setWindowCaption(L"Irrlicht test");
+ //set the title of the window
+ device->setWindowCaption(L"Game AI Assignment 1");
 	
-	//hide the cursor
-	device->getCursorControl()->setVisible(false);
+ //hide the cursor
+ device->getCursorControl()->setVisible(false);
 
-	//get the driver, scene manager, and gui environment objects
-	video::IVideoDriver* driver = device->getVideoDriver();
-	scene::ISceneManager* smgr = device->getSceneManager();
-	gui::IGUIEnvironment* guienv = device->getGUIEnvironment();
+ //get the driver, scene manager, and gui environment objects
+ video::IVideoDriver* driver = device->getVideoDriver();
+ scene::ISceneManager* smgr = device->getSceneManager();
+ gui::IGUIEnvironment* guienv = device->getGUIEnvironment();
 
 	 
-	 //create an animated mesh object from an md2 file
-	scene::IAnimatedMesh* mesh = smgr->getMesh("../media/sydney.md2");
-	if(!mesh)return 1;
+ //create an animated mesh object from an md2 file
+ scene::IAnimatedMesh* mesh = smgr->getMesh("../media/sydney.md2");
+ if(!mesh)return 1;
 
-	//create a "scene node" for the animated model
-	scene::IAnimatedMeshSceneNode* meshNode = smgr->addAnimatedMeshSceneNode( mesh );
-	if(!meshNode)return 1;	
-	 
-	 meshNode->setMaterialFlag(video::EMF_LIGHTING, false); //disable lighting
-	 meshNode->setMD2Animation(scene::EMAT_STAND); //set the animation to stand?
-	 meshNode->setMaterialTexture(0, driver->getTexture("../media/sydney.bmp")); //set the texture
-	meshNode->setPosition(core::vector3df(75,0,75));
+
+ //create a player controlled agent and its associated mesh node, and add it to the scene graph
+ scene::IAnimatedMeshSceneNode* meshNode = smgr->addAnimatedMeshSceneNode( mesh );
+ if(!meshNode)return 1;	
+ Agent playerControlledAgent(meshNode);
+ meshNode=NULL;
+
+ //create a "scene node" for the animated model
+ meshNode->setMaterialFlag(video::EMF_LIGHTING, false); //disable lighting
+ meshNode->setMD2Animation(scene::EMAT_STAND); //set the animation to stand?
+ meshNode->setMaterialTexture(0, driver->getTexture("../media/sydney.bmp")); //set the texture
+ meshNode->setPosition(core::vector3df(75,0,75));
 
 
  //load the pk3 file containing the .bsp map file into the engine file system
  device->getFileSystem()->addZipFileArchive("../media/map-20kdm2.pk3");
  
- //device->getFileSystem()->addZipFileArchive("../media/simpsons.pk3");
-
  //get the mesh from the map bsp file
  scene::IAnimatedMesh *map  = smgr->getMesh("20kdm2.bsp");
- //scene::IAnimatedMesh *map  = smgr->getMesh("simpsons_q3.bsp");  
  
  if(!map)return 1;
  //a scene node for the map
@@ -97,7 +71,6 @@ IER irs;
 
  //translate the map a bit since it wasn't modeled around the origin
  mapNode->setPosition(core::vector3df(-1300,-144,-1249));
-//mapNode->setPosition(core::vector3df(500,100,100));
 
 
  scene::ICameraSceneNode *camera = 
