@@ -3,6 +3,7 @@
 #define IRRLICHT
 #endif
 
+class Message;
 
 class GameEntity{
 	irr::core::vector3df position;
