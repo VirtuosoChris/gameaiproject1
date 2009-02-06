@@ -1,4 +1,6 @@
+#ifndef IRRLICHT
 #include <irrlicht.h>
+#endif
 #include <set>
 #include "messagehandler.h"
 
