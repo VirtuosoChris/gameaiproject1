@@ -6,7 +6,7 @@ void Agent::update(){
 }
 
 
-virtual void Agent::processMessage(Message*){
+ void Agent::processMessage(Message*){
 
 }
 

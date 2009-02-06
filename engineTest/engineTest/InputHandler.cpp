@@ -3,11 +3,9 @@
 
 //constructor
 InputHandler::InputHandler(){
-
 	for(int i = 0; i < irr::KEY_KEY_CODES_COUNT;i++){
 		keyPressed[i] = false;
 	}
-	
 }
 
 
@@ -20,7 +18,8 @@ bool InputHandler::OnEvent(const irr::SEvent& event1){
 		switch(event1.EventType){
 		
 			case irr::EET_KEY_INPUT_EVENT:
-				keyPressed[event1.KeyInput.Key] =  event1.KeyInput.PressedDown;		
+				keyPressed[event1.KeyInput.Key] =  event1.KeyInput.PressedDown;	
+				break;
 			default:
 				
 				;
