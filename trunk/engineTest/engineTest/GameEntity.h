@@ -1,6 +1,8 @@
 #ifndef IRRLICHT
 #include <irrlicht.h>
+#define IRRLICHT
 #endif
+
 
 class GameEntity{
 	irr::core::vector3df position;
