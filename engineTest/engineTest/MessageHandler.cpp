@@ -25,13 +25,13 @@ MessageHandler::~MessageHandler(){
 
 
 
-void MessageHandler::postMessage(Message_Type type, double delay, GameEntity *sender, GameEntity *receiver){
+void MessageHandler::postMessage(Message_Type type, int delay, GameEntity *sender, GameEntity *receiver,irr::ITimer* timer){
 
 Message* m = (Message*)malloc(sizeof(Message));
 m->messageType = type;
 m->sender = sender;
 m->receiver = receiver;
-m->postTime = delay + CURRENT_TIME;
+m->postTime = delay + timer->getTime();
 
 if(delay ==0){
 deliverMessage(m);
@@ -40,8 +40,9 @@ deliverMessage(m);
 }
 	
 
-int MessageHandler::update(){
+int MessageHandler::update(irr::ITimer* timer){
 //TO DO	 
+	return 0;
 }
 
 
