@@ -1,5 +1,6 @@
 #ifndef IRRLICHT
 #include <irrlicht.h>
+#define IRRLICHT
 #endif
 
 class InputHandler: public irr::IEventReceiver{
@@ -10,6 +11,11 @@ private:
 	~InputHandler();
 
 public:
-	InputHandler* getInstance();
+	static InputHandler* getInstance();
 	virtual bool OnEvent(const irr::SEvent& event1);
+	bool isKeyPressed(int);
+	bool isAKeyPressed();
+	bool isWKeyPressed();
+	bool isSKeyPressed();
+	bool isDKeyPressed();
 };

@@ -1,11 +1,13 @@
 #ifndef IRRLICHT
 #include <irrlicht.h>
+#define IRRLICHT
 #endif
+
+
 #include <set>
 #include "messagehandler.h"
 
 		 
-//class GameEntity;
 //class MessageHandler;
 //class  Message;
 
@@ -23,22 +25,32 @@ MessageHandler::~MessageHandler(){
 
 
 
-void postMessage(Message_Type type, double delay, GameEntity *sender, GameEntity *receiver){
-//TO DO
+void MessageHandler::postMessage(Message_Type type, double delay, GameEntity *sender, GameEntity *receiver){
+
+Message* m = (Message*)malloc(sizeof(Message));
+m->messageType = type;
+m->sender = sender;
+m->receiver = receiver;
+m->postTime = delay + CURRENT_TIME;
+
+if(delay ==0){
+deliverMessage(m);
+}
+
 }
 	
 
-int update(){
+int MessageHandler::update(){
 //TO DO	 
 }
 
 
 
 void MessageHandler::deliverMessage(Message* m){
-//TO DO
+	m->receiver->processMessage(m);
 }
 
-static MessageHandler* MessageHandler::getInstance(){
+ MessageHandler* MessageHandler::getInstance(){
 		 static MessageHandler instance;
 		 return &instance;
 }
