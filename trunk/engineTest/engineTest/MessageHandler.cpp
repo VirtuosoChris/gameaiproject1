@@ -8,12 +8,6 @@
 #include "messagehandler.h"
 
 		 
-//class MessageHandler;
-//class  Message;
-
-
- 
-
 MessageHandler::MessageHandler(){
 
 }
@@ -35,13 +29,22 @@ m->postTime = delay + timer->getTime();
 
 if(delay ==0){
 deliverMessage(m);
-}
+}else
+messageQueue.insert(*m);
 
 }
 	
 
 int MessageHandler::update(irr::ITimer* timer){
-//TO DO	 
+
+	while(messageQueue.begin()->postTime < (int)timer->getTime()){
+
+		deliverMessage(&*messageQueue.begin());
+
+		messageQueue.erase(messageQueue.begin());
+
+	}
+
 	return 0;
 }
 

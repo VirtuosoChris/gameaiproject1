@@ -1,7 +1,7 @@
 //do destructors/constructors
 //singleton stuff; copy constructor, assignment
-//implementations
 //agent class
+//free message memory
 
 #ifndef IRRLICHT
 #include <irrlicht.h>
@@ -26,7 +26,9 @@ public:
 		switch(event1.EventType){
 		
 			case irr::EET_KEY_INPUT_EVENT:
-				keyPressed[event1.KeyInput.Key] =  event1.KeyInput.PressedDown;		
+				keyPressed[event1.KeyInput.Key] =  event1.KeyInput.PressedDown;	
+
+				if(event1.KeyInput.Key == irr::KEY_ESCAPE)exit(0);
 			default:
 				
 				;
