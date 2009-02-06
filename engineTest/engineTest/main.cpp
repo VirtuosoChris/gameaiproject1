@@ -1,5 +1,9 @@
-#include <irrlicht.h>
+//do destructors/constructors
+//singleton stuff; copy constructor, assignment
 
+#ifndef IRRLICHT
+#include <irrlicht.h>
+#endif
 
 #ifdef _IRR_WINDOWS_
 #pragma comment(lib, "Irrlicht.lib")

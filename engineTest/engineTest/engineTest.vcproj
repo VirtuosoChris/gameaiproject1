@@ -170,7 +170,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\InputHandler.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\main.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Message.cpp"
 				>
 			</File>
 			<File
@@ -189,6 +197,14 @@
 			</File>
 			<File
 				RelativePath=".\GameEntity.h"
+				>
+			</File>
+			<File
+				RelativePath=".\InputHandler.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Message.h"
 				>
 			</File>
 			<File
