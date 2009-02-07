@@ -2,6 +2,9 @@
 //singleton stuff; copy constructor, assignment
 //agent class
 //free message memory
+//gameentitylist
+//degrees or radians?
+
 
 #ifndef IRRLICHT
 #include <irrlicht.h>
@@ -48,7 +51,7 @@ int main(int argc, char** argv){
  scene::IAnimatedMeshSceneNode* meshNode = smgr->addAnimatedMeshSceneNode( mesh );
  if(!meshNode)return 1;	
  Agent playerControlledAgent(meshNode);
- meshNode=NULL;
+ //meshNode=NULL;
 
  //create a "scene node" for the animated model
  meshNode->setMaterialFlag(video::EMF_LIGHTING, false); //disable lighting
@@ -133,14 +136,15 @@ if(!nodeAnimator)return 1;
  //while the user doesn't close the window
 	 while(device->run()){
 		 
- static float rot= 0;
- rot+=1;
+
+		 playerControlledAgent.update(device->getTimer());
+ 
  //meshNode->setRotation(core::vector3df(0.0f,rot,0.0f));
  
-      core::vector3df nodePos = meshNode->getPosition();
-      nodePos.Z += 1.0f;
-	  meshNode->setPosition(nodePos);
-//
+      //core::vector3df nodePos = meshNode->getPosition();
+      //nodePos.Z += 1.0f;
+	  //  meshNode->setPosition(nodePos);
+	  
 
 		billboard->setVisible(true);
 		 if(smgr->getSceneCollisionManager()->getCollisionPoint(line, selector,intersection, triangle))
