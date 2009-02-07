@@ -8,9 +8,8 @@ class Message;
 class GameEntity{
 	protected:
 	irr::core::vector3df position;
-	
 	irr::core::vector3df velocity;
-
+	
 	public:
 
 		double orientation;

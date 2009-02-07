@@ -3,14 +3,13 @@
 #include <cmath>
 
 using namespace irr;
-double degreesToRadians(double degrees){
-return 2*3.14159*degrees/360;
-}
+//double degreesToRadians(double degrees){
+//return 2*3.14159*degrees/360;/
+//}
+
 
 void Agent::update(irr::ITimer* timer){
-    
-	static bool moving = false;
-	static irr::u32 LASTUPDATE=0;
+    /*
 	static const irr::f32 SPEED = .50f;
 	static const float ROTATION_RATE =  .10f;
 	int TIMEELAPSED =0; //ADJFHKJHFKJHFKJHF
@@ -24,7 +23,6 @@ void Agent::update(irr::ITimer* timer){
 	irr::u32 ctime= 0;
 	TIMEELAPSED = (ctime = timer->getTime()) - LASTUPDATE;
 	LASTUPDATE = ctime;
-
 	
 	irr::core::vector3df nodePos = mynodep->getPosition();
 	
@@ -114,7 +112,7 @@ return;
 			mynodep->setMD2Animation(scene::EMAT_STAND);
 //		}
 	}
-
+*/
 
 }
 
@@ -125,9 +123,12 @@ void Agent::processMessage(Message*){
 
 Agent::Agent(irr::scene::IAnimatedMeshSceneNode* a, irr::core::vector3df p)
 :mynodep(a),position(p)
-{
+{	LASTUPDATE = 0;
+	
+mynodep->setPosition(p);
+ mynodep->setMaterialFlag(video::EMF_LIGHTING, false);
 	mynodep->setRotation(irr::core::vector3df(0.0f,orientation = 90.0f,0.0f));
-	position = mynodep->getPosition();
+	//position = mynodep->getPosition();
 	
  mynodep->setMD2Animation(scene::EMAT_STAND); //set the animation to stand?
 }
