@@ -3,8 +3,8 @@
 //agent class
 //free message memory
 //gameentitylist
-//degrees or radians?
-
+//make displacement heading
+//bounding boxes
 
 #ifndef IRRLICHT
 #include <irrlicht.h>
@@ -27,7 +27,7 @@ using namespace irr;
 int main(int argc, char** argv){
 
  //create the irrlicht device
- IrrlichtDevice *device = createDevice(video::EDT_OPENGL, core::dimension2d<s32>(1280,1024), 32, true, true, false, InputHandler::getInstance());
+ IrrlichtDevice *device = createDevice(video::EDT_OPENGL, core::dimension2d<s32>(1280,1024), 32, false, true, false, InputHandler::getInstance());
  if(device==NULL)return 1;
 
  //set the title of the window
@@ -55,7 +55,6 @@ int main(int argc, char** argv){
 
  //create a "scene node" for the animated model
  meshNode->setMaterialFlag(video::EMF_LIGHTING, false); //disable lighting
- meshNode->setMD2Animation(scene::EMAT_STAND); //set the animation to stand?
  meshNode->setMaterialTexture(0, driver->getTexture("../media/sydney.bmp")); //set the texture
  meshNode->setPosition(core::vector3df(75,0,75));
 
@@ -79,7 +78,7 @@ int main(int argc, char** argv){
  scene::ICameraSceneNode *camera = 
 	 smgr->addCameraSceneNodeFPS();
 
- camera->setPosition(core::vector3df(25,30,25));
+ camera->setPosition(core::vector3df(25,50,25));
 
  
  scene::ITriangleSelector*  selector = NULL;
@@ -91,7 +90,7 @@ int main(int argc, char** argv){
  scene::ISceneNodeAnimator *nodeAnimator = 
 	smgr->createCollisionResponseAnimator(selector,//geometry for collision 
 	camera, //scene node to apply collision to
-	core::vector3df(30,30,30),//collision volume radii
+	core::vector3df(30,50,30),//collision volume radii
 	core::vector3df(0,-10,0),//gravity 
 	core::vector3df(0,30,0)); //collision volume position
 
@@ -102,14 +101,15 @@ if(!nodeAnimator)return 1;
  nodeAnimator->drop();
 
  nodeAnimator = smgr->createCollisionResponseAnimator(selector, meshNode, 
-	core::vector3df(30,30,30),//collision volume radii
+	core::vector3df(30,20,30),//collision volume radii
 	core::vector3df(0,-10,0),//gravity 
 	core::vector3df(0,30,0)); //collision volume position
  
  meshNode->addAnimator(nodeAnimator);
- meshNode->setScale(core::vector3df(1.5f,1.5f,1.5f));
+ meshNode->setScale(core::vector3df(1.75f,1.75f,1.75f));
  nodeAnimator->drop();
 
+ 
 
 
 
@@ -135,9 +135,17 @@ if(!nodeAnimator)return 1;
 
  //while the user doesn't close the window
 	 while(device->run()){
+		  core::stringw str = L"";
+		  
 		 
-
 		 playerControlledAgent.update(device->getTimer());
+		 str+=playerControlledAgent.orientation;
+		 str+=" (";
+		 str+=playerControlledAgent.displacement.X;
+		 str+=",";
+		 str+=playerControlledAgent.displacement.Z;
+		 str+=")";
+		 device->setWindowCaption(str.c_str());
  
  //meshNode->setRotation(core::vector3df(0.0f,rot,0.0f));
  

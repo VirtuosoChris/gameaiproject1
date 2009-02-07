@@ -8,10 +8,17 @@ class Message;
 class GameEntity{
 	protected:
 	irr::core::vector3df position;
-	double orientation;
+	
 	irr::core::vector3df velocity;
 
 	public:
+
+		double orientation;
+		
+	irr::core::vector3df displacement;
+
+
+
 	virtual void processMessage(Message*)=0;
 	virtual void update(irr::ITimer*)=0;
 	
