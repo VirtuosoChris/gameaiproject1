@@ -11,7 +11,7 @@ void Agent::update(irr::ITimer* timer){
     
 	static bool moving = false;
 	static irr::u32 LASTUPDATE=0;
-	static const irr::f32 SPEED = .10f;
+	static const irr::f32 SPEED = .50f;
 	static const float ROTATION_RATE =  .10f;
 	int TIMEELAPSED =0; //ADJFHKJHFKJHFKJHF
 	InputHandler* ih= InputHandler::getInstance();
@@ -34,7 +34,7 @@ void Agent::update(irr::ITimer* timer){
 		orientation = mynodep->getRotation().Y;
 
 		//irr::core::vector3df 
-			displacement = irr::core::vector3df((irr::f32)cos(degreesToRadians(orientation)), 0.0f, (irr::f32)sin(degreesToRadians(orientation)));//* SPEED * (irr::f32)TIMEELAPSED;
+			displacement = irr::core::vector3df((irr::f32)cos(degreesToRadians(orientation)), 0.0f, (irr::f32)sin(degreesToRadians(orientation)))* SPEED * (irr::f32)TIMEELAPSED;
 displacement.Z*=-1;			
 		nodePos+=displacement;
 
@@ -69,19 +69,19 @@ return;
 
 	if(ih->isSKeyPressed()){
 		//MOVE_BACK
-mynodep->setAnimationSpeed(40);
+mynodep->setAnimationSpeed(25);
 		
     orientation = mynodep->getRotation().Y;
 	//irr::core::vector3df 
-		displacement = irr::core::vector3df((irr::f32)cos(degreesToRadians(orientation)), 0.0f, (irr::f32)sin(degreesToRadians(orientation)));//* SPEED * (irr::f32)TIMEELAPSED;
+		displacement = irr::core::vector3df((irr::f32)cos(degreesToRadians(orientation)), 0.0f, (irr::f32)sin(degreesToRadians(orientation)))* SPEED * (irr::f32)TIMEELAPSED;
 	displacement.Z*=-1;
-		nodePos -= displacement;//irr::core::vector3df((irr::f32)-cos(orientation), 0.0f, (irr::f32)-sin(orientation))* SPEED * (irr::f32)TIMEELAPSED;
+		nodePos -= displacement/4;//irr::core::vector3df((irr::f32)-cos(orientation), 0.0f, (irr::f32)-sin(orientation))* SPEED * (irr::f32)TIMEELAPSED;
 	
 	mynodep->setPosition(nodePos);
 
 	
 		if(!moving){moving=true;
-			mynodep->setMD2Animation(scene::EMAT_RUN);
+		mynodep->setMD2Animation(scene::EMAT_RUN);
 				
 		}
 

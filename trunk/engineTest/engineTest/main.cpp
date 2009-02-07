@@ -43,8 +43,9 @@ int main(int argc, char** argv){
 
 	 
  //create an animated mesh object from an md2 file
- scene::IAnimatedMesh* mesh = smgr->getMesh("../media/sydney.md2");
+ scene::IAnimatedMesh* mesh = smgr->getMesh("../media/chuckie.MD2");
  if(!mesh)return 1;
+ 
 
 
  //create a player controlled agent and its associated mesh node, and add it to the scene graph
@@ -55,7 +56,7 @@ int main(int argc, char** argv){
 
  //create a "scene node" for the animated model
  meshNode->setMaterialFlag(video::EMF_LIGHTING, false); //disable lighting
- meshNode->setMaterialTexture(0, driver->getTexture("../media/sydney.bmp")); //set the texture
+ meshNode->setMaterialTexture(0, driver->getTexture("../media/Chuckie.pcx")); //set the texture
  meshNode->setPosition(core::vector3df(75,0,75));
 
 
@@ -101,9 +102,12 @@ if(!nodeAnimator)return 1;
  nodeAnimator->drop();
 
  nodeAnimator = smgr->createCollisionResponseAnimator(selector, meshNode, 
-	core::vector3df(30,20,30),//collision volume radii
-	core::vector3df(0,-10,0),//gravity 
-	core::vector3df(0,30,0)); //collision volume position
+	core::vector3df(30,40,30),//collision volume radii
+//
+core::vector3df(0,-10,0),//gravity 
+	//core::vector3df(0,30,0)
+mesh->getBoundingBox().getCenter()	
+	); //collision volume position
  
  meshNode->addAnimator(nodeAnimator);
  meshNode->setScale(core::vector3df(1.75f,1.75f,1.75f));
