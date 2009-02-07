@@ -185,6 +185,10 @@
 				RelativePath=".\MessageHandler.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\SubjectAgent.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -209,6 +213,14 @@
 			</File>
 			<File
 				RelativePath=".\MessageHandler.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Model.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SubjectAgent.h"
 				>
 			</File>
 		</Filter>
