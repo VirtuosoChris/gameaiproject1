@@ -14,6 +14,12 @@ moving = false;
 }
 
 
+
+SubjectAgent::SubjectAgent (Model m, irr::core::vector3df p, irr::scene::ISceneManager* mgr):Agent(m,p,mgr){
+	moving = false;
+}
+
+
 void SubjectAgent::update(irr::ITimer* timer){
     
 	static const irr::f32 SPEED = .50f;

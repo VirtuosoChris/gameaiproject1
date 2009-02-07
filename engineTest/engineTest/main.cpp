@@ -1,3 +1,6 @@
+
+//good design would be of the form, make a chuckie at (3,3,0) <with these ai paramaters> and that's it... no worrying about scene nodes or collision detection
+
 //do destructors/constructors
 //singleton stuff; copy constructor, assignment
 //free message memory
@@ -8,6 +11,7 @@
 #endif
 
 #include <vector>
+#include <string>
 
 #include "InputHandler.h"
 #include "SubjectAgent.h"
@@ -23,7 +27,15 @@
 using namespace irr;
 
 
-//good design would be of the form, make a chuckie at (3,3,0) <with these ai paramaters>
+
+Model createModel(char* m, char* s, IrrlichtDevice *d, double sc=1.0f){
+ Model mod;
+ mod.mesh = d->getSceneManager()->getMesh(m);
+ mod.texture = d->getVideoDriver()->getTexture(s);
+ mod.scale = sc;
+ if(!(mod.mesh&&mod.texture))exit(0);
+ return mod;
+}
 
 
 int main(int argc, char** argv){
@@ -50,33 +62,33 @@ int main(int argc, char** argv){
  gui::IGUIEnvironment* guienv = device->getGUIEnvironment();
 
 
+ /*************************************************************/
+ /****************LOAD IN MODELS*******************************/
+ /*************************************************************/
+Model CHUCKIE = createModel("../media/chuckie.MD2","../media/Chuckie.pcx",device);
+Model BOBAFETT = createModel("../media/bobafett.md2","../media/bobafett.pcx",device, 2.0f);
+Model CARTMAN  = createModel("../media/ERIC.MD2","../media/ERIC.pcx",device, 1.5f);
+
+
+
+
+
 /*******************************************************/
 /***************CREATE GAME ENTITIES********************/
 /*******************************************************/
 
 
  //create an animated mesh object from an md2 file
- scene::IAnimatedMesh* mesh = smgr->getMesh("../media/chuckie.MD2");
- if(!mesh)return 1;
+ //scene::IAnimatedMesh* mesh = smgr->getMesh("../media/chuckie.MD2");
+//if(!mesh)return 1;
  
-
-
  //create a player controlled agent and its associated mesh node, and add it to the scene graph
- scene::IAnimatedMeshSceneNode* meshNode = smgr->addAnimatedMeshSceneNode( mesh );
- if(!meshNode)return 1;	
- SubjectAgent playerControlledAgent(meshNode,core::vector3df(75,0,75));
- //
- //create a "scene node" for the animated model //disable lighting
- meshNode->setMaterialTexture(0, driver->getTexture("../media/Chuckie.pcx")); //set the texture
-
+ //scene::IAnimatedMeshSceneNode* meshNode = smgr->addAnimatedMeshSceneNode( mesh );
+ //if(!meshNode)return 1;	
+ //SubjectAgent playerControlledAgent(meshNode,core::vector3df(75,0,75));
  
-
-meshNode=NULL;
-
-
-meshNode = smgr->addAnimatedMeshSceneNode(mesh);
- //meshNode->setPosition(core::vector3df(116,128,845));
- Agent agent2(meshNode,core::vector3df(116,128,845));
+ SubjectAgent playerControlledAgent(CHUCKIE,core::vector3df(75,0,75),smgr);
+ Agent agent2(BOBAFETT,core::vector3df(116,128,845),smgr );
 
 
  /****************************/
@@ -122,28 +134,28 @@ meshNode = smgr->addAnimatedMeshSceneNode(mesh);
 
 
 //create a collision node animator and apply it to the camera
- scene::ISceneNodeAnimator *nodeAnimator = 
-	smgr->createCollisionResponseAnimator(selector,//geometry for collision 
-	camera, //scene node to apply collision to
-	core::vector3df(30,50,30),//collision volume radii
-	core::vector3df(0,-10,0),//gravity 
-	core::vector3df(0,30,0)); //collision volume position
-if(!nodeAnimator)return 1;
- camera->addAnimator(nodeAnimator);
- nodeAnimator->drop();
+// scene::ISceneNodeAnimator *nodeAnimator = 
+///	smgr->createCollisionResponseAnimator(selector,//geometry for collision 
+//	camera, //scene node to apply collision to
+//	core::vector3df(30,50,30),//collision volume radii
+//	core::vector3df(0,-10,0),//gravity 
+//	core::vector3df(0,30,0)); //collision volume position
+//if(!nodeAnimator)return 1;
+ //camera->addAnimator(nodeAnimator);
+// nodeAnimator->drop();
 
 
- nodeAnimator = smgr->createCollisionResponseAnimator(selector, meshNode, 
-	core::vector3df(30,40,30),//collision volume radii
+//nodeAnimator = smgr->createCollisionResponseAnimator(selector, meshNode, 
+//	core::vector3df(30,40,30),//collision volume radii
 //
-core::vector3df(0,-10,0),//gravity 
-	//core::vector3df(0,30,0)
-mesh->getBoundingBox().getCenter()	
-	); //collision volume position
+//core::vector3df(0,-10,0),//gravity 
+
+//mesh->getBoundingBox().getCenter()	
+//); //collision volume position
  
- meshNode->addAnimator(nodeAnimator);
- meshNode->setScale(core::vector3df(1.75f,1.75f,1.75f));
- nodeAnimator->drop();
+// meshNode->addAnimator(nodeAnimator);
+ //meshNode->setScale(core::vector3df(1.75f,1.75f,1.75f));
+ //nodeAnimator->drop();
 
 
 
