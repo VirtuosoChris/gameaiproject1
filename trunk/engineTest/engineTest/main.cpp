@@ -47,7 +47,7 @@ int main(int argc, char** argv){
 /*******************************************************/
 
  //create the irrlicht device
- IrrlichtDevice *device = createDevice(video::EDT_OPENGL, core::dimension2d<s32>(1280,1024), 32, false, true, false, InputHandler::getInstance());
+ IrrlichtDevice *device = createDevice(video::EDT_OPENGL, core::dimension2d<s32>(1440,900), 32, true, true, true, InputHandler::getInstance());
  if(device==NULL)return 1;
 
  //set the title of the window
@@ -78,7 +78,7 @@ Model CYBERDEMON = createModel("../media/cyber.md2","../media/cyber.pcx",device,
 /*******************************************************/
 
  SubjectAgent playerControlledAgent(CHUCKIE,core::vector3df(75,0,75),smgr);
- Agent agent2(CYBERDEMON,core::vector3df(116,128,845),smgr );
+ Agent agent2(CARTMAN,core::vector3df(116,128,845),smgr );
  Agent agent3(BOBAFETT, core::vector3df(124, 185, -834), smgr);
 
 
@@ -193,8 +193,6 @@ if(!nodeAnimator)return 1;
 		//}
 
 		
-
-
 		//rig the window title bar to show the current camera position
 		core::stringw str = L"";  		 
 		 str+="(";
@@ -216,6 +214,9 @@ if(!nodeAnimator)return 1;
 		 else{
 			 billboard->setVisible(false);
 		 }
+
+
+		 
 
 		//Draw everything
 		 driver->beginScene(true, true, video::SColor(255,100,101,140));

@@ -20,6 +20,9 @@ class GameEntity{
 
 	virtual void processMessage(Message*)=0;
 	virtual void update(irr::ITimer*)=0;
+
+
+	irr::core::vector3df getPosition();
 	
 	void setVelocity(irr::core::vector3df vel);
 
