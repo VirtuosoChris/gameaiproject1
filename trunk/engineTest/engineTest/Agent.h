@@ -8,6 +8,7 @@ protected:
 	irr::scene::IAnimatedMeshSceneNode* mynodep;
 	irr::core::vector3df position;
 	irr::u32 LASTUPDATE;
+	Model model;
 	
 
 public:
@@ -19,6 +20,7 @@ virtual ~Agent();
 
 Agent(Model m, irr::core::vector3df p = irr::core::vector3df(0.0f,0.0f,0.0f),irr::scene::ISceneManager* mgr = NULL);
 
+void createCollisionAnimator(irr::scene::ITriangleSelector* selector ,irr::scene::ISceneManager* mgr);
 
 
 };
