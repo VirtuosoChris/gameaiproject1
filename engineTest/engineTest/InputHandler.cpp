@@ -49,4 +49,5 @@ bool InputHandler::isAKeyPressed(){return keyPressed[irr::KEY_KEY_A];}
 bool InputHandler::isWKeyPressed(){return keyPressed[irr::KEY_KEY_W];}
 bool InputHandler::isSKeyPressed(){return keyPressed[irr::KEY_KEY_S];}
 bool InputHandler::isDKeyPressed(){return keyPressed[irr::KEY_KEY_D];}
+bool InputHandler::isCKeyPressed(){return keyPressed[irr::KEY_KEY_C];}
 

@@ -40,7 +40,7 @@ Model createModel(char* m, char* s, IrrlichtDevice *d, double sc=1.0f){
 
 int main(int argc, char** argv){
 
-	std::vector<GameEntity*> entities;
+	std::vector<Agent*> entities;
 
 /*******************************************************/
 /****************ENGINE SETUP***************************/
@@ -68,7 +68,7 @@ int main(int argc, char** argv){
 Model CHUCKIE = createModel("../media/chuckie.MD2","../media/Chuckie.pcx",device);
 Model BOBAFETT = createModel("../media/bobafett.md2","../media/bobafett.pcx",device, 2.0f);
 Model CARTMAN  = createModel("../media/ERIC.MD2","../media/ERIC.pcx",device, 1.5f);
-
+Model CYBERDEMON = createModel("../media/cyber.md2","../media/cyber.pcx",device,3.0f);
 
 
 
@@ -77,18 +77,9 @@ Model CARTMAN  = createModel("../media/ERIC.MD2","../media/ERIC.pcx",device, 1.5
 /***************CREATE GAME ENTITIES********************/
 /*******************************************************/
 
-
- //create an animated mesh object from an md2 file
- //scene::IAnimatedMesh* mesh = smgr->getMesh("../media/chuckie.MD2");
-//if(!mesh)return 1;
- 
- //create a player controlled agent and its associated mesh node, and add it to the scene graph
- //scene::IAnimatedMeshSceneNode* meshNode = smgr->addAnimatedMeshSceneNode( mesh );
- //if(!meshNode)return 1;	
- //SubjectAgent playerControlledAgent(meshNode,core::vector3df(75,0,75));
- 
  SubjectAgent playerControlledAgent(CHUCKIE,core::vector3df(75,0,75),smgr);
- Agent agent2(BOBAFETT,core::vector3df(116,128,845),smgr );
+ Agent agent2(CYBERDEMON,core::vector3df(116,128,845),smgr );
+ Agent agent3(BOBAFETT, core::vector3df(124, 185, -834), smgr);
 
 
  /****************************/
@@ -119,11 +110,11 @@ Model CARTMAN  = createModel("../media/ERIC.MD2","../media/ERIC.pcx",device, 1.5
  scene::ICameraSceneNode *camera = 
 	 smgr->addCameraSceneNodeFPS();
 
- camera->setPosition(core::vector3df(25,50,25));
+ camera->setPosition(core::vector3df(30,30,30));
 
 
  /***************************************************/
- /****************** SET UP COLLOSIONS***************/
+ /****************** SET UP COLLISIONS***************/
  /***************************************************/
 
  //create a triangle selector object for the map
@@ -134,15 +125,15 @@ Model CARTMAN  = createModel("../media/ERIC.MD2","../media/ERIC.pcx",device, 1.5
 
 
 //create a collision node animator and apply it to the camera
-// scene::ISceneNodeAnimator *nodeAnimator = 
-///	smgr->createCollisionResponseAnimator(selector,//geometry for collision 
-//	camera, //scene node to apply collision to
-//	core::vector3df(30,50,30),//collision volume radii
-//	core::vector3df(0,-10,0),//gravity 
-//	core::vector3df(0,30,0)); //collision volume position
-//if(!nodeAnimator)return 1;
- //camera->addAnimator(nodeAnimator);
-// nodeAnimator->drop();
+ scene::ISceneNodeAnimator *nodeAnimator = 
+	smgr->createCollisionResponseAnimator(selector,//geometry for collision 
+	camera, //scene node to apply collision to/	
+	core::vector3df(30,50,30),//collision volume radii
+	core::vector3df(0,0,0),//gravity 
+	core::vector3df(0,30,0)); //collision volume position
+if(!nodeAnimator)return 1;
+ camera->addAnimator(nodeAnimator);
+ nodeAnimator->drop();
 
 
 //nodeAnimator = smgr->createCollisionResponseAnimator(selector, meshNode, 
@@ -181,7 +172,7 @@ Model CARTMAN  = createModel("../media/ERIC.MD2","../media/ERIC.pcx",device, 1.5
 
 //add collision to each game entity in the agent list
  for(int i = 0; i < entities.size(); i++){
- 
+	 entities[i]->createCollisionAnimator(selector,smgr);
  
  }
 
@@ -196,7 +187,12 @@ Model CARTMAN  = createModel("../media/ERIC.MD2","../media/ERIC.pcx",device, 1.5
 		}
 
 		//if the mouse is clicked, create a new agent at the camera's current position
-		//TO DO!!!
+		//TO DO!!! //THIS CREATES AN AGENT FOR EVERY TICK THE KEY IS PRESSED, BAD
+		//if(InputHandler::getInstance()->isCKeyPressed()){
+		//	entities.push_back(new Agent(CYBERDEMON, camera->getPosition(), smgr));
+		//}
+
+		
 
 
 		//rig the window title bar to show the current camera position

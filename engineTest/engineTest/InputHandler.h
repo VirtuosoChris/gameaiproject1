@@ -18,4 +18,5 @@ public:
 	bool isWKeyPressed();
 	bool isSKeyPressed();
 	bool isDKeyPressed();
+	bool isCKeyPressed();
 };

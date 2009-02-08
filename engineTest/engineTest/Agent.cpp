@@ -19,7 +19,7 @@ void Agent::processMessage(Message*){
 
 
 
-Agent::Agent(Model m, irr::core::vector3df p, irr::scene::ISceneManager* mgr):position(p){
+Agent::Agent(Model m, irr::core::vector3df p, irr::scene::ISceneManager* mgr):position(p),model(m){
 	
 	if(mgr){
 	mynodep = mgr->addAnimatedMeshSceneNode(m.mesh);
@@ -51,3 +51,25 @@ mynodep->setPosition(p);
 Agent::~Agent(){
 
 }
+
+
+
+
+
+void Agent::createCollisionAnimator(irr::scene::ITriangleSelector* selector ,irr::scene::ISceneManager* mgr){
+
+scene::ISceneNodeAnimator *nodeAnimator;
+	nodeAnimator = mgr->createCollisionResponseAnimator(selector, mynodep, 
+		core::vector3df(30*model.scale,25*model.scale,30*model.scale),//collision volume radii
+	core::vector3df(0,-10,0),//gravity 
+	model.mesh->getBoundingBox().getCenter()); //collision volume position
+ 
+ mynodep->addAnimator(nodeAnimator);
+ //mynodep->setScale(core::vector3df(1.75f,1.75f,1.75f));
+ nodeAnimator->drop();
+
+
+
+
+}
+

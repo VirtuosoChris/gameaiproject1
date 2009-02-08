@@ -22,7 +22,7 @@ SubjectAgent::SubjectAgent (Model m, irr::core::vector3df p, irr::scene::ISceneM
 
 void SubjectAgent::update(irr::ITimer* timer){
     
-	static const irr::f32 SPEED = .50f;
+	static const irr::f32 SPEED = .30f;
 	static const float ROTATION_RATE =  .10f;
 	int TIMEELAPSED =0; //ADJFHKJHFKJHFKJHF
 	InputHandler* ih= InputHandler::getInstance();
