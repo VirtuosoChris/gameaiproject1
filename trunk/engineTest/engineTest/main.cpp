@@ -28,7 +28,7 @@ using namespace irr;
 
 
 
-Model createModel(char* m, char* s, IrrlichtDevice *d, double sc=1.0f){
+Model createModel(const char* m, const char* s, IrrlichtDevice *d, double sc=1.0f){
  Model mod;
  mod.mesh = d->getSceneManager()->getMesh(m);
  mod.texture = d->getVideoDriver()->getTexture(s);
@@ -230,7 +230,6 @@ if(!nodeAnimator)return 1;
 	 }
 
 
-	
 	 device->drop();
 
 return 0;

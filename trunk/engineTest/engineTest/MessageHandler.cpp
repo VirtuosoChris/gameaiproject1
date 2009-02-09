@@ -22,7 +22,7 @@ MessageHandler::~MessageHandler(){
 
 void MessageHandler::postMessage(Message_Type type, int delay, GameEntity *sender, GameEntity *receiver,irr::ITimer* timer){
 
-Message* m = (Message*)malloc(sizeof(Message));
+Message* m = new Message;
 m->messageType = type;
 m->sender = sender;
 m->receiver = receiver;
@@ -40,8 +40,8 @@ int MessageHandler::update(irr::ITimer* timer){
 
 	while(messageQueue.begin()->postTime < (int)timer->getTime()){
 
-		deliverMessage(&*messageQueue.begin());
-
+		//deliverMessage(&*messageQueue.begin());
+	    deliverMessage(const_cast<Message*>(&*messageQueue.begin()));
 		messageQueue.erase(messageQueue.begin());
 
 	}
