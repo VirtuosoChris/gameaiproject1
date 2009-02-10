@@ -39,6 +39,7 @@ Agent::Agent(Model m, irr::core::vector3df p, irr::scene::ISceneManager* mgr):po
 
 
 
+/*
 Agent::Agent(irr::scene::IAnimatedMeshSceneNode* a, irr::core::vector3df p)
 :mynodep(a),position(p)
 {	LASTUPDATE = 0;
@@ -50,11 +51,12 @@ mynodep->setPosition(p);
 	
  mynodep->setMD2Animation(scene::EMAT_STAND); //set the animation to stand?
 }
+*/
+
 
 Agent::~Agent(){
 
 }
-
 
 
 
@@ -71,7 +73,7 @@ scene::ISceneNodeAnimator *nodeAnimator;
  //mynodep->setScale(core::vector3df(1.75f,1.75f,1.75f));
  nodeAnimator->drop();
 
-
+ smgr = mgr;
 
 
 }

@@ -9,9 +9,9 @@ double degreesToRadians(double degrees){
 return 2*3.14159*degrees/360;
 }
 
-SubjectAgent::SubjectAgent(irr::scene::IAnimatedMeshSceneNode* a, irr::core::vector3df p):Agent(a,p){
-moving = false;
-}
+//SubjectAgent::SubjectAgent(irr::scene::IAnimatedMeshSceneNode* a, irr::core::vector3df p):Agent(a,p){
+//moving = false;
+//}
 
 
 

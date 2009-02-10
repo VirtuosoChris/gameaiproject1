@@ -64,15 +64,13 @@ int main(int argc, char** argv){
  gui::IGUIEnvironment* guienv = device->getGUIEnvironment();
 
 
- /*************************************************************/
- /****************LOAD IN MODELS*******************************/
- /*************************************************************/
+/*************************************************************/
+/****************LOAD IN MODELS*******************************/
+/*************************************************************/
 Model CHUCKIE = createModel("../media/chuckie.MD2","../media/Chuckie.pcx",device);
 Model BOBAFETT = createModel("../media/bobafett.md2","../media/bobafett.pcx",device, 2.0f);
 Model CARTMAN  = createModel("../media/ERIC.MD2","../media/ERIC.pcx",device, 1.5f);
 Model CYBERDEMON = createModel("../media/cyber.md2","../media/cyber.pcx",device,3.0f);
-
-
 
 
 /*******************************************************/
@@ -162,7 +160,6 @@ if(!nodeAnimator)return 1;
 
 
  core::line3d<f32> line;
- 
  core::vector3df intersection;
  core::triangle3df triangle;
  
@@ -211,7 +208,8 @@ if(!nodeAnimator)return 1;
 		 line.end = line.start + (camera->getTarget() - line.start).normalize() * 5000.0f;
  
 		billboard->setVisible(true);
-		 if(smgr->getSceneCollisionManager()->getCollisionPoint(line, selector,intersection, triangle))
+		 
+		if(smgr->getSceneCollisionManager()->getCollisionPoint(line, selector,intersection, triangle))
 			billboard->setPosition(intersection);
 		 else{
 			 billboard->setVisible(false);
