@@ -190,6 +190,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Sensor2Data.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Sensor3Data.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\SubjectAgent.cpp"
 				>
 			</File>
