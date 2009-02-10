@@ -13,6 +13,7 @@ protected:
 	Model model;
 	
 	scene::ISceneManager* smgr;
+	irr::scene::ITriangleSelector* selector;
 
 	Sensor1Data *s1d;
 	Sensor2Data *s2d;
@@ -36,6 +37,8 @@ double agentBearing(Agent *nearAgent);
 std::vector<Sensor2Data*> *proximitySensor(std::vector<Agent*> globalAgentList, double sensorRange);
 
 void createCollisionAnimator(irr::scene::ITriangleSelector* selector ,irr::scene::ISceneManager* mgr);
+
+void updateSensor1();
 
 
 };
