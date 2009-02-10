@@ -42,7 +42,7 @@ int main(int argc, char** argv){
 
 	std::vector<Agent*> entities;
 
-	//GameEntity::setAgentList(&entities);
+	GameEntity::setAgentList(&entities);
 
 /*******************************************************/
 /****************ENGINE SETUP***************************/
