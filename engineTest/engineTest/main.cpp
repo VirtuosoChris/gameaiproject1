@@ -47,7 +47,7 @@ int main(int argc, char** argv){
 /*******************************************************/
 
  //create the irrlicht device
- IrrlichtDevice *device = createDevice(video::EDT_OPENGL, core::dimension2d<s32>(1440,900), 32, true, true, true, InputHandler::getInstance());
+ IrrlichtDevice *device = createDevice(video::EDT_OPENGL, core::dimension2d<s32>(1440,900), 32, false, true, true, InputHandler::getInstance());
  if(device==NULL)return 1;
 
  //set the title of the window
