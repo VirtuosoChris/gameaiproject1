@@ -8,7 +8,7 @@ bool moving;
 
 public:
 virtual void update(irr::ITimer*);
-SubjectAgent(irr::scene::IAnimatedMeshSceneNode* n, irr::core::vector3df p = irr::core::vector3df(0.0f,0.0f,0.0f));
+//SubjectAgent(irr::scene::IAnimatedMeshSceneNode* n, irr::core::vector3df p = irr::core::vector3df(0.0f,0.0f,0.0f));
 
 
 
