@@ -62,7 +62,7 @@ displacement.Z*=-1;
 		mynodep->setAnimationSpeed(30);
 		//ROTATE_LEFT
 		orientation -= ROTATION_RATE * TIMEELAPSED;
-		mynodep->setRotation(irr::core::vector3df(0.0f,orientation,0.0f));
+		mynodep->setRotation(irr::core::vector3df(0.0f,(irr::f32)orientation,0.0f));
 
 		//mynodep->setRotation(irr::core::vector3df(0.0f,1,0.0f));
  

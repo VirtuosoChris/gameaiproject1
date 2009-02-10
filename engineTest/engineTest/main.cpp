@@ -170,7 +170,7 @@ if(!nodeAnimator)return 1;
  
 
 //add collision to each game entity in the agent list
- for(int i = 0; i < entities.size(); i++){
+ for(int i = 0; i < (int)entities.size(); i++){
 	 entities[i]->createCollisionAnimator(selector,smgr);
  
  }
@@ -181,7 +181,7 @@ if(!nodeAnimator)return 1;
 /*******************************************************/
 	while(device->run()){
 		
-		for(int i = 0; i < entities.size();i++){
+		for(int i = 0; i < (int)entities.size();i++){
 			entities[i]->update(device->getTimer());
 		}
 
