@@ -21,6 +21,9 @@ void Agent::processMessage(Message*){
 
 Agent::Agent(Model m, irr::core::vector3df p, irr::scene::ISceneManager* mgr):position(p),model(m){
 	
+
+	s1d = new Sensor1Data(3,90);
+
 	if(mgr){
 	mynodep = mgr->addAnimatedMeshSceneNode(m.mesh);
 	mynodep->setPosition(p);

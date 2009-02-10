@@ -1,6 +1,12 @@
-struct Sensor1Data{
+//Wall feeler sensor
+class Sensor1Data{
+	int numFeelers;
+	double angle;
+	float* feelerDistances;
 
-
+	public: 
+		Sensor1Data(int nf,double a);
+		~Sensor1Data();
 
 };
 
