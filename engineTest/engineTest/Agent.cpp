@@ -17,14 +17,28 @@ void Agent::updateSensor1(){
 
  core::vector3df orientVector;
 
-line.start = mynodep->getPosition();
-		 line.end = line.start + orientVector * 5000.0f;
+ line.start = mynodep->getPosition();
+ line.end = line.start + orientVector * s1d->maxRange;
  
 	//	billboard->setVisible(true);
 		 
+
+ 
+ double  baseAngle = orientation - s1d->getAngle()/2.0;
+ double  increment = s1d->getAngle() / s1d->getNumFeelers();
+
 		 for(int i = 0; i < s1d->getNumFeelers(); i++){
-		 	
+				
+
+			double angle = i * increment + baseAngle;
+			 core::vector3df feelerVector = core::vector3df(cos(angle), 0, sin(angle));
+
 			 float t1 = 0.0f;
+			 
+			 line.start = mynodep->getPosition();
+			 line.end = line.start + orientVector * s1d->maxRange;
+ 
+
 			 if(smgr->getSceneCollisionManager()->getCollisionPoint(line, selector,intersection, triangle))
 				 s1d->feelerDistances[i] = (t1= (intersection.X - mynodep->getPosition().X)) * t1 + (t1 = (intersection.Z - mynodep->getPosition().Z)* t1);
 			 //billboard->setPosition(intersection);

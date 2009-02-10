@@ -19,3 +19,9 @@ Sensor1Data::~Sensor1Data(){
 int Sensor1Data::getNumFeelers(){
 return numFeelers;
 }
+
+
+double Sensor1Data::getAngle(){
+
+return angle;
+}

@@ -12,6 +12,7 @@ class Sensor1Data{
 		~Sensor1Data();
 
 		int getNumFeelers();
+		double getAngle();
 
 		float* feelerDistances;
 
