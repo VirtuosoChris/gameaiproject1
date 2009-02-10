@@ -220,6 +220,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Sensors.h"
+				>
+			</File>
+			<File
 				RelativePath=".\SubjectAgent.h"
 				>
 			</File>
