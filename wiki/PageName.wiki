@@ -1,14 +1,18 @@
 #summary This is the game project To-Do list
-#labels To-Dolist
+#labels To-Do
 
 = Introduction =
 
 *Things to-do*
 
 1. Mouse click places agent into environment
+
 2. Sensor 1 + Sensor 2
+
 3. Sensor 3
+
 4. GUI display sensor output
+
 5. Display sensors in world
 
 
