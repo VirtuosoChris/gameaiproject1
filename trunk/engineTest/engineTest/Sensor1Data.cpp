@@ -15,3 +15,6 @@ Sensor1Data::~Sensor1Data(){
 	//destructor
 }
 
+int Sensor1Data::getNumFeelers(){
+return numFeelers;
+}
