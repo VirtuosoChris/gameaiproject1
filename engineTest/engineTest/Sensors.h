@@ -2,10 +2,13 @@
 class Sensor1Data{
 	int numFeelers;
 	double angle;
-	
 	public: 
+
+		
+	float maxRange;
+
 		Sensor1Data();
-		Sensor1Data(int nf,double a);
+		Sensor1Data(int nf,double a, float mr = 5000.0f);
 		~Sensor1Data();
 
 		int getNumFeelers();

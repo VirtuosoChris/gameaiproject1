@@ -22,11 +22,18 @@ line.start = mynodep->getPosition();
  
 	//	billboard->setVisible(true);
 		 
-		if(smgr->getSceneCollisionManager()->getCollisionPoint(line, selector,intersection, triangle))
-			;//billboard->setPosition(intersection);
-		 else{
-			 //billboard->setVisible(false);
+		 for(int i = 0; i < s1d->getNumFeelers(); i++){
+		 	
+			 float t1 = 0.0f;
+			 if(smgr->getSceneCollisionManager()->getCollisionPoint(line, selector,intersection, triangle))
+				 s1d->feelerDistances[i] = (t1= (intersection.X - mynodep->getPosition().X)) * t1 + (t1 = (intersection.Z - mynodep->getPosition().Z)* t1);
+			 //billboard->setPosition(intersection);
+		    else{
+			 s1d->feelerDistances[i] =s1d->maxRange;
+			}
 		 }
+
+	
 
 
 }

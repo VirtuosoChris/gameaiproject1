@@ -5,7 +5,8 @@ Sensor1Data::Sensor1Data(){
 	//default
 }
 
-Sensor1Data::Sensor1Data(int nf,double a){
+Sensor1Data::Sensor1Data(int nf,double a, float mr){
+	maxRange = mr;
 	angle = a;
 	numFeelers = nf;
 	feelerDistances = new float[nf];
