@@ -3,12 +3,17 @@
 #define IRRLICHT
 #endif
 
+#include <vector>
+
 class Message;
+class Agent;
 
 class GameEntity{
 	protected:
 	irr::core::vector3df position;
 	irr::core::vector3df velocity;
+
+	static std::vector<Agent*>* agentList;
 	
 	public:
 
@@ -16,6 +21,7 @@ class GameEntity{
 		
 	irr::core::vector3df displacement;
 
+	static void setAgentList(std::vector<Agent*>*);
 
 
 	virtual void processMessage(Message*)=0;

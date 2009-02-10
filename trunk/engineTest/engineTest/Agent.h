@@ -12,7 +12,7 @@ protected:
 	irr::u32 LASTUPDATE;
 	Model model;
 
-	Sensor1Data s1d;
+	Sensor1Data *s1d;
 	Sensor2Data s2d;
 	Sensor3Data s3d;
 	
