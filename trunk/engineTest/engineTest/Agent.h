@@ -34,7 +34,7 @@ double agentProximity(Agent *nearAgent);
 
 double agentBearing(Agent *nearAgent);
 
-std::vector<Sensor2Data*> *proximitySensor(std::vector<Agent*> globalAgentList, double sensorRange);
+std::vector<Sensor2Data*> *proximitySensor(double sensorRange);
 
 void createCollisionAnimator(irr::scene::ITriangleSelector* selector ,irr::scene::ISceneManager* mgr);
 

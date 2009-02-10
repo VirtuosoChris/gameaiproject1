@@ -125,4 +125,66 @@ scene::ISceneNodeAnimator *nodeAnimator;
 
 }
 
-//This finds the relative distance between two agentsdouble Agent::agentProximity(Agent *nearAgent){	//Calculate magnitude	double x,z,mag ;	x = nearAgent->position.X - this->position.X ;	z = nearAgent->position.Z - this->position.Z ;	mag = sqrt((x*x)+(z*z)) ; //pythagorean theorem	return mag ;	}//This finds the relative bearing between two agentsdouble Agent::agentBearing(Agent *nearAgent){	//Calculate bearing between nearAgent and origin	double opp, adj, nearBear, thisBear;	opp = nearAgent->position.X - this->position.X ;	adj = nearAgent->position.Z - this->position.Z ;	nearBear = atan(opp/adj);	thisBear = this->orientation;	//Subtract nearBearing from currentBearing and return	return (nearBear - thisBear);}//This is Sensor 2, returns a list of Sensor2Data std::vector<Sensor2Data*> *Agent::proximitySensor(std::vector<Agent*> globalAgentList, double sensorRange){	//Create list for return	std::vector<Sensor2Data*> proxSenseList ;	//Traverse entire list	for(int x=0 ; x< globalAgentList.size() ; x++)	{		//Temp sensor data storage, this gets added to the list		Sensor2Data temp;		//Get relative distance between agents and store in temp		temp.relDistance = globalAgentList[x]->agentProximity(this);		//If agents are within range, then add to the list		if(temp.relDistance <= sensorRange)		{			//Set ID to pointer			temp.agentID = (int)globalAgentList[x];			//Get relative bearing and store in temp			temp.relHeading = globalAgentList[x]->agentBearing(this);			//Add temp to proxSenseList for return			proxSenseList.push_back(&temp);		}	}	//return pointer to the proximity sensor list	return &proxSenseList;}
+//This finds the relative distance between two agents
+double Agent::agentProximity(Agent *nearAgent)
+{
+	//Calculate magnitude
+	double x,z,mag ;
+	x = nearAgent->position.X - this->position.X ;
+	z = nearAgent->position.Z - this->position.Z ;
+	mag = sqrt((x*x)+(z*z)) ; //pythagorean theorem
+
+	return mag ;	
+}
+
+//This finds the relative bearing between two agents
+double Agent::agentBearing(Agent *nearAgent)
+{
+	//Calculate bearing between nearAgent and origin
+	double opp, adj, nearBear, thisBear;
+	opp = nearAgent->position.X - this->position.X ;
+	adj = nearAgent->position.Z - this->position.Z ;
+	nearBear = atan(opp/adj);
+	thisBear = this->orientation;
+
+	//Subtract nearBearing from currentBearing and return
+	return (nearBear - thisBear);
+}
+
+
+//This is Sensor 2, returns a list of Sensor2Data 
+std::vector<Sensor2Data*> *Agent::proximitySensor(double sensorRange)
+{
+	//Create list for return
+	std::vector<Sensor2Data*> proxSenseList ;
+
+	//Traverse entire list
+	for(int x=0 ; x< Agent::agentList->size() ; x++)
+	{
+		//Temp sensor data storage, this gets added to the list
+		Sensor2Data temp;
+
+		//Ignore entry in list that is self
+		if((*agentList)[x]!= this)
+		{
+			//Get relative distance between agents and store in temp
+			temp.relDistance = (*agentList)[x]->agentProximity(this);
+
+			//If agents are within range, then add to the list
+			if(temp.relDistance <= sensorRange)
+			{
+				//Set ID to pointer
+				temp.agentID = (*agentList)[x];
+
+				//Get relative bearing and store in temp
+				temp.relHeading = (*agentList)[x]->agentBearing(this);
+
+				//Add temp to proxSenseList for return
+				proxSenseList.push_back(&temp);
+			}
+		}
+	}
+
+	//return pointer to the proximity sensor list
+	return &proxSenseList;
+}

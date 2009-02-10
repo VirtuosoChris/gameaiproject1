@@ -1,4 +1,10 @@
+#include<string>
+
+//dummy agent class
+class Agent;
+
 //Wall feeler sensor
+
 class Sensor1Data{
 	int numFeelers;
 	double angle;
@@ -22,7 +28,7 @@ class Sensor1Data{
 class Sensor2Data{
 	public:
 		//Agent Identification Number
-		int agentID;
+		Agent *agentID;
 
 		//Relative distance to agent
 		double relDistance;
@@ -31,7 +37,7 @@ class Sensor2Data{
 		double relHeading;
 		
 		Sensor2Data();
-		Sensor2Data(int id, double rD, double rH);
+		Sensor2Data(Agent *id, double rD, double rH);
 		~Sensor2Data();
 };
 
