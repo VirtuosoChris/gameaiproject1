@@ -1,10 +1,10 @@
+#define MESSAGE
+
 class GameEntity;
 
 
-#ifndef IRRLICHT
-#define IRRLICHT
 #include "irrlicht.h"
-#endif
+
 
 
 

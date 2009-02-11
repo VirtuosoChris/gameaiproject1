@@ -15,10 +15,18 @@
 #include <vector>
 #include <string>
 
+#ifndef INPUTHANDLER
 #include "InputHandler.h"
-#include "SubjectAgent.h"
-#include "Model.h"
+#endif
 
+
+#ifndef SUBJECTAGENT
+#include "SubjectAgent.h"
+#endif
+
+#ifndef MODEL
+#include "Model.h"
+#endif
 
 #ifdef _IRR_WINDOWS_
 #pragma comment(lib, "Irrlicht.lib")

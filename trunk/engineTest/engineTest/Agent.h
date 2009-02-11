@@ -1,9 +1,18 @@
+#define AGENT
+
 #include "irrlicht.h"
+
+#ifndef GAMEENTITY
 #include "GameEntity.h"
+#endif
 
+#ifndef SENSORS
 #include "Sensors.h"
+#endif
 
+#ifndef MODEL
 #include "Model.h"
+#endif
 
 #include <string>
 

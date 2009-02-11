@@ -1,7 +1,6 @@
-#ifndef IRRLICHT
+#define GAMEENTITY
+
 #include <irrlicht.h>
-#define IRRLICHT
-#endif
 
 #include <vector>
 

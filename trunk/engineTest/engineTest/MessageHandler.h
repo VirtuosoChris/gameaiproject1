@@ -1,14 +1,15 @@
-#ifndef IRRLICHT
-#define IRRLICHT
+#define MESSAGEHANDLER
+
 #include <irrlicht.h>
-#endif
+
 
 
 class GameEntity;
 //class Message;
 
+#ifndef MESSAGE
 #include "Message.h"
-//#include "GameEntity.h"
+#endif
 
 class MessageHandler{
  

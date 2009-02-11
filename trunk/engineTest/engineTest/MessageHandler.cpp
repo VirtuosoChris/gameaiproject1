@@ -1,13 +1,13 @@
-#ifndef IRRLICHT
 #include <irrlicht.h>
-#define IRRLICHT
-#endif
+
 
 
 #include <set>
 #include "MessageHandler.h"
-#include "GameEntity.h"
 
+#ifndef GAMEENTITY
+#include "GameEntity.h"
+#endif
 		 
 MessageHandler::MessageHandler(){
 

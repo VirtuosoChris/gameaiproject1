@@ -1,7 +1,5 @@
-
-
-#ifndef MODEL
 #define MODEL
+
 #include <irrlicht.h>
 
 using namespace irr;
@@ -12,4 +10,3 @@ struct Model{
 	double scale;
 };
 
-#endif
