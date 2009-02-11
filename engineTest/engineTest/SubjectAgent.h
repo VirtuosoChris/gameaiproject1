@@ -1,5 +1,11 @@
+#define SUBJECTAGENT
+
 #include "irrlicht.h"
+
+#ifndef AGENT
 #include "Agent.h"
+#endif
+
 #include <vector>
 
 class SubjectAgent:public Agent{

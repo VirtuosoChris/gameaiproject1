@@ -1,7 +1,7 @@
-#ifndef IRRLICHT
+#define INPUTHANDLER
+
 #include <irrlicht.h>
-#define IRRLICHT
-#endif
+
 
 class InputHandler: public irr::IEventReceiver{
 

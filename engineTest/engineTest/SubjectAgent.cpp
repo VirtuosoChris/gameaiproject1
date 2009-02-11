@@ -1,6 +1,10 @@
 #include "SubjectAgent.h"
 
+
+#ifndef INPUTHANDLER
 #include "InputHandler.h"
+#endif
+
 #include <cmath>
 
 using namespace irr;

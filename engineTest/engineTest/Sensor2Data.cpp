@@ -1,4 +1,6 @@
+#ifndef SENSORS
 #include "Sensors.h"
+#endif
 
 
 Sensor2Data::Sensor2Data(){

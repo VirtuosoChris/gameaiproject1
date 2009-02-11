@@ -1,6 +1,9 @@
 #define NUMFEELERS 10
 #include "Agent.h"
+
+#ifndef INPUTHANDLER
 #include "InputHandler.h"
+#endif
 #include <cmath>
 #include <string>
 #include <vector>

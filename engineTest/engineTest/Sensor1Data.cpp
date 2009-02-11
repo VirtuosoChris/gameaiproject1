@@ -1,5 +1,6 @@
+#ifndef SENSORS
 #include "Sensors.h"
-
+#endif
 
 Sensor1Data::Sensor1Data(){
 	//default

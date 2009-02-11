@@ -1,3 +1,5 @@
+#define SENSORS
+
 #include<string>
 
 //dummy agent class
