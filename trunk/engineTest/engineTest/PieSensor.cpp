@@ -10,6 +10,10 @@ PieSensor::PieSensor(int slice){
 	angle = 360.0 / (num_slices * 2);
 	orientation = 0;
 	areas = new int[num_slices * 2];
+	clear();
+}
+
+void PieSensor::clear(){
 	for(int i = 0; i < (num_slices * 2); i++)
 		areas[i] = 0;
 }

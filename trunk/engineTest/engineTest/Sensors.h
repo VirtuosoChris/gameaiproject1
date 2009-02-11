@@ -58,6 +58,7 @@ class PieSensor{
 		PieSensor();
 		PieSensor(int);
 		~PieSensor();
+		void clear();
 		void Detect(std::vector<Agent*> *);
 		void showPieSensor();
 };

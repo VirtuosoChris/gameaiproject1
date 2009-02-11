@@ -113,6 +113,10 @@ void Agent::updateSensor2(){
 }
 
 void Agent::updatePieSensor(){
+	//Clear all previous entries
+	pie->clear();
+
+	//Run sensor and store values in array
 	Agent::PieDetect();
 	Agent::showPieSensor();
 
@@ -353,7 +357,7 @@ void Agent::proximitySensor(double sensorRange)
 				//Modify based on increasing orientation
 				remainder = (int)(theta/360);
 				remainder *= 360;
-				mod = theta - remainder;
+				mod = theta - abs(remainder);
 				theta = mod;
 				temp[x].relHeading = abs(alpha - theta);
 
@@ -373,6 +377,11 @@ void Agent::PieDetect(){
 			//double mag = sqrt( (abc[i]->getPosition().X * abc[i]->getPosition().X) + (abc[i]->getPosition().Y * abc[i]->getPosition().Y) + (abc[i]->getPosition().Z * abc[i]->getPosition().Z) );
 			//irr::core::vector3df agent_normal = irr::core::vector3df( (abc[i]->getPosition().X / mag), (abc[i]->getPosition().Y / mag), (abc[i]->getPosition().Z / mag) ); 
 			double self_angle = this->orientation;
+			//Modify based on increasing orientation
+			double remainder = (int)(self_angle/360);
+			remainder *= 360;
+			double mod = self_angle - abs(remainder);
+			self_angle = mod;
 			double agent_angle = Agent::agentBearing((*agentList)[i]);
 			double ang_between_players = abs(agent_angle - self_angle);
 			int place_in_bucket = ang_between_players / pie->angle;
