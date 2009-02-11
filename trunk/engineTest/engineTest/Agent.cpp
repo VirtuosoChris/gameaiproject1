@@ -37,7 +37,6 @@ void Agent::updateSensor1(){
 
 		 for(int i = 0; i < s1d->getNumFeelers(); i++){
 				
-
 			double angle = i * increment + baseAngle;
 			 core::vector3df feelerVector = core::vector3df(cos(angle), 0, sin(angle));
 
@@ -55,15 +54,20 @@ void Agent::updateSensor1(){
 			 s1d->feelerDistances[i] =s1d->maxRange;
 			}
 		 }
-
-	
-
-
 }
 
+
+void Agent::updateSensor2(){
+	//Clear all previous entries
+	s2d.clear();
+
+	//Run sensor and store values in vector
+	this->proximitySensor(1000.0);
+}
 void Agent::update(irr::ITimer* timer){
 
 updateSensor1();
+updateSensor2();
  
 }
 
@@ -133,39 +137,107 @@ scene::ISceneNodeAnimator *nodeAnimator;
 
 
 }
+//Finds the hypoteneuse
+double Agent::hypo(double opp, double adj)
+{
+	double mag ;
+	mag = sqrt((opp*opp)+(adj*adj)) ; //pythagorean theorem
+	return mag;
+}
 
 //This finds the relative distance between two agents
 double Agent::agentProximity(Agent *nearAgent)
 {
 	//Calculate magnitude
-	double x,z,mag ;
+	double x,z ;
 	x = nearAgent->position.X - this->position.X ;
 	z = nearAgent->position.Z - this->position.Z ;
-	mag = sqrt((x*x)+(z*z)) ; //pythagorean theorem
-
-	return mag ;	
+	return hypo(x,z) ;	
 }
 
-//This finds the relative bearing between two agents
+//This finds the relative bearing between X axis and agent
 double Agent::agentBearing(Agent *nearAgent)
 {
-	//Calculate bearing between nearAgent and origin
-	double opp, adj, nearBear, thisBear;
-	opp = nearAgent->position.X - this->position.X ;
-	adj = nearAgent->position.Z - this->position.Z ;
-	nearBear = atan(opp/adj);
-	thisBear = this->orientation;
+	//Some variables
+	double magAdj, magHypo;
+	
+	//Quadrant of nearAgent
+	int quad;
 
-	//Subtract nearBearing from currentBearing and return
-	return (nearBear - thisBear);
+	//nearAgent angle for return
+	double nearAngle = -1;
+
+	//math
+	magHypo = hypo(nearAgent->position.X,nearAgent->position.Z);
+	magAdj = abs(nearAgent->position.X);
+
+	//Determine which quadrant the nearAgent is in
+	if(nearAgent->position.X > 0)
+	{
+		//First quad check
+		if(nearAgent->position.Z > 0)
+			quad = 1;
+		//Fourth quad check
+		else if(nearAgent->position.Z < 0)
+			quad = 4;
+		//Angle zero
+		else if(nearAgent->position.Z == 0)
+			nearAngle = 0;
+	}
+	else if(nearAgent->position.X < 0)
+	{
+		//Second quad check
+		if(nearAgent->position.Z > 0)
+			quad = 2;
+		//Third quad check
+		else if(nearAgent->position.Z < 0)
+			quad = 3;
+		//Angle 180
+		else if(nearAgent->position.Z == 0)
+			nearAngle = 180;
+
+	}
+	else if(nearAgent->position.X == 0)
+	{
+		//Angle 90
+		if(nearAgent->position.Z > 0)
+			nearAngle = 90;
+		//Angle 270
+		else if(nearAgent->position.Z < 0)
+			nearAngle = 270;
+	}
+
+	//If angle has been determined, don't calculate
+	if(nearAngle < 0)
+	{
+		//calculate cos of the triangle
+		nearAngle = acos(magAdj/magHypo);
+	}
+
+	//Compensates depending on the quadrant nearAgent is located in
+	switch(quad){
+		case 1:
+			nearAngle += 0;
+		case 2:
+			nearAngle = 180 - nearAngle;
+		case 3:
+			nearAngle += 180;
+		case 4:
+			nearAngle = 360 - nearAngle;
+		default:
+			nearAngle += 0;
+	}
+
+	return nearAngle;
+
 }
 
 
-//This is Sensor 2, returns a list of Sensor2Data 
-std::vector<Sensor2Data*> *Agent::proximitySensor(double sensorRange)
-{
-	//Create list for return
-	std::vector<Sensor2Data*> proxSenseList ;
+//This is Sensor 2, updates list of nearby agents
+void Agent::proximitySensor(double sensorRange)
+{	
+	//variables
+	double alpha, theta;
 
 	//Traverse entire list
 	for(int x=0 ; x< Agent::agentList->size() ; x++)
@@ -186,14 +258,13 @@ std::vector<Sensor2Data*> *Agent::proximitySensor(double sensorRange)
 				temp.agentID = (*agentList)[x];
 
 				//Get relative bearing and store in temp
-				temp.relHeading = (*agentList)[x]->agentBearing(this);
+				alpha = Agent::agentBearing((*agentList)[x]);
+				theta = this->orientation ;
+				temp.relHeading = abs(alpha - theta);
 
 				//Add temp to proxSenseList for return
-				proxSenseList.push_back(&temp);
+				this->s2d.push_back(&temp);
 			}
 		}
 	}
-
-	//return pointer to the proximity sensor list
-	return &proxSenseList;
 }
