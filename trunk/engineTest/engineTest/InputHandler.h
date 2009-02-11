@@ -19,4 +19,7 @@ public:
 	bool isSKeyPressed();
 	bool isDKeyPressed();
 	bool isCKeyPressed();
+
+	bool unprocessedMouseMessageLMB;
+	bool unprocessedMouseMessageRMB;
 };
