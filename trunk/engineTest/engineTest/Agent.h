@@ -5,6 +5,8 @@
 
 #include "Model.h"
 
+#include <string>
+
 class Agent:public GameEntity{
 protected:
 	irr::scene::IAnimatedMeshSceneNode* mynodep;
@@ -40,9 +42,11 @@ void proximitySensor(double sensorRange);
 
 void createCollisionAnimator(irr::scene::ITriangleSelector* selector ,irr::scene::ISceneManager* mgr);
 
-void updateSensor1();
+virtual void updateSensor1();
 
 void updateSensor2();
+
+std::string sensor1ToString();
 
 
 };

@@ -1,13 +1,15 @@
+#define NUMFEELERS 10
 #include "Agent.h"
 #include "InputHandler.h"
 #include <cmath>
-
+#include <string>
 #include <vector>
 
 using namespace irr;
-//double degreesToRadians(double degrees){
-//return 2*3.14159*degrees/360;/
-//}
+inline double degreesToRadians(double degrees){
+return 2*3.14159*degrees/360;
+}
+
 
 
 void Agent::updateSensor1(){
@@ -20,6 +22,7 @@ void Agent::updateSensor1(){
  core::vector3df orientVector;
 
  
+ orientVector = core::vector3df((float)cos(degreesToRadians(orientation)),0.0f,(float)sin(degreesToRadians(orientation)));
  line.start = mynodep->getPosition();
  line.end = line.start + orientVector * s1d->maxRange;
  
@@ -38,7 +41,11 @@ void Agent::updateSensor1(){
 		 for(int i = 0; i < s1d->getNumFeelers(); i++){
 				
 			double angle = i * increment + baseAngle;
-			 core::vector3df feelerVector = core::vector3df(cos(angle), 0, sin(angle));
+			core::vector3df feelerVector = core::vector3df(
+				(float)cos(degreesToRadians(angle)), 0.0f, 
+				(float)sin(
+				degreesToRadians(angle)
+				));
 
 			 float t1 = 0.0f;
 			 
@@ -81,7 +88,7 @@ void Agent::processMessage(Message*){
 Agent::Agent(Model m, irr::core::vector3df p, irr::scene::ISceneManager* mgr):position(p),model(m){
 	
 
-	s1d = new Sensor1Data(3,90);
+	s1d = new Sensor1Data(5,45);
 
 	if(mgr){
 	mynodep = mgr->addAnimatedMeshSceneNode(m.mesh);
@@ -94,6 +101,8 @@ Agent::Agent(Model m, irr::core::vector3df p, irr::scene::ISceneManager* mgr):po
 	
 	}
 	LASTUPDATE = 0;
+
+	smgr= mgr;
 }
 
 
@@ -267,4 +276,30 @@ void Agent::proximitySensor(double sensorRange)
 			}
 		}
 	}
+}
+
+
+std::string Agent::sensor1ToString(){
+
+
+	std::string s("Wall Feelers:\n");
+	
+ double  baseAngle = orientation - s1d->getAngle()/2.0;
+ double  increment = s1d->getAngle() / s1d->getNumFeelers();
+
+
+ for(int i = 0; i < s1d->getNumFeelers(); i++){
+
+		double angle = i * increment + baseAngle;
+
+		char str[100];
+		sprintf(str,"%f", angle);
+		s+= std::string(str);
+		//s +="Angle:"+angle;
+		s+="\tDistance-Squared:";
+		sprintf(str,"%f",s1d->feelerDistances[i]);
+		s+= std::string(str);
+	  
+	}
+ return s;
 }
