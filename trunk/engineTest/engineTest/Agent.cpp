@@ -1,4 +1,4 @@
-#define NUMFEELERS 10
+#define NUMFEELERS 4
 #include "Agent.h"
 
 #ifndef INPUTHANDLER
@@ -98,7 +98,7 @@ void Agent::processMessage(Message*){
 Agent::Agent(Model m, irr::core::vector3df p, irr::scene::ISceneManager* mgr):position(p),model(m){
 	
 
-	s1d = new Sensor1Data(5,45);
+	s1d = new Sensor1Data(NUMFEELERS,45);
 	pie = new PieSensor(2);
 
 	if(mgr){

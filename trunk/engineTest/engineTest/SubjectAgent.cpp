@@ -8,6 +8,8 @@
 #include <cmath>
 
 using namespace irr;
+using namespace irr::core;
+
 
 extern bool ENABLE_DEBUG_OUTPUT;
 
@@ -29,18 +31,20 @@ SubjectAgent::SubjectAgent (Model m, irr::core::vector3df p, irr::scene::ISceneM
 
 	for(int i = 0; i < s1d->getNumFeelers();i++){
 		//
-		irr::scene::IBillboardSceneNode* a = mgr->addBillboardSceneNode();
+		irr::scene::IBillboardTextSceneNode* a = mgr->addBillboardTextSceneNode(0,L"INF");
 		feelerParticles.push_back(a);	
 
+		//mgr->addBillboardTextSceneNode(0,L"ZOMG");
 
 		
 	//mgr->addBillboardSceneNode()
-	a->setMaterialType(video::EMT_TRANSPARENT_ADD_COLOR);
+	//a->setMaterialType(video::EMT_TRANSPARENT_ADD_COLOR);
 	// feelerParticles[i]->setMaterialTexture(0,driver->getTexture("../media/particle.bmp"));
-	a->setMaterialFlag(video::EMF_LIGHTING, false);
+	//a->setMaterialFlag(video::EMF_LIGHTING, false);
 	a->setMaterialFlag(video::EMF_ZBUFFER,false);
 	a->setSize(core::dimension2d<f32>(20.0f, 20.0f));
 	a->setVisible(false);
+	
 	
 	}
 
@@ -51,6 +55,7 @@ SubjectAgent::SubjectAgent (Model m, irr::core::vector3df p, irr::scene::ISceneM
 	}
 
 }
+
 
 
 void SubjectAgent::update(irr::ITimer* timer){
@@ -225,15 +230,31 @@ void SubjectAgent::updateSensor1(){
 				 if(feelerParticles.at(i)){
 				 feelerParticles.at(i)->setPosition(intersection);
 
+
+					 
+				 float t1 = (intersection.X - mynodep->getPosition().X); 
+				 t1 *= t1; 
+				 float t2 = (intersection.Z - mynodep->getPosition().Z);
+				 t2*=t2;
+				 
+				
+				 
+				 s1d->feelerDistances[i] = sqrt( t2+ t1);
+				
+				 printf("%f\n", s1d->feelerDistances[i]);
+
 				 if(ENABLE_DEBUG_OUTPUT){
 				 feelerParticles.at(i)->setVisible(true);
+				 feelerParticles.at(i)->setText(stringw(
+					 (int)s1d->feelerDistances[i]
+				 
+				 ).c_str());
 				 }else{
 					 feelerParticles.at(i)->setVisible(false);
 				 }
 				 
 				 }
-				 s1d->feelerDistances[i] = 
-				 (t1= (intersection.X - mynodep->getPosition().X)) * t1 + (t1 = (intersection.Z - mynodep->getPosition().Z)* t1);
+				 
 			 }
 		    else{
 
@@ -242,5 +263,5 @@ void SubjectAgent::updateSensor1(){
 			 
 			}
 		 }
-		// printf("//////////////////\n");
+		 printf("//////////////////\n");
 }

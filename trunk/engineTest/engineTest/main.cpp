@@ -31,7 +31,7 @@
 
 #ifdef _IRR_WINDOWS_
 #pragma comment(lib, "Irrlicht.lib")
-#pragma comment(linker, "/subsystem:windows /ENTRY:mainCRTStartup")
+//#pragma comment(linker, "/subsystem:windows /ENTRY:mainCRTStartup")
 #endif
 
 
@@ -86,7 +86,10 @@ int main(int argc, char** argv){
 /*************************************************************/
 /****************LOAD IN MODELS*******************************/
 /*************************************************************/
-Model CHUCKIE = createModel("media/chuckie.MD2","media/Chuckie.pcx",device);Model BOBAFETT = createModel("media/bobafett.md2","media/bobafett.pcx",device, 2.0f);Model CARTMAN  = createModel("media/ERIC.MD2","media/ERIC.pcx",device, 1.5f);Model CYBERDEMON = createModel("media/cyber.md2","media/cyber.pcx",device,3.0f);
+Model CHUCKIE = createModel("../media/chuckie.MD2","../media/Chuckie.pcx",device);
+Model BOBAFETT = createModel("../media/bobafett.md2","../media/bobafett.pcx",device, 2.0f);
+Model CARTMAN  = createModel("../media/ERIC.MD2","../media/ERIC.pcx",device, 1.5f);
+Model CYBERDEMON = createModel("../media/cyber.md2","../media/cyber.pcx",device,3.0f);
 
 /*******************************************************/
 /***************CREATE GAME ENTITIES********************/
@@ -101,7 +104,7 @@ Model CHUCKIE = createModel("media/chuckie.MD2","media/Chuckie.pcx",device);Mode
  /*******LOAD THE MAP*********/
  /****************************/
  //load the pk3 file containing the .bsp map file into the engine file system
- device->getFileSystem()->addZipFileArchive("media/map-20kdm2.pk3");
+ device->getFileSystem()->addZipFileArchive("../media/map-20kdm2.pk3");
  
  //get the mesh from the map bsp file
  scene::IAnimatedMesh *map  = smgr->getMesh("20kdm2.bsp");
@@ -151,19 +154,6 @@ if(!nodeAnimator)return 1;
  nodeAnimator->drop();
 
 
- //create the laser pointer particle
- scene::IBillboardSceneNode *billboard = smgr->addBillboardSceneNode();
- billboard->setMaterialType(video::EMT_TRANSPARENT_ADD_COLOR);
- billboard->setMaterialTexture(0,driver->getTexture("media/particle.bmp"));
- billboard->setMaterialFlag(video::EMF_LIGHTING, false);
- billboard->setMaterialFlag(video::EMF_ZBUFFER,false);
- billboard->setSize(core::dimension2d<f32>(20.0f, 20.0f));
-
-
- core::line3d<f32> line;
- core::vector3df intersection;
- core::triangle3df triangle;
- 
 
  //add the agents to the agent list
  entities.push_back(&playerControlledAgent);
@@ -245,17 +235,6 @@ s2box->setAutoScrollEnabled(true);
 		 str+= ")";
 		 device->setWindowCaption(str.c_str());
  
-
-		 line.start = camera->getPosition();
-		 line.end = line.start + (camera->getTarget() - line.start).normalize() * 5000.0f;
- 
-		billboard->setVisible(true);
-		 
-		if(smgr->getSceneCollisionManager()->getCollisionPoint(line, selector,intersection, triangle))
-			billboard->setPosition(intersection);
-		 else{
-			 billboard->setVisible(false);
-		 }
 
 		 //If the Debug output is enabled, display a box with some stuff
 
