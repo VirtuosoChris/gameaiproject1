@@ -16,7 +16,7 @@ protected:
 	irr::scene::ITriangleSelector* selector;
 
 	Sensor1Data *s1d;
-	Sensor2Data *s2d;
+	std::vector<Sensor2Data*> s2d;
 	Sensor3Data *s3d;
 	
 
@@ -30,15 +30,19 @@ virtual ~Agent();
 
 Agent(Model m, irr::core::vector3df p = irr::core::vector3df(0.0f,0.0f,0.0f),irr::scene::ISceneManager* mgr = NULL);
 
+double hypo(double opp, double adj);
+
 double agentProximity(Agent *nearAgent);
 
 double agentBearing(Agent *nearAgent);
 
-std::vector<Sensor2Data*> *proximitySensor(double sensorRange);
+void proximitySensor(double sensorRange);
 
 void createCollisionAnimator(irr::scene::ITriangleSelector* selector ,irr::scene::ISceneManager* mgr);
 
 void updateSensor1();
+
+void updateSensor2();
 
 
 };
