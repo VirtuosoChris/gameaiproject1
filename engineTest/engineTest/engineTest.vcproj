@@ -186,15 +186,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\PieSensor.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Sensor1Data.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\Sensor2Data.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Sensor3Data.cpp"
 				>
 			</File>
 			<File

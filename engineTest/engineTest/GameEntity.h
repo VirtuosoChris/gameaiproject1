@@ -12,14 +12,12 @@ class GameEntity{
 	protected:
 	irr::core::vector3df position;
 	irr::core::vector3df velocity;
+	double orientation;
+	irr::core::vector3df displacement;
 
 	static std::vector<Agent*>* agentList;
 	
 	public:
-
-		double orientation;
-		
-	irr::core::vector3df displacement;
 
 	static void setAgentList(std::vector<Agent*>*);
 
@@ -27,8 +25,8 @@ class GameEntity{
 	virtual void processMessage(Message*)=0;
 	virtual void update(irr::ITimer*)=0;
 
-
 	irr::core::vector3df getPosition();
+	double getOrientation() { return orientation; }
 	
 	void setVelocity(irr::core::vector3df vel);
 

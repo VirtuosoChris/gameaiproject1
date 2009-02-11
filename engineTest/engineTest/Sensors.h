@@ -6,8 +6,10 @@ class Agent;
 //Wall feeler sensor
 
 class Sensor1Data{
+
 	int numFeelers;
 	double angle;
+
 	public: 
 
 		
@@ -42,13 +44,20 @@ class Sensor2Data{
 };
 
 
-class Sensor3Data{
-	//put variables here
-
-public:
-	Sensor3Data();
-	~Sensor3Data();
-
+class PieSensor{
+	private:
+		Agent *pt;
+		int num_slices;
+		double range;
+		double orientation;
+		double angle;
+		int areas[];
+	public:
+		double degreesToRadians(double degrees){return 2*3.14159*degrees/360;}
+		PieSensor(int, Agent *);
+		~PieSensor();
+		void Detect(std::vector<Agent*> *);
+		void showSensor();
 };
 
 

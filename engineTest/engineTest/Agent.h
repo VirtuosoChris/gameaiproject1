@@ -17,7 +17,7 @@ protected:
 
 	Sensor1Data *s1d;
 	std::vector<Sensor2Data*> s2d;
-	Sensor3Data *s3d;
+	PieSensor *s3d;
 	
 
 public:
