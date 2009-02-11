@@ -74,7 +74,7 @@ int main(int argc, char** argv){
 Model CHUCKIE = createModel("../media/chuckie.MD2","../media/Chuckie.pcx",device);
 Model BOBAFETT = createModel("../media/bobafett.md2","../media/bobafett.pcx",device, 2.0f);
 Model CARTMAN  = createModel("../media/ERIC.MD2","../media/ERIC.pcx",device, 1.5f);
-Model CYBERDEMON = createModel("../media/cyber.md2","../media/cyber.pcx",device,3.0f);
+Model CYBERDEMON = createModel("../media/cyber.md2","../media/cyber.pcx",device,2.0f);
 
 
 /*******************************************************/
