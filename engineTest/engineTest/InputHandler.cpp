@@ -6,6 +6,8 @@ InputHandler::InputHandler(){
 	for(int i = 0; i < irr::KEY_KEY_CODES_COUNT;i++){
 		keyPressed[i] = false;
 	}
+
+	unprocessedMouseMessageLMB = unprocessedMouseMessageRMB = false;
 }
 
 
@@ -25,6 +27,19 @@ bool InputHandler::OnEvent(const irr::SEvent& event1){
 				if(event1.KeyInput.Key == irr::KEY_ESCAPE)exit(0);
 				keyPressed[event1.KeyInput.Key] =  event1.KeyInput.PressedDown;	
 				break;
+
+
+			case irr::EET_MOUSE_INPUT_EVENT:
+				if(event1.MouseInput.Event == irr::EMIE_LMOUSE_LEFT_UP){
+						unprocessedMouseMessageLMB = true;					
+				}if(event1.MouseInput.Event == irr::EMIE_LMOUSE_LEFT_UP){
+						unprocessedMouseMessageRMB = true;					
+				}
+				
+			
+
+
+			 break;
 			default:
 				
 				;
@@ -37,6 +52,7 @@ bool InputHandler::OnEvent(const irr::SEvent& event1){
 //returns the instance of the InputHandler class
  InputHandler* InputHandler::getInstance(){
 static InputHandler instance;
+
 return &instance;
 }
 

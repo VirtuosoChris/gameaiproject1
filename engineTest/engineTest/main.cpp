@@ -137,20 +137,6 @@ if(!nodeAnimator)return 1;
  nodeAnimator->drop();
 
 
-//nodeAnimator = smgr->createCollisionResponseAnimator(selector, meshNode, 
-//	core::vector3df(30,40,30),//collision volume radii
-//
-//core::vector3df(0,-10,0),//gravity 
-
-//mesh->getBoundingBox().getCenter()	
-//); //collision volume position
- 
-// meshNode->addAnimator(nodeAnimator);
- //meshNode->setScale(core::vector3df(1.75f,1.75f,1.75f));
- //nodeAnimator->drop();
-
-
-
  //create the laser pointer particle
  scene::IBillboardSceneNode *billboard = smgr->addBillboardSceneNode();
  billboard->setMaterialType(video::EMT_TRANSPARENT_ADD_COLOR);
@@ -183,15 +169,24 @@ if(!nodeAnimator)return 1;
 	while(device->run()){
 		
 		for(int i = 0; i < (int)entities.size();i++){
+			if(entities[i]){
 			entities[i]->update(device->getTimer());
+			}
 		}
 
 		//if the mouse is clicked, create a new agent at the camera's current position
 		//TO DO!!! //THIS CREATES AN AGENT FOR EVERY TICK THE KEY IS PRESSED, BAD
-		//if(InputHandler::getInstance()->isCKeyPressed()){
-		//	entities.push_back(new Agent(CYBERDEMON, camera->getPosition(), smgr));
-		//}
 
+
+		
+		if(InputHandler::getInstance()->unprocessedMouseMessageLMB){
+		Agent* ap = new Agent(CYBERDEMON, camera->getPosition(), smgr);
+			ap->createCollisionAnimator(selector,smgr);
+			if(ap==NULL)return 1;
+			else 
+			entities.push_back(ap);	
+			InputHandler::getInstance()->unprocessedMouseMessageLMB = false;
+		}
 		
 		//rig the window title bar to show the current camera position
 		core::stringw str = L"";  		 

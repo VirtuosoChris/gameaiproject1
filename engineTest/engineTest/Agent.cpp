@@ -2,6 +2,8 @@
 #include "InputHandler.h"
 #include <cmath>
 
+#include <vector>
+
 using namespace irr;
 //double degreesToRadians(double degrees){
 //return 2*3.14159*degrees/360;/
@@ -17,15 +19,21 @@ void Agent::updateSensor1(){
 
  core::vector3df orientVector;
 
+ 
  line.start = mynodep->getPosition();
  line.end = line.start + orientVector * s1d->maxRange;
  
 	//	billboard->setVisible(true);
 		 
-
+//std::vector<Agent*> a;
+//a = *agentList;
+//(*agentList)[0] = NULL;
+// a[0] = NULL;
  
  double  baseAngle = orientation - s1d->getAngle()/2.0;
  double  increment = s1d->getAngle() / s1d->getNumFeelers();
+
+
 
 		 for(int i = 0; i < s1d->getNumFeelers(); i++){
 				
@@ -40,8 +48,9 @@ void Agent::updateSensor1(){
  
 
 			 if(smgr->getSceneCollisionManager()->getCollisionPoint(line, selector,intersection, triangle))
-				 s1d->feelerDistances[i] = (t1= (intersection.X - mynodep->getPosition().X)) * t1 + (t1 = (intersection.Z - mynodep->getPosition().Z)* t1);
-			 //billboard->setPosition(intersection);
+				 s1d->feelerDistances[i] = 
+				 (t1= (intersection.X - mynodep->getPosition().X)) * t1 + (t1 = (intersection.Z - mynodep->getPosition().Z)* t1);
+			
 		    else{
 			 s1d->feelerDistances[i] =s1d->maxRange;
 			}
