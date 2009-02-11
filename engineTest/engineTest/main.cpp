@@ -6,6 +6,8 @@
 //free message memory
 //entities interact (animation, kewl eh?);
 
+//replace exit 0's with proper exiting
+
 #ifndef IRRLICHT
 #include <irrlicht.h>
 #endif
@@ -26,6 +28,7 @@
 
 using namespace irr;
 
+bool ENABLE_DEBUG_OUTPUT = true;
 
 
 Model createModel(const char* m, const char* s, IrrlichtDevice *d, double sc=1.0f){
@@ -68,10 +71,10 @@ int main(int argc, char** argv){
 /*************************************************************/
 /****************LOAD IN MODELS*******************************/
 /*************************************************************/
-Model CHUCKIE = createModel("media/chuckie.MD2","media/Chuckie.pcx",device);
-Model BOBAFETT = createModel("media/bobafett.md2","media/bobafett.pcx",device, 2.0f);
-Model CARTMAN  = createModel("media/ERIC.MD2","media/ERIC.pcx",device, 1.5f);
-Model CYBERDEMON = createModel("media/cyber.md2","media/cyber.pcx",device,3.0f);
+Model CHUCKIE = createModel("../media/chuckie.MD2","../media/Chuckie.pcx",device);
+Model BOBAFETT = createModel("../media/bobafett.md2","../media/bobafett.pcx",device, 2.0f);
+Model CARTMAN  = createModel("../media/ERIC.MD2","../media/ERIC.pcx",device, 1.5f);
+Model CYBERDEMON = createModel("../media/cyber.md2","../media/cyber.pcx",device,3.0f);
 
 
 /*******************************************************/
@@ -87,7 +90,7 @@ Model CYBERDEMON = createModel("media/cyber.md2","media/cyber.pcx",device,3.0f);
  /*******LOAD THE MAP*********/
  /****************************/
  //load the pk3 file containing the .bsp map file into the engine file system
- device->getFileSystem()->addZipFileArchive("media/map-20kdm2.pk3");
+ device->getFileSystem()->addZipFileArchive("../media/map-20kdm2.pk3");
  
  //get the mesh from the map bsp file
  scene::IAnimatedMesh *map  = smgr->getMesh("20kdm2.bsp");
@@ -140,7 +143,7 @@ if(!nodeAnimator)return 1;
  //create the laser pointer particle
  scene::IBillboardSceneNode *billboard = smgr->addBillboardSceneNode();
  billboard->setMaterialType(video::EMT_TRANSPARENT_ADD_COLOR);
- billboard->setMaterialTexture(0,driver->getTexture("media/particle.bmp"));
+ billboard->setMaterialTexture(0,driver->getTexture("../media/particle.bmp"));
  billboard->setMaterialFlag(video::EMF_LIGHTING, false);
  billboard->setMaterialFlag(video::EMF_ZBUFFER,false);
  billboard->setSize(core::dimension2d<f32>(20.0f, 20.0f));
