@@ -26,12 +26,12 @@ protected:
 	scene::ISceneManager* smgr;
 	irr::scene::ITriangleSelector* selector;
 
-	Sensor1Data *s1d;
-	std::vector<Sensor2Data*> s2d;
-	PieSensor *s3d;
-	
 
 public:
+
+	Sensor1Data *s1d;
+	std::vector<Sensor2Data*> s2d;
+	PieSensor *pie;
 virtual void update(irr::ITimer*);
 virtual void processMessage(Message*);
 
@@ -49,6 +49,10 @@ double agentBearing(Agent *nearAgent);
 
 void proximitySensor(double sensorRange);
 
+void PieDetect();
+
+void showPieSensor();
+
 void createCollisionAnimator(irr::scene::ITriangleSelector* selector ,irr::scene::ISceneManager* mgr);
 
 virtual void updateSensor1();
@@ -56,6 +60,8 @@ virtual void updateSensor1();
 void updateSensor2();
 
 std::string sensor1ToString();
+
+void updatePieSensor();
 
 
 };

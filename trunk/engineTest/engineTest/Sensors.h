@@ -1,12 +1,13 @@
 #define SENSORS
 
 #include<string>
+#include<iostream>
+#include<vector>
 
 //dummy agent class
 class Agent;
 
 //Wall feeler sensor
-
 class Sensor1Data{
 
 	int numFeelers;
@@ -32,7 +33,7 @@ class Sensor1Data{
 class Sensor2Data{
 	public:
 		//Agent Identification Number
-		Agent *agentID;
+		int agentID;
 
 		//Relative distance to agent
 		double relDistance;
@@ -41,25 +42,23 @@ class Sensor2Data{
 		double relHeading;
 		
 		Sensor2Data();
-		Sensor2Data(Agent *id, double rD, double rH);
+		Sensor2Data(int id, double rD, double rH);
 		~Sensor2Data();
 };
-
-
 class PieSensor{
-	private:
-		Agent *pt;
+	public:
+		//Agent *pt;
 		int num_slices;
 		double range;
 		double orientation;
 		double angle;
-		int areas[];
-	public:
+		int *areas;
+	
 		double degreesToRadians(double degrees){return 2*3.14159*degrees/360;}
-		PieSensor(int, Agent *);
+		PieSensor();
+		PieSensor(int);
 		~PieSensor();
 		void Detect(std::vector<Agent*> *);
-		void showSensor();
+		void showPieSensor();
 };
-
 

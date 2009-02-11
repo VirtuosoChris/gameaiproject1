@@ -74,10 +74,17 @@ void Agent::updateSensor2(){
 	//Run sensor and store values in vector
 	this->proximitySensor(1000.0);
 }
+
+void Agent::updatePieSensor(){
+	Agent::PieDetect();
+	Agent::showPieSensor();
+
+}
 void Agent::update(irr::ITimer* timer){
 
 updateSensor1();
 updateSensor2();
+updatePieSensor();
  
 }
 
@@ -92,6 +99,7 @@ Agent::Agent(Model m, irr::core::vector3df p, irr::scene::ISceneManager* mgr):po
 	
 
 	s1d = new Sensor1Data(5,45);
+	pie = new PieSensor(2);
 
 	if(mgr){
 	mynodep = mgr->addAnimatedMeshSceneNode(m.mesh);
@@ -181,7 +189,7 @@ double Agent::agentBearing(Agent *nearAgent)
 
 	//math
 	magHypo = hypo(nearAgent->position.X,nearAgent->position.Z);
-	magAdj = abs(nearAgent->position.X);
+	magAdj = abs(nearAgent->position.X );
 
 	//Determine which quadrant the nearAgent is in
 	if(nearAgent->position.X > 0)
@@ -224,20 +232,29 @@ double Agent::agentBearing(Agent *nearAgent)
 	{
 		//calculate cos of the triangle
 		nearAngle = acos(magAdj/magHypo);
+
+		//convert from radians to degrees
+		//1 radian = 57.29578 degrees
+		nearAngle *= 57.29578;
 	}
 
 	//Compensates depending on the quadrant nearAgent is located in
 	switch(quad){
 		case 1:
 			nearAngle += 0;
+			break;
 		case 2:
 			nearAngle = 180 - nearAngle;
+			break;
 		case 3:
 			nearAngle += 180;
+			break;
 		case 4:
 			nearAngle = 360 - nearAngle;
+			break;
 		default:
 			nearAngle += 0;
+			break;
 	}
 
 	return nearAngle;
@@ -249,42 +266,77 @@ double Agent::agentBearing(Agent *nearAgent)
 void Agent::proximitySensor(double sensorRange)
 {	
 	//variables
-	double alpha, theta;
+	double alpha, theta, mod;
+	int remainder;
+
+	//get the agentList size
+	int aListSize = Agent::agentList->size();
+
+	//Temp sensor data storage, this gets added to the list
+	Sensor2Data *temp ;
+	temp = new Sensor2Data[aListSize];
 
 	//Traverse entire list
-	for(int x=0 ; x< Agent::agentList->size() ; x++)
+	for(int x=0 ; x< aListSize ; x++)
 	{
-		//Temp sensor data storage, this gets added to the list
-		Sensor2Data temp;
-
 		//Ignore entry in list that is self
 		if((*agentList)[x]!= this)
 		{
 			//Get relative distance between agents and store in temp
-			temp.relDistance = (*agentList)[x]->agentProximity(this);
+			temp[x].relDistance = (*agentList)[x]->agentProximity(this);
 
 			//If agents are within range, then add to the list
-			if(temp.relDistance <= sensorRange)
+			if(temp[x].relDistance <= sensorRange)
 			{
 				//Set ID to pointer
-				temp.agentID = (*agentList)[x];
+				temp[x].agentID = (int)(*agentList)[x];
 
 				//Get relative bearing and store in temp
 				alpha = Agent::agentBearing((*agentList)[x]);
 				theta = this->orientation ;
-				temp.relHeading = abs(alpha - theta);
+				//Modify based on increasing orientation
+				remainder = (int)(theta/360);
+				remainder *= 360;
+				mod = theta - remainder;
+				theta = mod;
+				temp[x].relHeading = abs(alpha - theta);
 
 				//Add temp to proxSenseList for return
-				this->s2d.push_back(&temp);
+				this->s2d.push_back(&temp[x]);
 			}
 		}
 	}
 }
 
+void Agent::PieDetect(){
+	//irr::core::vector3df self_normal = irr::core::vector3df(cos(degreesToRadians(orientation)), 0, sin(degreesToRadians(orientation))); 
+	for(int i = 0; i < Agent::agentList->size(); i++){
+		double distance = (*agentList)[i]->agentProximity(this);
+		if(distance <= pie->range){
+			//this is the magnitude of the agent vector AND the distance between myself and the agent 
+			//double mag = sqrt( (abc[i]->getPosition().X * abc[i]->getPosition().X) + (abc[i]->getPosition().Y * abc[i]->getPosition().Y) + (abc[i]->getPosition().Z * abc[i]->getPosition().Z) );
+			//irr::core::vector3df agent_normal = irr::core::vector3df( (abc[i]->getPosition().X / mag), (abc[i]->getPosition().Y / mag), (abc[i]->getPosition().Z / mag) ); 
+			double self_angle = this->orientation;
+			double agent_angle = Agent::agentBearing((*agentList)[i]);
+			double ang_between_players = abs(agent_angle - self_angle);
+			int place_in_bucket = ang_between_players / pie->angle;
+			pie->areas[place_in_bucket]++;
+		}
+	}
+}
+
+void Agent::showPieSensor(){
+	using std::cout;
+	using std::endl;
+	cout << "Going counterclockwise starting from the front.\n";
+	cout << "[ ";
+	for(int i = 0; i < (pie->num_slices * 2); i++)
+		cout << pie->areas[i] << " ";
+	cout << "]" << endl;
+}
 
 std::string Agent::sensor1ToString(){
-
-
+	
 	std::string s("Wall Feelers:\n");
 	
  double  baseAngle = orientation - s1d->getAngle()/2.0;

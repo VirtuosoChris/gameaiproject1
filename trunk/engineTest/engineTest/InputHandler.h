@@ -19,6 +19,7 @@ public:
 	bool isSKeyPressed();
 	bool isDKeyPressed();
 	bool isCKeyPressed();
+	bool isTKeyPressed();
 
 	bool unprocessedMouseMessageLMB;
 	bool unprocessedMouseMessageRMB;

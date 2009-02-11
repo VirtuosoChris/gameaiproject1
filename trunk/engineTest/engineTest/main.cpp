@@ -14,6 +14,7 @@
 
 #include <vector>
 #include <string>
+#include <iostream>
 
 #ifndef INPUTHANDLER
 #include "InputHandler.h"
@@ -35,8 +36,14 @@
 
 
 using namespace irr;
+using namespace gui;
+using namespace core;
+using namespace scene;
+using namespace video;
+using namespace io;
 
-bool ENABLE_DEBUG_OUTPUT = true;
+
+bool ENABLE_DEBUG_OUTPUT = false;
 
 
 Model createModel(const char* m, const char* s, IrrlichtDevice *d, double sc=1.0f){
@@ -79,11 +86,7 @@ int main(int argc, char** argv){
 /*************************************************************/
 /****************LOAD IN MODELS*******************************/
 /*************************************************************/
-Model CHUCKIE = createModel("../media/chuckie.MD2","../media/Chuckie.pcx",device);
-Model BOBAFETT = createModel("../media/bobafett.md2","../media/bobafett.pcx",device, 2.0f);
-Model CARTMAN  = createModel("../media/ERIC.MD2","../media/ERIC.pcx",device, 1.5f);
-Model CYBERDEMON = createModel("../media/cyber.md2","../media/cyber.pcx",device,2.0f);
-
+Model CHUCKIE = createModel("media/chuckie.MD2","media/Chuckie.pcx",device);Model BOBAFETT = createModel("media/bobafett.md2","media/bobafett.pcx",device, 2.0f);Model CARTMAN  = createModel("media/ERIC.MD2","media/ERIC.pcx",device, 1.5f);Model CYBERDEMON = createModel("media/cyber.md2","media/cyber.pcx",device,3.0f);
 
 /*******************************************************/
 /***************CREATE GAME ENTITIES********************/
@@ -98,7 +101,7 @@ Model CYBERDEMON = createModel("../media/cyber.md2","../media/cyber.pcx",device,
  /*******LOAD THE MAP*********/
  /****************************/
  //load the pk3 file containing the .bsp map file into the engine file system
- device->getFileSystem()->addZipFileArchive("../media/map-20kdm2.pk3");
+ device->getFileSystem()->addZipFileArchive("media/map-20kdm2.pk3");
  
  //get the mesh from the map bsp file
  scene::IAnimatedMesh *map  = smgr->getMesh("20kdm2.bsp");
@@ -151,7 +154,7 @@ if(!nodeAnimator)return 1;
  //create the laser pointer particle
  scene::IBillboardSceneNode *billboard = smgr->addBillboardSceneNode();
  billboard->setMaterialType(video::EMT_TRANSPARENT_ADD_COLOR);
- billboard->setMaterialTexture(0,driver->getTexture("../media/particle.bmp"));
+ billboard->setMaterialTexture(0,driver->getTexture("media/particle.bmp"));
  billboard->setMaterialFlag(video::EMF_LIGHTING, false);
  billboard->setMaterialFlag(video::EMF_ZBUFFER,false);
  billboard->setSize(core::dimension2d<f32>(20.0f, 20.0f));
@@ -165,6 +168,7 @@ if(!nodeAnimator)return 1;
  //add the agents to the agent list
  entities.push_back(&playerControlledAgent);
  entities.push_back(&agent2);
+ entities.push_back(&agent3);
  
 
 //add collision to each game entity in the agent list
@@ -173,22 +177,53 @@ if(!nodeAnimator)return 1;
  
  }
 
+/*******************************************************/
+/***************GUI SETUP*******************************/
+/*******************************************************/
+ //gui::IGUIEnvironment* guienv = device->getGUIEnvironment();
+guienv->addStaticText(L"Sensor 2 Output:", rect<s32>(25,400,300,415), true, true, 0, -1, true);
+IGUIListBox * s2box = guienv->addListBox(rect<s32>(25, 420, 300, 590), 0, -1, true);
+s2box->setAutoScrollEnabled(true);
+
+
+
+
 
 /*******************************************************/
 /***************GAME UPDATE LOOP************************/
 /*******************************************************/
 	while(device->run()){
 		
+		//update all entities
 		for(int i = 0; i < (int)entities.size();i++){
 			if(entities[i]){
 			entities[i]->update(device->getTimer());
 			}
 		}
 
+		//clear sensor2 output
+		s2box->clear();
+
+		//output sensor2 data
+		for(int x = 0 ; x < playerControlledAgent.s2d.size() ; x++)
+		{
+			int id = playerControlledAgent.s2d[x]->agentID;
+			double distance = playerControlledAgent.s2d[x]->relDistance;
+			double heading = playerControlledAgent.s2d[x]->relHeading;
+			stringw idstring(id);
+			stringw bstring(distance);
+			stringw hstring(heading);
+			stringw mainstring = L"AgentID: ";
+			mainstring+=idstring;
+			mainstring+= L" Distance: ";
+			mainstring+=bstring;
+			mainstring+= L" Heading: ";
+			mainstring+=hstring;
+			s2box->addItem(mainstring.c_str());
+		}
+
 		//if the mouse is clicked, create a new agent at the camera's current position
 		//TO DO!!! //THIS CREATES AN AGENT FOR EVERY TICK THE KEY IS PRESSED, BAD
-
-
 		
 		if(InputHandler::getInstance()->unprocessedMouseMessageLMB){
 		Agent* ap = new Agent(CYBERDEMON, camera->getPosition(), smgr);
@@ -222,20 +257,19 @@ if(!nodeAnimator)return 1;
 			 billboard->setVisible(false);
 		 }
 
+		 //If the Debug output is enabled, display a box with some stuff
 
-		 
 
 		//Draw everything
-		 driver->beginScene(true, true, video::SColor(255,100,101,140));
-			smgr->drawAll();  //draw 3d objects
-			guienv->drawAll();//draw gui components
-		 driver->endScene();//end drawing
-
-
+		driver->beginScene(true, true, video::SColor(255,100,101,140));
+		smgr->drawAll();  //draw 3d objects
 		
-	 	 
-	 }
+		//Only draw GUI components if Debug output is enabled
+		if(ENABLE_DEBUG_OUTPUT)
+			guienv->drawAll();
 
+		driver->endScene();//end drawing 
+	 }
 
 	 device->drop();
 
