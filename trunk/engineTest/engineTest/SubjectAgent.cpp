@@ -39,7 +39,7 @@ SubjectAgent::SubjectAgent (Model m, irr::core::vector3df p, irr::scene::ISceneM
 		
 	//mgr->addBillboardSceneNode()
 	//a->setMaterialType(video::EMT_TRANSPARENT_ADD_COLOR);
-	// feelerParticles[i]->setMaterialTexture(0,driver->getTexture("../media/particle.bmp"));
+	// feelerParticles[i]->setMaterialTexture(0,driver->getTexture("media/particle.bmp"));
 	//a->setMaterialFlag(video::EMF_LIGHTING, false);
 	a->setMaterialFlag(video::EMF_ZBUFFER,false);
 	a->setSize(core::dimension2d<f32>(20.0f, 20.0f));
