@@ -13,7 +13,7 @@ class SubjectAgent:public Agent{
 
 protected:
 bool moving;
-std::vector<irr::scene::IBillboardSceneNode*> feelerParticles;
+std::vector<irr::scene::IBillboardTextSceneNode*> feelerParticles;
 
 public:
 virtual void update(irr::ITimer*);
