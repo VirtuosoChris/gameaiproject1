@@ -241,7 +241,7 @@ void SubjectAgent::updateSensor1(){
 				 
 				 s1d->feelerDistances[i] = sqrt( t2+ t1);
 				
-				 printf("%f\n", s1d->feelerDistances[i]);
+				// printf("%f\n", s1d->feelerDistances[i]);
 
 				 if(ENABLE_DEBUG_OUTPUT){
 				 feelerParticles.at(i)->setVisible(true);
@@ -263,5 +263,5 @@ void SubjectAgent::updateSensor1(){
 			 
 			}
 		 }
-		 printf("//////////////////\n");
+		// printf("//////////////////\n");
 }
