@@ -17,7 +17,7 @@
 #include <string>
 
 class Agent:public GameEntity{
-protected:
+public:
 	irr::scene::IAnimatedMeshSceneNode* mynodep;
 	irr::core::vector3df position;
 	irr::u32 LASTUPDATE;
@@ -27,11 +27,12 @@ protected:
 	irr::scene::ITriangleSelector* selector;
 
 
-public:
+
 
 	Sensor1Data *s1d;
 	std::vector<Sensor2Data*> s2d;
 	PieSensor *pie;
+
 virtual void update(irr::ITimer*);
 virtual void processMessage(Message*);
 

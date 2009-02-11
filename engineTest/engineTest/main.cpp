@@ -171,11 +171,15 @@ if(!nodeAnimator)return 1;
 /***************GUI SETUP*******************************/
 /*******************************************************/
  //gui::IGUIEnvironment* guienv = device->getGUIEnvironment();
+//Sensor2
 guienv->addStaticText(L"Sensor 2 Output:", rect<s32>(25,400,300,415), true, true, 0, -1, true);
 IGUIListBox * s2box = guienv->addListBox(rect<s32>(25, 420, 300, 590), 0, -1, true);
 s2box->setAutoScrollEnabled(true);
 
-
+//PieSensor
+guienv->addStaticText(L"PieSensor Output:", rect<s32>(310,400,500,415), true, true, 0, -1, true);
+IGUIListBox * piebox = guienv->addListBox(rect<s32>(310, 420, 500, 590), 0, -1, true);
+piebox->setAutoScrollEnabled(true);
 
 
 
@@ -191,8 +195,27 @@ s2box->setAutoScrollEnabled(true);
 			}
 		}
 
+		//clear piesensor output
+		piebox->clear();
+
+		//output piesensor data
+		//num_slices*2 = number of sections (elements in array)
+		for(int i = 0; i < (playerControlledAgent.pie->num_slices)*2 ; i++)
+		{
+			stringw pieSection(i+1);
+			stringw numAgents(playerControlledAgent.pie->areas[i]);
+			stringw mainstring = L"Pie Section: ";
+			mainstring+=pieSection;
+			mainstring+= L"      NumAgents: ";
+			mainstring+=numAgents;
+			piebox->addItem(mainstring.c_str());
+		}
+
 		//clear sensor2 output
 		s2box->clear();
+
+		//the chuckman
+		stringw chuckMan;
 
 		//output sensor2 data
 		for(int x = 0 ; x < playerControlledAgent.s2d.size() ; x++)
@@ -210,7 +233,29 @@ s2box->setAutoScrollEnabled(true);
 			mainstring+= L" Heading: ";
 			mainstring+=hstring;
 			s2box->addItem(mainstring.c_str());
+			stringw chuckPX(playerControlledAgent.position.X);
+			stringw chuckPY(playerControlledAgent.position.Y);
+			stringw chuckPZ(playerControlledAgent.position.Z);
+			//Modify based on increasing orientation
+			double self_angle = playerControlledAgent.orientation;
+			double remainder = (int)(self_angle/360);
+			remainder *= 360;
+			double mod = self_angle - abs(remainder);
+			self_angle = mod;
+
+			stringw chuckOr(self_angle);
+			chuckMan = L"Pos X: ";
+			chuckMan+=chuckPX;
+			chuckMan+= L" Y: ";
+			chuckMan+=chuckPY;
+			chuckMan+= L" Z: ";
+			chuckMan+=chuckPZ;
+			chuckMan+= L" Orient: ";
+			chuckMan+=chuckOr;
 		}
+
+		//Add Chuck's stats to debug output
+		s2box->addItem(chuckMan.c_str());
 
 		//if the mouse is clicked, create a new agent at the camera's current position
 		//TO DO!!! //THIS CREATES AN AGENT FOR EVERY TICK THE KEY IS PRESSED, BAD

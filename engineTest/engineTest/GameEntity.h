@@ -11,13 +11,12 @@ class GameEntity{
 	protected:
 	irr::core::vector3df position;
 	irr::core::vector3df velocity;
-	double orientation;
 	irr::core::vector3df displacement;
 
 	static std::vector<Agent*>* agentList;
 	
 	public:
-
+		double orientation;
 	static void setAgentList(std::vector<Agent*>*);
 
 
