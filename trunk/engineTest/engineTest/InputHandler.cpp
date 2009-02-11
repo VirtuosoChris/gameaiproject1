@@ -1,6 +1,8 @@
 #include "InputHandler.h"
 
 
+extern bool ENABLE_DEBUG_OUTPUT;
+
 //constructor
 InputHandler::InputHandler(){
 	for(int i = 0; i < irr::KEY_KEY_CODES_COUNT;i++){
@@ -26,6 +28,9 @@ bool InputHandler::OnEvent(const irr::SEvent& event1){
 
 				if(event1.KeyInput.Key == irr::KEY_ESCAPE)exit(0);
 				keyPressed[event1.KeyInput.Key] =  event1.KeyInput.PressedDown;	
+
+				//if(keyPressed[irr::KEY_KEY_T])ENABLE_DEBUG_OUTPUT = !ENABLE_DEBUG_OUTPUT;
+
 				break;
 
 
