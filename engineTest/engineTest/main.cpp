@@ -31,7 +31,7 @@
 
 #ifdef _IRR_WINDOWS_
 #pragma comment(lib, "Irrlicht.lib")
-//#pragma comment(linker, "/subsystem:windows /ENTRY:mainCRTStartup")
+#pragma comment(linker, "/subsystem:windows /ENTRY:mainCRTStartup")
 #endif
 
 
@@ -86,10 +86,10 @@ int main(int argc, char** argv){
 /*************************************************************/
 /****************LOAD IN MODELS*******************************/
 /*************************************************************/
-Model CHUCKIE = createModel("../media/chuckie.MD2","../media/Chuckie.pcx",device);
-Model BOBAFETT = createModel("../media/bobafett.md2","../media/bobafett.pcx",device, 2.0f);
-Model CARTMAN  = createModel("../media/ERIC.MD2","../media/ERIC.pcx",device, 1.5f);
-Model CYBERDEMON = createModel("../media/cyber.md2","../media/cyber.pcx",device,3.0f);
+Model CHUCKIE = createModel("media/chuckie.MD2","media/Chuckie.pcx",device);
+Model BOBAFETT = createModel("media/bobafett.md2","media/bobafett.pcx",device, 2.0f);
+Model CARTMAN  = createModel("media/ERIC.MD2","media/ERIC.pcx",device, 1.5f);
+Model CYBERDEMON = createModel("media/cyber.md2","media/cyber.pcx",device,3.0f);
 
 /*******************************************************/
 /***************CREATE GAME ENTITIES********************/
@@ -104,7 +104,7 @@ Model CYBERDEMON = createModel("../media/cyber.md2","../media/cyber.pcx",device,
  /*******LOAD THE MAP*********/
  /****************************/
  //load the pk3 file containing the .bsp map file into the engine file system
- device->getFileSystem()->addZipFileArchive("../media/map-20kdm2.pk3");
+ device->getFileSystem()->addZipFileArchive("media/map-20kdm2.pk3");
  
  //get the mesh from the map bsp file
  scene::IAnimatedMesh *map  = smgr->getMesh("20kdm2.bsp");
