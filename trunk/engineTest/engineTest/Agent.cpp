@@ -159,8 +159,7 @@ Agent::Agent(Model m, irr::core::vector3df p, irr::scene::ISceneManager* mgr):po
 
 	//mgr->addBillboardTextSceneNode(0,L"HAI");
 	//mgr->
-
-
+	
 	if(mgr){
 	mynodep = mgr->addAnimatedMeshSceneNode(m.mesh);
 	mynodep->setPosition(p);
@@ -190,7 +189,8 @@ orientation = 360.0f - 90.0f;
 	a->setMaterialFlag(video::EMF_ZBUFFER,false);
 	a->setSize(core::dimension2d<f32>(20.0f, 20.0f));
 
-	
+	//mynodep->addChild(smgr->addLightSceneNode(0,vector3df(-10,25*model.scale,-10),video::SColor(255,255,255,255),1000));
+
 }
 
 
