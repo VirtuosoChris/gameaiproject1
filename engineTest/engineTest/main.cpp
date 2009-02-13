@@ -5,9 +5,7 @@
 //singleton stuff; copy constructor, assignment
 //free message memory
 //entities interact (animation, kewl eh?);
-
 //replace exit 0's with proper exiting
-
 //todo : figure out what goes in which baseclass
 
 #ifndef IRRLICHT
@@ -122,8 +120,7 @@ Model CYBERDEMON = createModel("../media/cyber.md2","../media/cyber.pcx",device,
  //translate the map a bit since it wasn't modeled around the origin because artists are morons
  mapNode->setPosition(core::vector3df(-1300,-144,-1249));
  //mapNode->setScale(core::vector3df(1000,1000,1000));
-
-
+mapNode->setMaterialFlag(video::EMF_LIGHTING, true);
 
  /**************************************************/
  /***************CREATE THE CAMERA******************/

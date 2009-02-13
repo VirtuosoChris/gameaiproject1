@@ -44,6 +44,7 @@ SubjectAgent::SubjectAgent (Model m, irr::core::vector3df p, irr::scene::ISceneM
 	a->setMaterialFlag(video::EMF_ZBUFFER,false);
 	a->setSize(core::dimension2d<f32>(20.0f, 20.0f));
 	a->setVisible(false);
+
 	
 	
 	}
@@ -54,6 +55,8 @@ SubjectAgent::SubjectAgent (Model m, irr::core::vector3df p, irr::scene::ISceneM
 		feelerParticles.at(i)->setVisible(false);
 	}
 
+
+	
 }
 
 
