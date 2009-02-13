@@ -1,5 +1,6 @@
 #define NUMFEELERS 4
 #include "Agent.h"
+#include <iostream>
 
 #ifndef INPUTHANDLER
 #include "InputHandler.h"
@@ -7,6 +8,7 @@
 #include <cmath>
 #include <string>
 #include <vector>
+//#include <iostream>
 
 using namespace irr;
 using namespace irr::core;
@@ -383,20 +385,32 @@ void Agent::proximitySensor(double sensorRange)
 void Agent::PieDetect(){
 	//irr::core::vector3df self_normal = irr::core::vector3df(cos(degreesToRadians(orientation)), 0, sin(degreesToRadians(orientation))); 
 	for(int i = 0; i < Agent::agentList->size(); i++){
-		double distance = (*agentList)[i]->agentProximity(this);
+		if( (*agentList)[i] == this) continue;
+		double distance = Agent::agentProximity( (*agentList)[i] );
 		if(distance <= pie->range){
 			//this is the magnitude of the agent vector AND the distance between myself and the agent 
 			//double mag = sqrt( (abc[i]->getPosition().X * abc[i]->getPosition().X) + (abc[i]->getPosition().Y * abc[i]->getPosition().Y) + (abc[i]->getPosition().Z * abc[i]->getPosition().Z) );
 			//irr::core::vector3df agent_normal = irr::core::vector3df( (abc[i]->getPosition().X / mag), (abc[i]->getPosition().Y / mag), (abc[i]->getPosition().Z / mag) ); 
 			double self_angle = this->orientation;
+
 			//Modify based on increasing orientation
-			double remainder = (int)(self_angle/360);
-			remainder *= 360;
-			double mod = self_angle - abs(remainder);
-			self_angle = mod;
 			double agent_angle = Agent::agentBearing((*agentList)[i]);
-			double ang_between_players = abs(agent_angle - self_angle);
-			int place_in_bucket = ang_between_players / pie->angle;
+			double ang_between_players;
+			if ( (agent_angle - self_angle) < 0){
+				ang_between_players = 360.0 - fabs(agent_angle - self_angle);
+			}
+			else{
+				ang_between_players = agent_angle - self_angle;
+			}
+			
+			double final_angle;
+			
+			final_angle = ang_between_players + pie->offset; 
+			if(final_angle > 360) final_angle-=360;
+
+			int place_in_bucket = int( final_angle / fabs(pie->angle) );
+			
+			if (place_in_bucket > ( (pie->num_slices * 2) -1) ) exit(0);
 			pie->areas[place_in_bucket]++;
 		}
 	}
