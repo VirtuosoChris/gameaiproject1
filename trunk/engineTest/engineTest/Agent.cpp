@@ -12,9 +12,12 @@
 
 using namespace irr;
 using namespace irr::core;
-using namespace irr::video;
-inline double degreesToRadians(double degrees){
+using namespace irr::video;inline double degreesToRadians(double degrees){
 return 2*3.14159*degrees/360;
+}
+
+inline double radiansToDegrees(double radians){
+	return radians*= 57.29578;
 }
 
 
@@ -254,6 +257,7 @@ double Agent::agentBearing(Agent *nearAgent)
 {
 	//Some variables
 	double magAdj, magHypo;
+	double diffX, diffZ;
 	
 	//Quadrant of nearAgent
 	int quad;
@@ -262,42 +266,44 @@ double Agent::agentBearing(Agent *nearAgent)
 	double nearAngle = -1;
 
 	//math
-	magHypo = hypo(nearAgent->position.X,nearAgent->position.Z);
-	magAdj = abs(nearAgent->position.X );
+	diffX= nearAgent->position.X - this->position.X;
+	diffZ= nearAgent->position.Z - this->position.Z;
+	magHypo = hypo(diffX,diffZ);
+	magAdj = abs(diffX);
 
 	//Determine which quadrant the nearAgent is in
-	if(nearAgent->position.X > 0)
+	if(diffX > 0)
 	{
 		//First quad check
-		if(nearAgent->position.Z > 0)
+		if(diffZ > 0)
 			quad = 1;
 		//Fourth quad check
-		else if(nearAgent->position.Z < 0)
+		else if(diffZ < 0)
 			quad = 4;
 		//Angle zero
-		else if(nearAgent->position.Z == 0)
+		else if(diffZ == 0)
 			nearAngle = 0;
 	}
-	else if(nearAgent->position.X < 0)
+	else if(diffX < 0)
 	{
 		//Second quad check
-		if(nearAgent->position.Z > 0)
+		if(diffZ > 0)
 			quad = 2;
 		//Third quad check
-		else if(nearAgent->position.Z < 0)
+		else if(diffZ < 0)
 			quad = 3;
 		//Angle 180
-		else if(nearAgent->position.Z == 0)
+		else if(diffZ == 0)
 			nearAngle = 180;
 
 	}
-	else if(nearAgent->position.X == 0)
+	else if(diffX == 0)
 	{
 		//Angle 90
-		if(nearAgent->position.Z > 0)
+		if(diffZ > 0)
 			nearAngle = 90;
 		//Angle 270
-		else if(nearAgent->position.Z < 0)
+		else if(diffZ < 0)
 			nearAngle = 270;
 	}
 
@@ -306,10 +312,9 @@ double Agent::agentBearing(Agent *nearAgent)
 	{
 		//calculate cos of the triangle
 		nearAngle = acos(magAdj/magHypo);
-
+		
 		//convert from radians to degrees
-		//1 radian = 57.29578 degrees
-		nearAngle *= 57.29578;
+		nearAngle = radiansToDegrees(nearAngle);
 	}
 
 	//Compensates depending on the quadrant nearAgent is located in
@@ -331,6 +336,7 @@ double Agent::agentBearing(Agent *nearAgent)
 			break;
 	}
 
+
 	return nearAngle;
 
 }
@@ -340,8 +346,7 @@ double Agent::agentBearing(Agent *nearAgent)
 void Agent::proximitySensor(double sensorRange)
 {	
 	//variables
-	double alpha, theta, mod;
-	int remainder;
+	double alpha, theta;
 
 	//get the agentList size
 	int aListSize = Agent::agentList->size();
@@ -366,15 +371,29 @@ void Agent::proximitySensor(double sensorRange)
 				temp[x].agentID = (int)(*agentList)[x];
 
 				//Get relative bearing and store in temp
-				alpha = Agent::agentBearing((*agentList)[x]);
+				alpha = this->agentBearing((*agentList)[x]);
 				theta = this->orientation ;
-				//Modify based on increasing orientation
-				remainder = (int)(theta/360);
-				remainder *= 360;
-				mod = theta - abs(remainder);
-				theta = mod;
-				temp[x].relHeading = abs(alpha - theta);
+				std::cout<<"Angle wrt chuckyspace Alpha"<<std::endl;
+				std::cout<<alpha<<std::endl;
+				std::cout<<"Angle wrt chuckyspace Theta"<<std::endl;
+				std::cout<<theta<<std::endl;
+				//Calculate angle between
+				if( abs(alpha-theta) < (360-abs(alpha-theta)))
+					temp[x].relHeading = alpha-theta;
+				else{
+					//if the alternate angle has a smaller magnitude 
+					//we take it instead
+					
+					//assumed that this will return a positive value less than or equal to 
+					//360
+					temp[x].relHeading = 360 - abs(alpha - theta);
+					
+					//if the original angle was less than zero then the alternate is positive
+					if(alpha-theta <0.0);
+					//otherwise we know that the alternative angle is negative
+					else{temp[x].relHeading*=-1;}
 
+				}
 				//Add temp to proxSenseList for return
 				this->s2d.push_back(&temp[x]);
 			}
