@@ -8,6 +8,8 @@
 
 //replace exit 0's with proper exiting
 
+//todo : figure out what goes in which baseclass
+
 #ifndef IRRLICHT
 #include <irrlicht.h>
 #endif

@@ -222,7 +222,7 @@ void SubjectAgent::updateSensor1(){
 			
 			//printf("%f\n", angle);
 			
-			core::vector3df feelerVector = core::vector3df((float)cos(degreesToRadians(angle)), 0.0f, -(float)sin(degreesToRadians(angle)));
+			core::vector3df feelerVector = core::vector3df((float)cos(degreesToRadians(angle)), 0.0f, (float)sin(degreesToRadians(angle)));
 
 			 float t1 = 0.0f;
 			 
