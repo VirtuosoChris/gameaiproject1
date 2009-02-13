@@ -294,6 +294,9 @@ piebox->setAutoScrollEnabled(true);
 		if(ENABLE_DEBUG_OUTPUT)
 			guienv->drawAll();
 
+		if(ENABLE_DEBUG_OUTPUT)
+		playerControlledAgent.drawPieSlices(driver);
+
 		driver->endScene();//end drawing 
 	 }
 

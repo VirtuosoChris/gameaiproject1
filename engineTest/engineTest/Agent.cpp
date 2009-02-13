@@ -12,10 +12,10 @@
 
 using namespace irr;
 using namespace irr::core;
+using namespace irr::video;
 inline double degreesToRadians(double degrees){
 return 2*3.14159*degrees/360;
 }
-
 
 
 void Agent::updateWallSensor(){
@@ -448,4 +448,37 @@ std::string Agent::WallSensorToString(){
 	  
 	}
  return s;
+}
+
+
+void Agent::drawPieSlices(irr::video::IVideoDriver * driver){
+
+
+	SMaterial m; 
+   m.Lighting=false; 
+   m.ZBuffer = 0;
+   driver->setMaterial(m); 
+   
+   driver->setTransform(video::ETS_WORLD, mynodep->getAbsoluteTransformation());
+
+
+driver->draw3DLine(vector3df(0,0,0), vector3df(500,0,0), SColor(255,0,0,255));
+   double angle = pie->offset;
+	for(int i = 0; i < pie->num_slices*2;i++){
+		
+	driver->draw3DLine(
+			vector3df(0,0,0), 
+			vector3df(
+						250*cos( degreesToRadians(angle) ),
+						0,
+						250*sin( degreesToRadians(angle) )), 
+						SColor(255,255,255,255));
+		angle += pie->angle;
+   
+	  // core::matrix4()); 
+  //driver->draw3DLine(vector3df(0,0,0), vector3df(0,0,250));
+		//driver->draw3DLine(mynodep->getPosition(), mynodep->getPosition()+5000*vector3df(cos(0.0f), mynodep->getAbsolutePosition().Y, sin(0.0f)),video::SColor(255,255,255,255));
+	}
+
+
 }

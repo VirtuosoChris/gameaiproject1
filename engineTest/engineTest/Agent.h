@@ -26,7 +26,7 @@ public:
 	scene::ISceneManager* smgr;
 	irr::scene::ITriangleSelector* selector;
 
-
+	void drawPieSlices(irr::video::IVideoDriver*);
 
 
 	WallSensorData *s1d;
