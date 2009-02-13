@@ -52,6 +52,7 @@ class PieSensor{
 		double range;
 		double orientation;
 		double angle;
+		double offset;
 		int *areas;
 	
 		double degreesToRadians(double degrees){return 2*3.14159*degrees/360;}

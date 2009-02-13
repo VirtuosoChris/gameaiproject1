@@ -263,12 +263,12 @@ piebox->setAutoScrollEnabled(true);
 		//TO DO!!! //THIS CREATES AN AGENT FOR EVERY TICK THE KEY IS PRESSED, BAD
 		
 		if(InputHandler::getInstance()->unprocessedMouseMessageLMB){
-		//Agent* ap = new Agent(CYBERDEMON, camera->getPosition(), smgr);
-		//	ap->createCollisionAnimator(selector,smgr);
-		//	if(ap==NULL)return 1;
-		//	else 
-		//	entities.push_back(ap);	
-		//	InputHandler::getInstance()->unprocessedMouseMessageLMB = false;
+		Agent* ap = new Agent(CYBERDEMON, camera->getPosition(), smgr);
+			ap->createCollisionAnimator(selector,smgr);
+			if(ap==NULL)return 1;
+			else 
+			entities.push_back(ap);	
+			InputHandler::getInstance()->unprocessedMouseMessageLMB = false;
 		}
 		
 		//rig the window title bar to show the current camera position
