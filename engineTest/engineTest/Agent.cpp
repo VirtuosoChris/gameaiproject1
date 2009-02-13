@@ -373,10 +373,6 @@ void Agent::proximitySensor(double sensorRange)
 				//Get relative bearing and store in temp
 				alpha = this->agentBearing((*agentList)[x]);
 				theta = this->orientation ;
-				std::cout<<"Angle wrt chuckyspace Alpha"<<std::endl;
-				std::cout<<alpha<<std::endl;
-				std::cout<<"Angle wrt chuckyspace Theta"<<std::endl;
-				std::cout<<theta<<std::endl;
 				//Calculate angle between
 				if( abs(alpha-theta) < (360-abs(alpha-theta)))
 					temp[x].relHeading = alpha-theta;
