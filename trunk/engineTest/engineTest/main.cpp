@@ -99,7 +99,7 @@ Model CYBERDEMON = createModel("../media/cyber.md2","../media/cyber.pcx",device,
 
  SubjectAgent playerControlledAgent(CHUCKIE,core::vector3df(75,0,75),smgr);
  Agent agent2(CARTMAN,core::vector3df(116,128,845),smgr );
- Agent agent3(BOBAFETT, core::vector3df(124, 185, -834), smgr);
+// Agent agent3(BOBAFETT, core::vector3df(124, 185, -834), smgr);
 
 
  /****************************/
@@ -160,7 +160,7 @@ if(!nodeAnimator)return 1;
  //add the agents to the agent list
  entities.push_back(&playerControlledAgent);
  entities.push_back(&agent2);
- entities.push_back(&agent3);
+// entities.push_back(&agent3);
  
 
 //add collision to each game entity in the agent list
@@ -263,12 +263,12 @@ piebox->setAutoScrollEnabled(true);
 		//TO DO!!! //THIS CREATES AN AGENT FOR EVERY TICK THE KEY IS PRESSED, BAD
 		
 		if(InputHandler::getInstance()->unprocessedMouseMessageLMB){
-		Agent* ap = new Agent(CYBERDEMON, camera->getPosition(), smgr);
-			ap->createCollisionAnimator(selector,smgr);
-			if(ap==NULL)return 1;
-			else 
-			entities.push_back(ap);	
-			InputHandler::getInstance()->unprocessedMouseMessageLMB = false;
+		//Agent* ap = new Agent(CYBERDEMON, camera->getPosition(), smgr);
+		//	ap->createCollisionAnimator(selector,smgr);
+		//	if(ap==NULL)return 1;
+		//	else 
+		//	entities.push_back(ap);	
+		//	InputHandler::getInstance()->unprocessedMouseMessageLMB = false;
 		}
 		
 		//rig the window title bar to show the current camera position
