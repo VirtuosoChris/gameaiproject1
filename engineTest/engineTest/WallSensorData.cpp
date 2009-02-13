@@ -2,27 +2,27 @@
 #include "Sensors.h"
 #endif
 
-Sensor1Data::Sensor1Data(){
+WallSensorData::WallSensorData(){
 	//default
 }
 
-Sensor1Data::Sensor1Data(int nf,double a, float mr){
+WallSensorData::WallSensorData(int nf,double a, float mr){
 	maxRange = mr;
 	angle = a;
 	numFeelers = nf;
 	feelerDistances = new float[nf];
 }
 
-Sensor1Data::~Sensor1Data(){
+WallSensorData::~WallSensorData(){
 	//destructor
 }
 
-int Sensor1Data::getNumFeelers(){
+int WallSensorData::getNumFeelers(){
 return numFeelers;
 }
 
 
-double Sensor1Data::getAngle(){
+double WallSensorData::getAngle(){
 
 return angle;
 }

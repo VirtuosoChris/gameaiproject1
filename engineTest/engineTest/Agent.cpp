@@ -16,7 +16,7 @@ return 2*3.14159*degrees/360;
 
 
 
-void Agent::updateSensor1(){
+void Agent::updateWallSensor(){
 
 
 
@@ -104,7 +104,7 @@ void Agent::updateSensor1(){
 		 }}
 
 
-void Agent::updateSensor2(){
+void Agent::updateProximitySensor(){
 	//Clear all previous entries
 	s2d.clear();
 
@@ -123,8 +123,8 @@ void Agent::updatePieSensor(){
 }
 void Agent::update(irr::ITimer* timer){
 
-updateSensor1();
-updateSensor2();
+updateWallSensor();
+updateProximitySensor();
 updatePieSensor();
 
 
@@ -148,7 +148,7 @@ void Agent::processMessage(Message*){
 Agent::Agent(Model m, irr::core::vector3df p, irr::scene::ISceneManager* mgr):position(p),model(m){
 	
 
-	s1d = new Sensor1Data(NUMFEELERS,45);
+	s1d = new WallSensorData(NUMFEELERS,45);
 	pie = new PieSensor(2);
 
 
@@ -345,8 +345,8 @@ void Agent::proximitySensor(double sensorRange)
 	int aListSize = Agent::agentList->size();
 
 	//Temp sensor data storage, this gets added to the list
-	Sensor2Data *temp ;
-	temp = new Sensor2Data[aListSize];
+	ProximitySensorData *temp ;
+	temp = new ProximitySensorData[aListSize];
 
 	//Traverse entire list
 	for(int x=0 ; x< aListSize ; x++)
@@ -412,7 +412,7 @@ void Agent::showPieSensor(){
 	cout << "]" << endl;
 }
 
-std::string Agent::sensor1ToString(){
+std::string Agent::WallSensorToString(){
 	
 	std::string s("Wall Feelers:\n");
 	
