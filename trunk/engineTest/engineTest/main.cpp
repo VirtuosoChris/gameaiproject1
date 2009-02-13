@@ -97,9 +97,9 @@ Model CYBERDEMON = createModel("../media/cyber.md2","../media/cyber.pcx",device,
 
  SubjectAgent playerControlledAgent(CHUCKIE,core::vector3df(75,0,75),smgr);
  Agent agent2(CARTMAN,core::vector3df(116,128,845),smgr );
- //Agent agent3(BOBAFETT, core::vector3df(124, 185, -834), smgr);
- //Agent agent4(CARTMAN, core::vector3df(-440, -57, 90), smgr);
- //Agent agent5(CARTMAN, core::vector3df(124, 185, -834), smgr);
+ Agent agent3(BOBAFETT, core::vector3df(124, 185, -834), smgr);
+ Agent agent4(CARTMAN, core::vector3df(-440, -57, 90), smgr);
+ Agent agent5(CARTMAN, core::vector3df(124, 185, -834), smgr);
 
 
  /****************************/
@@ -159,8 +159,9 @@ if(!nodeAnimator)return 1;
  //add the agents to the agent list
  entities.push_back(&playerControlledAgent);
  entities.push_back(&agent2);
-// entities.push_back(&agent3);
- //entities.push_back(&agent4);
+ entities.push_back(&agent3);
+ entities.push_back(&agent4);
+ entities.push_back(&agent5);
  
 
 //add collision to each game entity in the agent list
