@@ -190,15 +190,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Sensor1Data.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Sensor2Data.cpp"
+				RelativePath=".\ProximitySensorData.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\SubjectAgent.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\WallSensorData.cpp"
 				>
 			</File>
 		</Filter>

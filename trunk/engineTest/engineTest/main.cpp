@@ -173,7 +173,7 @@ if(!nodeAnimator)return 1;
 /***************GUI SETUP*******************************/
 /*******************************************************/
  //gui::IGUIEnvironment* guienv = device->getGUIEnvironment();
-//Sensor2
+//ProximitySensor
 guienv->addStaticText(L"Sensor 2 Output:", rect<s32>(25,400,300,415), true, true, 0, -1, true);
 IGUIListBox * s2box = guienv->addListBox(rect<s32>(25, 420, 300, 590), 0, -1, true);
 s2box->setAutoScrollEnabled(true);
@@ -213,13 +213,13 @@ piebox->setAutoScrollEnabled(true);
 			piebox->addItem(mainstring.c_str());
 		}
 
-		//clear sensor2 output
+		//clear ProximitySensor output
 		s2box->clear();
 
 		//the chuckman
 		stringw chuckMan;
 
-		//output sensor2 data
+		//output ProximitySensor data
 		for(int x = 0 ; x < playerControlledAgent.s2d.size() ; x++)
 		{
 			int id = playerControlledAgent.s2d[x]->agentID;

@@ -181,7 +181,7 @@ return;
 
 
 
-void SubjectAgent::updateSensor1(){
+void SubjectAgent::updateWallSensor(){
 
  
 

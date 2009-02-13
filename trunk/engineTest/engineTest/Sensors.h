@@ -8,7 +8,7 @@
 class Agent;
 
 //Wall feeler sensor
-class Sensor1Data{
+class WallSensorData{
 
 	int numFeelers;
 	double angle;
@@ -18,9 +18,9 @@ class Sensor1Data{
 		
 	float maxRange;
 
-		Sensor1Data();
-		Sensor1Data(int nf,double a, float mr = 5000.0f);
-		~Sensor1Data();
+		WallSensorData();
+		WallSensorData(int nf,double a, float mr = 5000.0f);
+		~WallSensorData();
 
 		int getNumFeelers();
 		double getAngle();
@@ -30,7 +30,7 @@ class Sensor1Data{
 
 };
 
-class Sensor2Data{
+class ProximitySensorData{
 	public:
 		//Agent Identification Number
 		int agentID;
@@ -41,9 +41,9 @@ class Sensor2Data{
 		//Relative heading to agent
 		double relHeading;
 		
-		Sensor2Data();
-		Sensor2Data(int id, double rD, double rH);
-		~Sensor2Data();
+		ProximitySensorData();
+		ProximitySensorData(int id, double rD, double rH);
+		~ProximitySensorData();
 };
 class PieSensor{
 	public:

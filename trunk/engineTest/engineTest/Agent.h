@@ -29,8 +29,8 @@ public:
 
 
 
-	Sensor1Data *s1d;
-	std::vector<Sensor2Data*> s2d;
+	WallSensorData *s1d;
+	std::vector<ProximitySensorData*> s2d;
 	PieSensor *pie;
 
 virtual void update(irr::ITimer*);
@@ -56,11 +56,11 @@ void showPieSensor();
 
 void createCollisionAnimator(irr::scene::ITriangleSelector* selector ,irr::scene::ISceneManager* mgr);
 
-virtual void updateSensor1();
+virtual void updateWallSensor();
 
-void updateSensor2();
+void updateProximitySensor();
 
-std::string sensor1ToString();
+std::string WallSensorToString();
 
 void updatePieSensor();
 

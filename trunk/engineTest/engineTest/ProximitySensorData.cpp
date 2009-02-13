@@ -3,18 +3,18 @@
 
 
 
-Sensor2Data::Sensor2Data(){
+ProximitySensorData::ProximitySensorData(){
 	//default
 }
 
-Sensor2Data::Sensor2Data(int id, double rD, double rH){
-	//Assign values to Sensor2Data object
+ProximitySensorData::ProximitySensorData(int id, double rD, double rH){
+	//Assign values to ProximitySensorData object
 	agentID = id;
 	relDistance = rD;
 	relHeading = rH;
 }
 
 
-Sensor2Data::~Sensor2Data(){
+ProximitySensorData::~ProximitySensorData(){
 	//destructor
 }
