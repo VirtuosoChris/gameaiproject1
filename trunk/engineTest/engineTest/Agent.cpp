@@ -126,6 +126,15 @@ void Agent::update(irr::ITimer* timer){
 updateSensor1();
 updateSensor2();
 updatePieSensor();
+
+
+if(orientation >360.0f || -orientation >=360.0f){
+orientation = fmod((double)orientation, (double)360.0f);
+}
+
+if(orientation <0.0f){
+	orientation = 360.0f +orientation; 
+}
  
 }
 

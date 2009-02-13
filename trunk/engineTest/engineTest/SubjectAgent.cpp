@@ -70,7 +70,6 @@ void SubjectAgent::update(irr::ITimer* timer){
 	
 	if(timer==NULL)return;
 	
-	Agent::update(timer);
 
 	irr::u32 ctime= 0;
 	TIMEELAPSED = (ctime = timer->getTime()) - LASTUPDATE;
@@ -171,6 +170,10 @@ return;
 
 
 		position = mynodep->getPosition();
+
+
+
+	Agent::update(timer);
 }
 
 
