@@ -1,4 +1,4 @@
-#define NUMFEELERS 4
+#define NUMFEELERS 6
 #include "Agent.h"
 #include <iostream>
 
@@ -154,7 +154,7 @@ Agent::Agent(Model m, irr::core::vector3df p, irr::scene::ISceneManager* mgr):po
 	
 
 	s1d = new WallSensorData(NUMFEELERS,45);
-	pie = new PieSensor(2);
+	pie = new PieSensor(4);
 
 
 	//mgr->addBillboardTextSceneNode(0,L"HAI");
@@ -260,7 +260,7 @@ double Agent::agentBearing(Agent *nearAgent)
 	double diffX, diffZ;
 	
 	//Quadrant of nearAgent
-	int quad;
+	int quad = -1;
 
 	//nearAgent angle for return
 	double nearAngle = -1;
