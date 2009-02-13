@@ -39,7 +39,7 @@ SubjectAgent::SubjectAgent (Model m, irr::core::vector3df p, irr::scene::ISceneM
 		
 	//mgr->addBillboardSceneNode()
 	//a->setMaterialType(video::EMT_TRANSPARENT_ADD_COLOR);
-	// feelerParticles[i]->setMaterialTexture(0,driver->getTexture("media/particle.bmp"));
+	// feelerParticles[i]->setMaterialTexture(0,driver->getTexture("../media/particle.bmp"));
 	//a->setMaterialFlag(video::EMF_LIGHTING, false);
 	a->setMaterialFlag(video::EMF_ZBUFFER,false);
 	a->setSize(core::dimension2d<f32>(20.0f, 20.0f));
@@ -60,6 +60,9 @@ SubjectAgent::SubjectAgent (Model m, irr::core::vector3df p, irr::scene::ISceneM
 
 void SubjectAgent::update(irr::ITimer* timer){
     
+
+	Agent::update(timer);
+
 	static const irr::f32 SPEED = .30f;
 	static const float ROTATION_RATE =  .10f;
 	int TIMEELAPSED =0; //ADJFHKJHFKJHFKJHF
@@ -80,11 +83,11 @@ void SubjectAgent::update(irr::ITimer* timer){
 
 	if(ih->isWKeyPressed()){
 		//MOVE_FORWARD
-		orientation = mynodep->getRotation().Y;
+		//orientation = mynodep->getRotation().Y;
 
 		//irr::core::vector3df 
 			displacement = irr::core::vector3df((irr::f32)cos(degreesToRadians(orientation)), 0.0f, (irr::f32)sin(degreesToRadians(orientation)))* SPEED * (irr::f32)TIMEELAPSED;
-displacement.Z*=-1;			
+//displacement.Z*=-1;			
 		nodePos+=displacement;
 
 		mynodep->setPosition(nodePos);
@@ -101,9 +104,9 @@ displacement.Z*=-1;
 	if(ih->isAKeyPressed()){
 		mynodep->setAnimationSpeed(30);
 		//ROTATE_LEFT
-		orientation -= ROTATION_RATE * TIMEELAPSED;
-		mynodep->setRotation(irr::core::vector3df(0.0f,(irr::f32)orientation,0.0f));
-
+		orientation += ROTATION_RATE * TIMEELAPSED;
+		mynodep->setRotation(irr::core::vector3df(0.0f,(irr::f32)fabs(360.0f-orientation),0.0f));
+		
 		//mynodep->setRotation(irr::core::vector3df(0.0f,1,0.0f));
  
 		
@@ -122,10 +125,10 @@ return;
 		//MOVE_BACK
 mynodep->setAnimationSpeed(25);
 		
-    orientation = mynodep->getRotation().Y;
+    //orientation = mynodep->getRotation().Y;
 	//irr::core::vector3df 
 		displacement = irr::core::vector3df((irr::f32)cos(degreesToRadians(orientation)), 0.0f, (irr::f32)sin(degreesToRadians(orientation)))* SPEED * (irr::f32)TIMEELAPSED;
-	displacement.Z*=-1;
+	//displacement.Z*=-1;
 		nodePos -= displacement/4;//irr::core::vector3df((irr::f32)-cos(orientation), 0.0f, (irr::f32)-sin(orientation))* SPEED * (irr::f32)TIMEELAPSED;
 	
 	mynodep->setPosition(nodePos);
@@ -142,8 +145,8 @@ return;
 	if(ih->isDKeyPressed()){
 		//ROTATE_RIGHT
 
-		orientation += ROTATION_RATE * TIMEELAPSED;
-		mynodep->setRotation(irr::core::vector3df(0.0f,(irr::f32)orientation,0.0f));
+		orientation -= ROTATION_RATE * TIMEELAPSED;
+		mynodep->setRotation(irr::core::vector3df(0.0f,(irr::f32)fabs(360.0f-orientation),0.0f));
 		
 		
 		//STRAFE_RIGHT
@@ -173,7 +176,6 @@ return;
 
 
 
-	Agent::update(timer);
 }
 
 
