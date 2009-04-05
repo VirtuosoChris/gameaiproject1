@@ -1,10 +1,10 @@
+#ifndef SENSORS
 #define SENSORS
 
 #include<string>
 #include<iostream>
 #include<vector>
 
-//dummy agent class
 class Agent;
 
 //Wall feeler sensor
@@ -64,3 +64,4 @@ class PieSensor{
 		void showPieSensor();
 };
 
+#endif

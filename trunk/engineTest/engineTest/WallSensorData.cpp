@@ -1,6 +1,5 @@
-#ifndef SENSORS
+
 #include "Sensors.h"
-#endif
 
 WallSensorData::WallSensorData(){
 	//default

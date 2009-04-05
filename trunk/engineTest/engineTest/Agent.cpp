@@ -1,23 +1,46 @@
+//mesh/engine bugs
+//crappiness of steering behaviors
+//redundancy of edges
+//edge disabling/annotating
+//wall avoidance and recovery
+//why i chose a*
+//prevent crashes by not assuming everything will work
+//path smoothing
+
 #define NUMFEELERS 6
 #include "Agent.h"
 #include <iostream>
 
-#ifndef INPUTHANDLER
+
 #include "InputHandler.h"
-#endif
+
+
+
+#include "cpMath.h"
 #include <cmath>
 #include <string>
 #include <vector>
+#include <limits>
 //#include <iostream>
 
 using namespace irr;
 using namespace irr::core;
-using namespace irr::video;inline double degreesToRadians(double degrees){
-return 2*3.14159*degrees/360;
-}
+using namespace irr::video;
 
-inline double radiansToDegrees(double radians){
-	return radians*= 57.29578;
+
+//std::vector<int>* astarSearch(unsigned int src, unsigned int tgt);
+extern irr::core::vector3df SEEK_POS;
+
+
+
+
+//finds the quadrant a vector is in
+inline int quadrant(vector3df a){
+	if(a.X >0 && a.Z>0)return 1;
+	if(a.X>0 && a.Z<0)return 4;
+	if(a.X < 0 && a.Z>0)return 2;
+	if(a.X< 0 && a.Z < 0) return 3;
+	return 0;
 }
 
 
@@ -126,56 +149,160 @@ void Agent::updatePieSensor(){
 	Agent::showPieSensor();
 
 }
+
+
+//update method
 void Agent::update(irr::ITimer* timer){
 
+	
+irr::u32 ctime= 0;
+irr::f32 TIMEELAPSED = (irr::f32)((ctime = timer->getTime()) - LASTUPDATE);
+LASTUPDATE = ctime;
+
+
+//update sensors
 updateWallSensor();
 updateProximitySensor();
 updatePieSensor();
+irr::f32 MAXSPEED = .3f;
 
 
-if(orientation >360.0f || -orientation >=360.0f){
-orientation = fmod((double)orientation, (double)360.0f);
+
+
+//seek to the current seek target
+vector3df tp = currentSeekTarget;
+tp.Y = 0;
+vector3df ap = mynodep->getPosition();
+ap.Y = 0;
+tp = tp-ap;
+
+
+if((mynodep->getPosition() - currentSeekTarget).getLength() <100.0f){
+	if(!pathList.empty()){
+		currentSeekTarget = pathList.front();
+		pathList.remove(pathList.front());
+	}else{
+		velocity = core::vector3df(0,0,0);
+		currentSeekTarget = mynodep->getPosition();
+	}
 }
 
-if(orientation <0.0f){
-	orientation = 360.0f +orientation; 
+
+irr::core::vector3df accel = seek(currentSeekTarget);
+
+if(!(velocity+(accel*TIMEELAPSED)).getLength() == 0.0f){
+	velocity+=accel*TIMEELAPSED;
+	velocity = velocity.normalize()*MAXSPEED;
+	}else{
+		//velocity = velocity.normalize()*.001; //core::vector3df(0,0,0);
+		velocity = vector3df(0,0,0);
+
 }
+
+if(velocity.getLength() > .01f){
+	mynodep->setPosition(mynodep->getPosition() + (TIMEELAPSED * velocity));
+	
+	if(!MOVING){
+	MOVING= true;
+	mynodep->setMD2Animation(scene::EMAT_RUN);
+	}
+}else if(MOVING){
+MOVING = false;
+mynodep->setMD2Animation(scene::EMAT_STAND);
+}
+
+
+
+vector3df abc = velocity;//SEEK_POS - mynodep->getPosition();
+abc.Y = 0;
+//abc.Z*=-1;
+abc = abc.normalize();
+double tAngle = radiansToDegrees(acos(fabs(abc.X)));
+
+switch(
+	   quadrant(velocity.normalize()
+	   )){
+case 1:break;
+case 2:tAngle = 180-tAngle;break;
+case 3:tAngle = 180+tAngle;break;
+case 4:tAngle = 360-tAngle;break;
+default:;
+}
+
+
+//printf("%f\n", tAngle);
+
+if(velocity.getLength()!=0){
+orientation = tAngle;
+mynodep->setRotation(irr::core::vector3df(0.0f,(irr::f32)fabs(360-orientation),0.0f));
+}
+
+position = mynodep->getPosition();
+
  
 }
 
 
-void Agent::processMessage(Message*){
+void Agent::processMessage(Message* m){
+
+	delete m;
 
 }
 
 
-
+//ctor
 Agent::Agent(Model m, irr::core::vector3df p, irr::scene::ISceneManager* mgr):position(p),model(m){
 	
-
+	
 	s1d = new WallSensorData(NUMFEELERS,45);
 	pie = new PieSensor(4);
 
+	MOVING = false;
+
+	velocity = vector3df(0.0f,0.0f,0.0f);
 
 	//mgr->addBillboardTextSceneNode(0,L"HAI");
 	//mgr->
 	
+	//if(mgr == NULL){
+	//	std::cout<<"NO SCENE MANAGER WTF";}
+	//else{
+	//	std::cout<<"HAS SCENE MANAGER WHOO";
+	//}
+
 	if(mgr){
 	mynodep = mgr->addAnimatedMeshSceneNode(m.mesh);
+
+//	std::cout<<"\nADDED MESH SCENE NODE LOL\n";
 	mynodep->setPosition(p);
 	mynodep->setMaterialTexture(0,m.texture);
-	mynodep->setMaterialFlag(video::EMF_LIGHTING, false);
+	mynodep->setMaterialFlag(video::EMF_LIGHTING, true);
 	mynodep->setMD2Animation(scene::EMAT_STAND);
-	mynodep->setRotation(irr::core::vector3df(0.0f,(irr::f32)(90.0f),0.0f));
+	mynodep->setRotation(irr::core::vector3df(0.0f,(irr::f32)(0.0f),0.0f));
 	mynodep->setScale(irr::core::vector3df((irr::f32)m.scale,(irr::f32)m.scale,(irr::f32)m.scale));
+	mynodep->setMaterialFlag(video::EMF_FOG_ENABLE, true);
+	//mynodep->addShadowVolumeSceneNode();
+
+//extern IrrlichtDevice* device;
+//if(device){Model SG =  createModel("../media/Marine_shotgun.md2", "../media/Gshotgun.pcx", device, 3.0f);
+///	smgr->addAnimatedMeshSceneNode(SG.mesh);
+//}
+
+//	extern IrrlichtDevice* device;
+//	Model CHUCKIERAIL = createModel("../media/w_railgun.md2","../media/w_railgun.pcx",device,1.0f);
+//
+//	mynodep->addChild( mgr->addAnimatedMeshSceneNode(CHUCKIERAIL.mesh));
+
 	
 	}
 
-orientation = 360.0f - 90.0f;
+orientation = //360.0f - 
+0.0f;
 
 	LASTUPDATE = 0;
 
 	smgr= mgr;
+	
 	
 	irr::scene::IBillboardTextSceneNode* a = 
  
@@ -185,29 +312,17 @@ orientation = 360.0f - 90.0f;
 	a->setPosition(vector3df(0.0f, 25.0f,0.0f));
 	//a->setPosition(mynodep->getPosition());
 	mynodep->addChild(a);
-	
-	a->setMaterialFlag(video::EMF_ZBUFFER,false);
+	a->setMaterialFlag(video::EMF_ZBUFFER,true);
+	a->setMaterialFlag(video::EMF_LIGHTING, true);
+	a->setMaterialFlag(video::EMF_FOG_ENABLE, true);
 	a->setSize(core::dimension2d<f32>(20.0f, 20.0f));
-
+	a->setVisible(false);
 	//mynodep->addChild(smgr->addLightSceneNode(0,vector3df(-10,25*model.scale,-10),video::SColor(255,255,255,255),1000));
-
+	currentSeekTarget = mynodep->getPosition();
 }
 
 
 
-/*
-Agent::Agent(irr::scene::IAnimatedMeshSceneNode* a, irr::core::vector3df p)
-:mynodep(a),position(p)
-{	LASTUPDATE = 0;
-	
-mynodep->setPosition(p);
- mynodep->setMaterialFlag(video::EMF_LIGHTING, false);
-	mynodep->setRotation(irr::core::vector3df(0.0f,orientation = 90.0f,0.0f));
-	//position = mynodep->getPosition();
-	
- mynodep->setMD2Animation(scene::EMAT_STAND); //set the animation to stand?
-}
-*/
 
 
 Agent::~Agent(){
@@ -399,7 +514,7 @@ void Agent::proximitySensor(double sensorRange)
 
 void Agent::PieDetect(){
 	//irr::core::vector3df self_normal = irr::core::vector3df(cos(degreesToRadians(orientation)), 0, sin(degreesToRadians(orientation))); 
-	for(int i = 0; i < Agent::agentList->size(); i++){
+	for(unsigned int i = 0; i < Agent::agentList->size(); i++){
 		if( (*agentList)[i] == this) continue;
 		double distance = Agent::agentProximity( (*agentList)[i] );
 		if(distance <= pie->range){
@@ -434,11 +549,11 @@ void Agent::PieDetect(){
 void Agent::showPieSensor(){
 	using std::cout;
 	using std::endl;
-	cout << "Going counterclockwise starting from the front.\n";
-	cout << "[ ";
-	for(int i = 0; i < (pie->num_slices * 2); i++)
-		cout << pie->areas[i] << " ";
-	cout << "]" << endl;
+	//cout << "Going counterclockwise starting from the front.\n";
+	//cout << "[ ";
+	//for(int i = 0; i < (pie->num_slices * 2); i++)
+	//	cout << pie->areas[i] << " ";
+	//cout << "]" << endl;
 }
 
 std::string Agent::WallSensorToString(){
@@ -466,34 +581,125 @@ std::string Agent::WallSensorToString(){
 }
 
 
+
 void Agent::drawPieSlices(irr::video::IVideoDriver * driver){
 
 
 	SMaterial m; 
    m.Lighting=false; 
-   m.ZBuffer = 0;
+   m.ZBuffer = 1;
    driver->setMaterial(m); 
    
    driver->setTransform(video::ETS_WORLD, mynodep->getAbsoluteTransformation());
 
 
 driver->draw3DLine(vector3df(0,0,0), vector3df(500,0,0), SColor(255,0,0,255));
-   double angle = pie->offset;
+irr::f32 angle = (irr::f32)pie->offset;
 	for(int i = 0; i < pie->num_slices*2;i++){
 		
 	driver->draw3DLine(
 			vector3df(0,0,0), 
 			vector3df(
-						250*cos( degreesToRadians(angle) ),
+			(irr::f32)(250*cos( degreesToRadians(angle) )),
 						0,
-						250*sin( degreesToRadians(angle) )), 
+						(irr::f32)(250*sin( degreesToRadians(angle) ))), 
 						SColor(255,255,255,255));
-		angle += pie->angle;
+	angle +=(irr::f32)pie->angle;
    
 	  // core::matrix4()); 
   //driver->draw3DLine(vector3df(0,0,0), vector3df(0,0,250));
 		//driver->draw3DLine(mynodep->getPosition(), mynodep->getPosition()+5000*vector3df(cos(0.0f), mynodep->getAbsolutePosition().Y, sin(0.0f)),video::SColor(255,255,255,255));
 	}
 
-
 }
+
+
+//generates a seek steering force
+irr::core::vector3df Agent::seek(irr::core::vector3df tp){
+
+	if(tp == mynodep->getPosition())return vector3df(0,0,0);
+	irr::f32 MAXSPEED = .3f;
+		irr::core::vector3df target = tp - mynodep->getPosition();
+		target.Y = 0;
+		if(target.getLength() == 0)return vector3df(0,0,0);
+		target.normalize();
+	target*=MAXSPEED;
+	irr::f32 mass = 100.0f;
+
+	irr::core::vector3df accel = (target-velocity);
+	accel/=mass;
+	//accel*= (tp - mynodep->getPosition()).getLength()*.05;
+	return accel;
+	
+}
+
+
+//this function generates a list of waypoints to seek to a target location
+void Agent::newTargetLocation(irr::core::vector3df fin){
+/*
+	extern std::vector<irr::core::vector3df> NODE_VECTOR;
+
+	pathList.clear();
+
+	//get the unobstructed node closest to the target location
+	//
+
+ core::line3d<f32> line;
+ core::vector3df intersection;
+ core::triangle3df triangle;
+ line.start = fin;
+	
+ double closest = std::numeric_limits<double>::max();
+ int sNode2 = -1;
+
+	for(unsigned int i = 0; i < NODE_VECTOR.size();i++){
+		if((fin - NODE_VECTOR[i]).getLength() < closest){
+			line.end = NODE_VECTOR[i];
+			if(!smgr->getSceneCollisionManager()->getCollisionPoint(line, selector,intersection, triangle)){
+				
+				closest = (fin - NODE_VECTOR[i]).getLength();
+				sNode2 = i;
+				
+			}
+		}
+	}
+
+	//get the unobstructed node closest to the agent
+	int sNode1=-1;
+	closest = std::numeric_limits<double>::max();
+	line.start = mynodep->getPosition();
+	for(unsigned int i = 0; i < NODE_VECTOR.size();i++){
+		if((mynodep->getPosition() - NODE_VECTOR[i]).getLength() < closest){
+			line.end = NODE_VECTOR[i];
+			if(!smgr->getSceneCollisionManager()->getCollisionPoint(line, selector,intersection, triangle)){
+				
+				closest = (mynodep->getPosition() - NODE_VECTOR[i]).getLength();
+				sNode1 = i;
+			}
+		}
+	}
+
+	
+	std::vector<int>* result = astarSearch(sNode1, sNode2);
+
+	if(result->size()){
+	for(unsigned int i = 0; i < result->size(); i++){
+		pathList.push_front( NODE_VECTOR[(*result)[i]]);
+	}
+	pathList.push_back(fin);
+
+
+	currentSeekTarget = pathList.front();
+
+	}else{
+	
+		pathList.push_back(mynodep->getPosition());
+	}
+	printf("%d %d\n", sNode1, sNode2);
+*/
+}
+
+
+
+
+//}

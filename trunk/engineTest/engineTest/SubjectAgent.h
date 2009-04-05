@@ -1,10 +1,8 @@
+#ifndef SUBJECTAGENT
 #define SUBJECTAGENT
 
 #include "irrlicht.h"
-
-#ifndef AGENT
 #include "Agent.h"
-#endif
 
 #include <vector>
 
@@ -27,3 +25,4 @@ SubjectAgent(Model m, irr::core::vector3df p = irr::core::vector3df(0.0f,0.0f,0.
 virtual void updateWallSensor();
 
 };
+#endif

@@ -1,3 +1,4 @@
+#ifndef GAMEENTITY
 #define GAMEENTITY
 
 #include <irrlicht.h>
@@ -33,3 +34,4 @@ class GameEntity{
 
 };
 
+#endif

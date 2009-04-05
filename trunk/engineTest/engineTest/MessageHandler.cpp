@@ -4,10 +4,7 @@
 
 #include <set>
 #include "MessageHandler.h"
-
-#ifndef GAMEENTITY
 #include "GameEntity.h"
-#endif
 		 
 MessageHandler::MessageHandler(){
 

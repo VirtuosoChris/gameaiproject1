@@ -1,15 +1,14 @@
+#ifndef MESSAGEHANDLER
 #define MESSAGEHANDLER
 
 #include <irrlicht.h>
-
+#include <set>
 
 
 class GameEntity;
 //class Message;
 
-#ifndef MESSAGE
 #include "Message.h"
-#endif
 
 class MessageHandler{
  
@@ -30,3 +29,5 @@ class MessageHandler{
 
 			
 };
+
+#endif

@@ -1,14 +1,15 @@
-#define MESSAGE
 
 class GameEntity;
 
+#ifndef MESSAGE
+#define MESSAGE
 
 #include "irrlicht.h"
 
 
 
 
-enum Message_Type {MSG_ACTIVATE, MSG_ROTATE_LEFT, MSG_ROTATE_RIGHT, MSG_MOVE_FORWARD, MSG_MOVE_BACKWARD};
+enum Message_Type {KTC_ACTIVATE, KTC_KILL, KTC_REVIVE, KTC_SPOTTED, KTC_ENDROUND, KTC_BEGINROUND, KTC_PLAYER_LEFT_MOUSE_CLICK, KTC_PLAYER_RIGHT_MOUSE_CLICK};
 
 class Message{
 
@@ -28,3 +29,5 @@ class Message{
 	  bool operator<=( Message)const;
 	  
  };
+
+#endif

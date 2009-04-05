@@ -1,7 +1,9 @@
 #include "InputHandler.h"
 
+#include <vector>
+#include <algorithm>
 
-extern bool ENABLE_DEBUG_OUTPUT;
+
 
 //constructor
 InputHandler::InputHandler(){
@@ -10,6 +12,7 @@ InputHandler::InputHandler(){
 	}
 
 	unprocessedMouseMessageLMB = unprocessedMouseMessageRMB = false;
+	EXIT_MESSAGE = false;
 }
 
 
@@ -26,10 +29,19 @@ bool InputHandler::OnEvent(const irr::SEvent& event1){
 		
 			case irr::EET_KEY_INPUT_EVENT:
 
-				if(event1.KeyInput.Key == irr::KEY_ESCAPE)exit(0);
+				if(event1.KeyInput.Key == irr::KEY_ESCAPE)EXIT_MESSAGE=true;
 				keyPressed[event1.KeyInput.Key] =  event1.KeyInput.PressedDown;	
 
-				if(keyPressed[irr::KEY_KEY_T])ENABLE_DEBUG_OUTPUT = !ENABLE_DEBUG_OUTPUT;
+			//	if(keyPressed[irr::KEY_KEY_T]){ENABLE_DEBUG_OUTPUT = !ENABLE_DEBUG_OUTPUT;
+				//extern std::vector<irr::scene::ISceneNode*> SCENE_NODE_VECTOR;
+			
+				//fo/r(unsigned int i = 0; i < SCENE_NODE_VECTOR.size(); i++){
+				//	SCENE_NODE_VECTOR[i]->setVisible(ENABLE_DEBUG_OUTPUT);
+				//}
+
+			//	}
+
+			
 
 				break;
 
@@ -37,7 +49,7 @@ bool InputHandler::OnEvent(const irr::SEvent& event1){
 			case irr::EET_MOUSE_INPUT_EVENT:
 				if(event1.MouseInput.Event == irr::EMIE_LMOUSE_LEFT_UP){
 						unprocessedMouseMessageLMB = true;					
-				}if(event1.MouseInput.Event == irr::EMIE_LMOUSE_LEFT_UP){
+				}if(event1.MouseInput.Event == irr::EMIE_RMOUSE_LEFT_UP){
 						unprocessedMouseMessageRMB = true;					
 				}
 				
@@ -66,10 +78,4 @@ return &instance;
   return keyPressed[i];
  }
 
-bool InputHandler::isAKeyPressed(){return keyPressed[irr::KEY_KEY_A];}
-bool InputHandler::isWKeyPressed(){return keyPressed[irr::KEY_KEY_W];}
-bool InputHandler::isSKeyPressed(){return keyPressed[irr::KEY_KEY_S];}
-bool InputHandler::isDKeyPressed(){return keyPressed[irr::KEY_KEY_D];}
-bool InputHandler::isCKeyPressed(){return keyPressed[irr::KEY_KEY_C];}
-bool InputHandler::isTKeyPressed(){return keyPressed[irr::KEY_KEY_T];}
 

@@ -1,9 +1,7 @@
 #include "SubjectAgent.h"
 
 
-#ifndef INPUTHANDLER
 #include "InputHandler.h"
-#endif
 
 #include <cmath>
 
@@ -11,7 +9,7 @@ using namespace irr;
 using namespace irr::core;
 
 
-extern bool ENABLE_DEBUG_OUTPUT;
+//extern bool ENABLE_DEBUG_OUTPUT;
 
 inline double degreesToRadians(double degrees){
 return 2*3.14159*degrees/360;
@@ -27,7 +25,7 @@ SubjectAgent::SubjectAgent (Model m, irr::core::vector3df p, irr::scene::ISceneM
 	moving = false;
 	//feelerParticles = new std::vector<scene::IBillboardSceneNode*>(s1d->getNumFeelers());
 	
-//if(s1d->getNumFeelers()!=3)exit(1);
+    //if(s1d->getNumFeelers()!=3)exit(1);
 
 	for(int i = 0; i < s1d->getNumFeelers();i++){
 		//
@@ -49,7 +47,7 @@ SubjectAgent::SubjectAgent (Model m, irr::core::vector3df p, irr::scene::ISceneM
 	
 	}
 
-	for(int i = 0; i < feelerParticles.size();i++){
+	for(unsigned int i = 0; i < feelerParticles.size();i++){
 		//(*feelerParticles).at(i)->setVisible(false);
 		if(feelerParticles.at(i))
 		feelerParticles.at(i)->setVisible(false);
@@ -66,7 +64,7 @@ void SubjectAgent::update(irr::ITimer* timer){
 
 	Agent::update(timer);
 
-	static const irr::f32 SPEED = .30f;
+	static const irr::f32 SPEED = .3f;
 	static const float ROTATION_RATE =  .10f;
 	int TIMEELAPSED =0; //ADJFHKJHFKJHFKJHF
 	InputHandler* ih= InputHandler::getInstance();
@@ -251,7 +249,7 @@ void SubjectAgent::updateWallSensor(){
 				
 				// printf("%f\n", s1d->feelerDistances[i]);
 
-				 if(ENABLE_DEBUG_OUTPUT){
+				 if(true){
 				 feelerParticles.at(i)->setVisible(true);
 				 feelerParticles.at(i)->setText(stringw(
 					 (int)s1d->feelerDistances[i]

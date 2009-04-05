@@ -166,7 +166,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\canEntity.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\GameEntity.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\gunEntity.cpp"
 				>
 			</File>
 			<File
@@ -174,7 +182,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ktcGame.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\main.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\mapGraph.cpp"
 				>
 			</File>
 			<File
@@ -183,6 +199,10 @@
 			</File>
 			<File
 				RelativePath=".\MessageHandler.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\model.cpp"
 				>
 			</File>
 			<File
@@ -212,11 +232,35 @@
 				>
 			</File>
 			<File
+				RelativePath=".\canEntity.h"
+				>
+			</File>
+			<File
+				RelativePath=".\cpMath.h"
+				>
+			</File>
+			<File
+				RelativePath=".\doubleArray.h"
+				>
+			</File>
+			<File
 				RelativePath=".\GameEntity.h"
 				>
 			</File>
 			<File
+				RelativePath=".\gunEntity.h"
+				>
+			</File>
+			<File
 				RelativePath=".\InputHandler.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ktcGame.h"
+				>
+			</File>
+			<File
+				RelativePath=".\mapGraph.h"
 				>
 			</File>
 			<File
