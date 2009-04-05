@@ -1,37 +1,53 @@
-
-//good design would be of the form, make a chuckie at (3,3,0) <with these ai paramaters> and that's it... no worrying about scene nodes or collision detection
-
 //do destructors/constructors
 //singleton stuff; copy constructor, assignment
 //free message memory
 //entities interact (animation, kewl eh?);
 //replace exit 0's with proper exiting
 //todo : figure out what goes in which baseclass
+//todo:: double array Method
+//todo:: reference zap method
+//animating light intensity for the artifact
+//spectator/predator/prey cameras
+//scene node dropping
 
-#ifndef IRRLICHT
+//get the gun version of the game
+//thievery ut style gameplay mode
+//free for all
+//better engine version
+
+//totally redo steering behavior stuff
+//cover objects and hiding spot nodes
+//graph generation stuff
+
+//agent/sensor memory deallocation stuff
+//fix the crash on exit bug
+//get rid of local constants
+
+//grab the gun scene node so its not drawn twice
+
+//fix collisions and gun jitter
+//fix last memory leaks
+//refactor gameEntity
+//refactor math stuff
+//catch exceptions
+
+//better t key stuff : make the game class BE the input handler? -- no, use message handling -- for now, this is for debugging so not that important
+
 #include <irrlicht.h>
-#endif
-
 #include <vector>
 #include <string>
+#include <limits>
 #include <iostream>
-
-#ifndef INPUTHANDLER
+#include <algorithm>
+#include "doubleArray.h"
 #include "InputHandler.h"
-#endif
-
-
-#ifndef SUBJECTAGENT
 #include "SubjectAgent.h"
-#endif
-
-#ifndef MODEL
 #include "Model.h"
-#endif
+#include "ktcGame.h"
 
 #ifdef _IRR_WINDOWS_
 #pragma comment(lib, "Irrlicht.lib")
-#pragma comment(linker, "/subsystem:windows /ENTRY:mainCRTStartup")
+//#pragma comment(linker, "/subsystem:windows /ENTRY:mainCRTStartup")
 #endif
 
 
@@ -43,36 +59,19 @@ using namespace video;
 using namespace io;
 
 
-bool ENABLE_DEBUG_OUTPUT = false;
 
+int main(int, char**){
 
-Model createModel(const char* m, const char* s, IrrlichtDevice *d, double sc=1.0f){
- Model mod;
- mod.mesh = d->getSceneManager()->getMesh(m);
- mod.texture = d->getVideoDriver()->getTexture(s);
- mod.scale = sc;
- if(!(mod.mesh&&mod.texture))exit(0);
- return mod;
-}
-
-
-int main(int argc, char** argv){
-
-	std::vector<Agent*> entities;
-
-	GameEntity::setAgentList(&entities);
-
-/*******************************************************/
-/****************ENGINE SETUP***************************/
-/*******************************************************/
+	IrrlichtDevice *device;
 
  //create the irrlicht device
  //IrrlichtDevice *device = createDevice(video::EDT_OPENGL, core::dimension2d<s32>(1440,900), 32, false, true, true, InputHandler::getInstance());
- IrrlichtDevice *device = createDevice(video::EDT_OPENGL, core::dimension2d<s32>(800,600), 32, false, true, true, InputHandler::getInstance());
+  device = createDevice(video::EDT_OPENGL, core::dimension2d<s32>(1280,1024), 32, true//shadows
+	 , true, true, InputHandler::getInstance());
 	if(device==NULL)return 1;
 
  //set the title of the window
- device->setWindowCaption(L"Game AI Assignment 1");
+ device->setWindowCaption(L"Quake the Can");
 	
  //hide the cursor
  device->getCursorControl()->setVisible(false);
@@ -83,225 +82,76 @@ int main(int argc, char** argv){
  gui::IGUIEnvironment* guienv = device->getGUIEnvironment();
 
 
-/*************************************************************/
-/****************LOAD IN MODELS*******************************/
-/*************************************************************/
-Model CHUCKIE = createModel("../media/chuckie.MD2","../media/Chuckie.pcx",device);
-Model BOBAFETT = createModel("../media/bobafett.md2","../media/bobafett.pcx",device, 2.0f);
-Model CARTMAN  = createModel("../media/ERIC.MD2","../media/ERIC.pcx",device, 1.5f);
-Model CYBERDEMON = createModel("../media/cyber.md2","../media/cyber.pcx",device,3.0f);
+ /***Load the map***/
 
-/*******************************************************/
-/***************CREATE GAME ENTITIES********************/
-/*******************************************************/
-
- SubjectAgent playerControlledAgent(CHUCKIE,core::vector3df(75,0,75),smgr);
- Agent agent2(CARTMAN,core::vector3df(116,128,845),smgr );
- Agent agent3(BOBAFETT, core::vector3df(124, 185, -834), smgr);
- Agent agent4(CARTMAN, core::vector3df(-440, -57, 90), smgr);
- Agent agent5(CARTMAN, core::vector3df(124, 185, -834), smgr);
-
-
- /****************************/
- /*******LOAD THE MAP*********/
- /****************************/
  //load the pk3 file containing the .bsp map file into the engine file system
  device->getFileSystem()->addZipFileArchive("../media/map-20kdm2.pk3");
  
  //get the mesh from the map bsp file
- scene::IAnimatedMesh *map  = smgr->getMesh("20kdm2.bsp");
-  if(!map)return 1;
+ scene::IQ3LevelMesh* mesh =
+		(scene::IQ3LevelMesh*) (smgr->getMesh("maps/20kdm2.bsp"));
  
+
  //add a scene node for the map
- scene::ISceneNode *mapNode = NULL;
- mapNode = smgr->addOctTreeSceneNode(map->getMesh(0), 0, -1, 1024);
+ scene::ISceneNode *mapNode = NULL;//scene node representing the level itself
+ mapNode = smgr->addOctTreeSceneNode(
+
+ mesh->getMesh(quake3::E_Q3_MESH_GEOMETRY), 0, -1, 1024);
+  
+ if(!mesh){throw new std::string("mesh creation error");}
+ 
+ //code i took from an irrlicht tutorial to load in quake 3 shader items
+ scene::IMesh * additional_mesh = mesh->getMesh ( quake3::E_Q3_MESH_ITEMS );
+
+		for ( u32 i = 0; i!= additional_mesh->getMeshBufferCount (); ++i )
+		{
+			IMeshBuffer *meshBuffer = additional_mesh->getMeshBuffer ( i );
+			const video::SMaterial &material = meshBuffer->getMaterial();
+
+			//! The ShaderIndex is stored in the material parameter
+			s32 shaderIndex = (s32) material.MaterialTypeParam2;
+
+			// the meshbuffer can be rendered without additional support, or it has no shader
+			const quake3::SShader *shader = mesh->getShader ( shaderIndex );
+
+			if ( 0 == shader ){throw new std::string("Error loading shaders");}
+			mapNode->addChild((smgr->addQuake3SceneNode ( meshBuffer, shader )));
+		}
+		mesh->releaseMesh ( quake3::E_Q3_MESH_ITEMS );
+
  if(!mapNode)return 1;
 
- //translate the map a bit since it wasn't modeled around the origin because artists are morons
- mapNode->setPosition(core::vector3df(-1300,-144,-1249));
- //mapNode->setScale(core::vector3df(1000,1000,1000));
-mapNode->setMaterialFlag(video::EMF_LIGHTING, true);
 
- /**************************************************/
- /***************CREATE THE CAMERA******************/
- /**************************************************/
-
- scene::ICameraSceneNode *camera = 
-	 smgr->addCameraSceneNodeFPS();
-
- camera->setPosition(core::vector3df(30,30,30));
+ //CPTODO: get rid of local constant
+mapNode->setPosition(core::vector3df(-1300,-144,-1249));
+mapNode->setMaterialFlag(video::EMF_LIGHTING, true);//enable lighting
+mapNode->setMaterialType(irr::video::EMT_LIGHTMAP_LIGHTING_M4);//set the material property of the map to blend the lightmap with dynamic lighting
+smgr->addSkyDomeSceneNode(driver->getTexture("../media/skydome.jpg"),32,32,1.0f,2.0f); //create the skydome
+driver->setFog(irr::video::SColor(255,25,25,25), true, 0,750, 0, true, true);//set the fog properties
+mapNode->setMaterialFlag(irr::video::EMF_FOG_ENABLE, true);//enable fogging on the map node
 
 
- /***************************************************/
- /****************** SET UP COLLISIONS***************/
- /***************************************************/
-
- //create a triangle selector object for the map
- scene::ITriangleSelector*  selector = NULL;
- selector = smgr->createOctTreeTriangleSelector(map->getMesh(0), mapNode,128);
+ //create a triangle selector object for the map for use in creating collisions
+irr::scene::ITriangleSelector*  selector = NULL;
+ selector = smgr->createOctTreeTriangleSelector(mesh->getMesh(quake3::E_Q3_MESH_GEOMETRY),//map->getMesh(0), 
+	 mapNode,128); 
  if(!selector)return 1;
  mapNode->setTriangleSelector(selector);
 
-
-//create a collision node animator and apply it to the camera
- scene::ISceneNodeAnimator *nodeAnimator = 
-	smgr->createCollisionResponseAnimator(selector,//geometry for collision 
-	camera, //scene node to apply collision to/	
-	core::vector3df(30,50,30),//collision volume radii
-	core::vector3df(0,0,0),//gravity 
-	core::vector3df(0,30,0)); //collision volume position
-if(!nodeAnimator)return 1;
- camera->addAnimator(nodeAnimator);
- nodeAnimator->drop();
-
-
-
- //add the agents to the agent list
- entities.push_back(&playerControlledAgent);
- entities.push_back(&agent2);
- entities.push_back(&agent3);
- entities.push_back(&agent4);
- entities.push_back(&agent5);
- 
-
-//add collision to each game entity in the agent list
- for(int i = 0; i < (int)entities.size(); i++){
-	 entities[i]->createCollisionAnimator(selector,smgr);
- 
- }
-
-/*******************************************************/
-/***************GUI SETUP*******************************/
-/*******************************************************/
- //gui::IGUIEnvironment* guienv = device->getGUIEnvironment();
-//ProximitySensor
-guienv->addStaticText(L"Sensor 2 Output:", rect<s32>(25,400,300,415), true, true, 0, -1, true);
-IGUIListBox * s2box = guienv->addListBox(rect<s32>(25, 420, 300, 590), 0, -1, true);
-s2box->setAutoScrollEnabled(true);
-
-//PieSensor
-guienv->addStaticText(L"PieSensor Output:", rect<s32>(310,400,500,415), true, true, 0, -1, true);
-IGUIListBox * piebox = guienv->addListBox(rect<s32>(310, 420, 500, 590), 0, -1, true);
-piebox->setAutoScrollEnabled(true);
-
-
+//create the game object
+ktcGame game(device, selector);
 
 /*******************************************************/
 /***************GAME UPDATE LOOP************************/
 /*******************************************************/
-	while(device->run()){
-		
-		//update all entities
-		for(int i = 0; i < (int)entities.size();i++){
-			if(entities[i]){
-			entities[i]->update(device->getTimer());
-			}
-		}
+	
+while(device->run()){
+		game.update(device->getTimer());
+		guienv->drawAll();
+		if(InputHandler::getInstance()->EXIT_MESSAGE)exit(0);
+}
 
-		//clear piesensor output
-		piebox->clear();
-
-		//output piesensor data
-		//num_slices*2 = number of sections (elements in array)
-		for(int i = 0; i < (playerControlledAgent.pie->num_slices)*2 ; i++)
-		{
-			stringw pieSection(i+1);
-			stringw numAgents(playerControlledAgent.pie->areas[i]);
-			stringw mainstring = L"Pie Section: ";
-			mainstring+=pieSection;
-			mainstring+= L"      NumAgents: ";
-			mainstring+=numAgents;
-			piebox->addItem(mainstring.c_str());
-		}
-
-		//clear ProximitySensor output
-		s2box->clear();
-
-		//the chuckman
-		stringw chuckMan;
-
-		//output ProximitySensor data
-		for(int x = 0 ; x < playerControlledAgent.s2d.size() ; x++)
-		{
-			int id = playerControlledAgent.s2d[x]->agentID;
-			double distance = playerControlledAgent.s2d[x]->relDistance;
-			double heading = playerControlledAgent.s2d[x]->relHeading;
-			stringw idstring(id);
-			stringw bstring(distance);
-			stringw hstring(heading);
-			stringw mainstring = L"AgentID: ";
-			mainstring+=idstring;
-			mainstring+= L" Distance: ";
-			mainstring+=bstring;
-			mainstring+= L" Heading: ";
-			mainstring+=hstring;
-			s2box->addItem(mainstring.c_str());
-			stringw chuckPX(playerControlledAgent.position.X);
-			stringw chuckPY(playerControlledAgent.position.Y);
-			stringw chuckPZ(playerControlledAgent.position.Z);
-			//Modify based on increasing orientation
-			double self_angle = playerControlledAgent.orientation;
-			double remainder = (int)(self_angle/360);
-			remainder *= 360;
-			double mod = self_angle - abs(remainder);
-			self_angle = mod;
-
-			stringw chuckOr(self_angle);
-			chuckMan = L"Pos X: ";
-			chuckMan+=chuckPX;
-			chuckMan+= L" Y: ";
-			chuckMan+=chuckPY;
-			chuckMan+= L" Z: ";
-			chuckMan+=chuckPZ;
-			chuckMan+= L" Orient: ";
-			chuckMan+=chuckOr;
-		}
-
-		//Add Chuck's stats to debug output
-		s2box->addItem(chuckMan.c_str());
-
-		//if the mouse is clicked, create a new agent at the camera's current position
-		//TO DO!!! //THIS CREATES AN AGENT FOR EVERY TICK THE KEY IS PRESSED, BAD
-		
-		if(InputHandler::getInstance()->unprocessedMouseMessageLMB){
-		Agent* ap = new Agent(CYBERDEMON, camera->getPosition(), smgr);
-			ap->createCollisionAnimator(selector,smgr);
-			if(ap==NULL)return 1;
-			else 
-			entities.push_back(ap);	
-			InputHandler::getInstance()->unprocessedMouseMessageLMB = false;
-		}
-		
-		//rig the window title bar to show the current camera position
-		core::stringw str = L"";  		 
-		 str+="(";
-		 str+= camera->getPosition().X;
-		 str+= ",";
-		 str+= camera->getPosition().Y;
-		 str+= ",";
-		 str+= camera->getPosition().Z;
-		 str+= ")";
-		 device->setWindowCaption(str.c_str());
- 
-
-		 //If the Debug output is enabled, display a box with some stuff
-
-
-		//Draw everything
-		driver->beginScene(true, true, video::SColor(255,100,101,140));
-		smgr->drawAll();  //draw 3d objects
-		
-		//Only draw GUI components if Debug output is enabled
-		if(ENABLE_DEBUG_OUTPUT)
-			guienv->drawAll();
-
-		if(ENABLE_DEBUG_OUTPUT)
-		playerControlledAgent.drawPieSlices(driver);
-
-		driver->endScene();//end drawing 
-	 }
-
-	 device->drop();
+device->drop();
 
 return 0;
 }

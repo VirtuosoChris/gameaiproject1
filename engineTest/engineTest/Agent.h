@@ -1,27 +1,43 @@
+#ifndef AGENT
 #define AGENT
 
 #include "irrlicht.h"
-
-#ifndef GAMEENTITY
 #include "GameEntity.h"
-#endif
-
-#ifndef SENSORS
 #include "Sensors.h"
-#endif
-
-#ifndef MODEL
 #include "Model.h"
-#endif
-
 #include <string>
+#include <list>
 
 class Agent:public GameEntity{
+
+	irr::core::vector3df currentSeekTarget;
+	std::list<irr::core::vector3df> pathList;
+
 public:
+	
+	inline std::list<irr::core::vector3df> getPathList(){
+	return pathList;
+	}
+
+	inline void setPathList(std::list<irr::core::vector3df> pl){
+	 pathList = pl;
+	}
+
+	inline irr::core::vector3df getSeekTarget(){
+	return currentSeekTarget;
+	}
+
+	inline void setSeekTarget(irr::core::vector3df pl){
+	 currentSeekTarget = pl;
+	}
+
+
 	irr::scene::IAnimatedMeshSceneNode* mynodep;
 	irr::core::vector3df position;
 	irr::u32 LASTUPDATE;
 	Model model;
+
+	bool MOVING;
 	
 	scene::ISceneManager* smgr;
 	irr::scene::ITriangleSelector* selector;
@@ -40,7 +56,7 @@ virtual void processMessage(Message*);
 
 virtual ~Agent();
 
-Agent(Model m, irr::core::vector3df p = irr::core::vector3df(0.0f,0.0f,0.0f),irr::scene::ISceneManager* mgr = NULL);
+ Agent(Model m, irr::core::vector3df p = irr::core::vector3df(0.0f,0.0f,0.0f),irr::scene::ISceneManager* mgr = NULL);
 
 double hypo(double opp, double adj);
 
@@ -64,5 +80,12 @@ std::string WallSensorToString();
 
 void updatePieSensor();
 
+irr::core::vector3df seek(irr::core::vector3df);
+void newTargetLocation(irr::core::vector3df);
+
+
+
 
 };
+
+#endif
