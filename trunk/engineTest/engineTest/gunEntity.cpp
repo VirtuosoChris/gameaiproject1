@@ -2,14 +2,14 @@
 
 using namespace irr;
 using namespace irr::core;
-gunEntity::gunEntity(irr::IrrlichtDevice *device, irr::scene::ICameraSceneNode *camera){
+gunEntity::gunEntity(irr::IrrlichtDevice *device, irr::scene::ICameraSceneNode *camera)
+{
 
-	irr::scene::ISceneManager* smgr = device->getSceneManager();
+irr::scene::ISceneManager* smgr = device->getSceneManager();
 Model GUN = createModel("../media/dreadus_shotgun.md2","../media/shotgun_map.png",device,1.0f);
 //Model GUN = createModel("../media/w_railgun.md2","../media/railgun.pcx",device,1.0f);
-gun = smgr->addAnimatedMeshSceneNode(GUN.mesh);
-
-camera->addChild(gun);
+ gun = smgr->addAnimatedMeshSceneNode(GUN.mesh);
+//camera->addChild(gun);
 gun->setRotation(vector3df(0,270,0));
 gun->setPosition(
 				 (vector3df(.0f,.0f,.0f)
@@ -17,7 +17,7 @@ gun->setPosition(
 				)//.normalize()
 				);
 
-
+//gun2->remove();
 //gun->setPosition(vector3df(0, 0, gun->getPosition().Z));
 
 //gun->setMaterialFlag(video::EMF_ZBUFFER, false);
@@ -26,11 +26,17 @@ gun->setAnimationSpeed(60);
 gun->setMaterialTexture(0,GUN.texture);
 gun->setMaterialFlag(video::EMF_FOG_ENABLE, true);
 gun->setLoopMode(false);
+//gun->setPosition(vector3df(-1000,-1000,-1000));//HACKHACKHACK
+//gun->setRenderFromIdentity(true);
+gun->setPosition(vector3df(0,-1000,0));
+//gun->setMaterialFlag(video::EMF_ZBUFFER, false);
 
 }
 
 
-void gunEntity::update(irr::ITimer*){}
+void gunEntity::update(irr::ITimer*){
+
+}
 
 void gunEntity::processMessage(Message* m){
 
