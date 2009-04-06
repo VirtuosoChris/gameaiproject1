@@ -92,6 +92,22 @@ smgr->drawAll();  //draw 3d objects
 graph.render(device->getVideoDriver());
 
 device->getVideoDriver()->clearZBuffer();
+
+irr::core::matrix4 abc(irr::core::IdentityMatrix);
+const float mdat[16] = {1,0,0,0, 0,1,0,0, 0,0,1,0, 0,1000,0,1};
+abc.setM(mdat);
+
+//abc.setTranslation(vector3df(1,1000,10));
+
+//abc.setTranslation(vector3df(0,100,0));
+
+device->getVideoDriver()->setTransform(video::ETS_WORLD,camera->getAbsoluteTransformation());// camera->getAbsoluteTransformation());
+device->getVideoDriver()->setTransform(video::ETS_VIEW, abc);
+
+//gun.gun->setRotation(camera->getAbsoluteTransformation().getRotationDegrees()+ vector3df(0,270,0));
+//gun.gun->setPosition(camera->getAbsoluteTransformation().getTranslation());
+//gun.gun->setScale(camera->getAbsoluteTransformation().getScale());
+
 gun.gun->render();
 device->getVideoDriver()->endScene();//end drawing 
 
@@ -127,6 +143,10 @@ device->getVideoDriver()->endScene();//end drawing
 
 	can.update(timer);
 	gun.update(timer);
+
+
+	///gun.gun->setPosition(camera->getPosition());	
+	//gun.gun->setRotation(camera->getRotation() + vector3df(0,270,0));
 
 }
 
