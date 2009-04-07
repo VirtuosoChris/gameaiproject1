@@ -7,6 +7,7 @@
 #include "Model.h"
 #include <string>
 #include <list>
+#include "mapGraph.h"
 
 class Agent:public GameEntity{
 
@@ -81,9 +82,9 @@ std::string WallSensorToString();
 void updatePieSensor();
 
 irr::core::vector3df seek(irr::core::vector3df);
-void newTargetLocation(irr::core::vector3df);
+void newTargetLocation(irr::core::vector3df,mapGraph* mg);
 
-
+void createPatrolRoute(mapGraph* mg);
 
 
 };

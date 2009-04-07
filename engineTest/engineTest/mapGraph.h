@@ -31,7 +31,7 @@ public:
 	//the adjacency list, and any edges to exclude from the graph
 	
 	int getClosestNode(irr::core::vector3df pos); //returns the id of the node in the graph with the closest straight line distance to the input position
-
+	int getClosestNodeUnobstructed(irr::core::vector3df pos, irr::scene::ISceneManager*, irr::scene::ITriangleSelector* selector);
 	
 	//returns a pointer to a vector of integer node id's representing the path from src to target
 	std::vector<int>* astarSearch(unsigned int src, unsigned int tgt);
@@ -42,6 +42,7 @@ public:
 	
 	inline bool isDebugOutput(){return ENABLE_DEBUG_OUTPUT;};
 
+	inline irr::core::vector3df nodePosition(int i){return NODE_VECTOR[i];}
 	
 	void toggleDebugOutput(bool);
 	void render(video::IVideoDriver* driver);

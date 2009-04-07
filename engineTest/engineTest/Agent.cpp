@@ -21,6 +21,8 @@
 #include <string>
 #include <vector>
 #include <limits>
+
+#include "mapGraph.h"
 //#include <iostream>
 
 using namespace irr;
@@ -30,7 +32,9 @@ using namespace irr::video;
 
 //std::vector<int>* astarSearch(unsigned int src, unsigned int tgt);
 extern irr::core::vector3df SEEK_POS;
-
+double MAXSPEED = .1; //was .3
+double mass = 25; //was 100
+double RADIUS = 25;//was 100
 
 
 
@@ -164,7 +168,7 @@ LASTUPDATE = ctime;
 updateWallSensor();
 updateProximitySensor();
 updatePieSensor();
-irr::f32 MAXSPEED = .3f;
+//irr::f32 MAXSPEED = .3f;
 
 
 
@@ -176,8 +180,9 @@ vector3df ap = mynodep->getPosition();
 ap.Y = 0;
 tp = tp-ap;
 
-
-if((mynodep->getPosition() - currentSeekTarget).getLength() <100.0f){
+core::vector3df tv = (mynodep->getPosition() - currentSeekTarget);
+tv.Y = 0;
+if( tv.getLength()<RADIUS){
 	if(!pathList.empty()){
 		currentSeekTarget = pathList.front();
 		pathList.remove(pathList.front());
@@ -618,13 +623,13 @@ irr::f32 angle = (irr::f32)pie->offset;
 irr::core::vector3df Agent::seek(irr::core::vector3df tp){
 
 	if(tp == mynodep->getPosition())return vector3df(0,0,0);
-	irr::f32 MAXSPEED = .3f;
+	//irr::f32 MAXSPEED = .3f;
 		irr::core::vector3df target = tp - mynodep->getPosition();
 		target.Y = 0;
 		if(target.getLength() == 0)return vector3df(0,0,0);
 		target.normalize();
 	target*=MAXSPEED;
-	irr::f32 mass = 100.0f;
+	//irr::f32 mass = 10.0f;
 
 	irr::core::vector3df accel = (target-velocity);
 	accel/=mass;
@@ -634,57 +639,60 @@ irr::core::vector3df Agent::seek(irr::core::vector3df tp){
 }
 
 
+void Agent::createPatrolRoute(mapGraph* mg){
+
+pathList.clear();
+std::vector<int>* result = mg->depthFirstSearch(mg->getClosestNodeUnobstructed(mynodep->getPosition(),smgr, selector));
+
+if(result->size()){
+	for(unsigned int i = 0; i < result->size(); i++){
+		pathList.push_front( mg->nodePosition( (*result)[i]));
+	}
+	//pathList.push_back(fin);
+
+
+	currentSeekTarget = pathList.front();
+
+	}else{
+	
+		pathList.push_back(mynodep->getPosition());
+	}
+//	printf("%d %d\n", sNode1, sNode2);
+
+
+for(int i = 0; i < result->size(); i++){
+
+	std::cout<<(*result)[i]<<"\n";
+}
+std::cout<<std::endl;
+
+delete result;
+
+
+}
+
+
 //this function generates a list of waypoints to seek to a target location
-void Agent::newTargetLocation(irr::core::vector3df fin){
-/*
-	extern std::vector<irr::core::vector3df> NODE_VECTOR;
+void Agent::newTargetLocation(irr::core::vector3df fin, mapGraph* mg){
+
+	//extern std::vector<irr::core::vector3df> NODE_VECTOR;
 
 	pathList.clear();
 
 	//get the unobstructed node closest to the target location
 	//
-
- core::line3d<f32> line;
- core::vector3df intersection;
- core::triangle3df triangle;
- line.start = fin;
 	
- double closest = std::numeric_limits<double>::max();
- int sNode2 = -1;
 
-	for(unsigned int i = 0; i < NODE_VECTOR.size();i++){
-		if((fin - NODE_VECTOR[i]).getLength() < closest){
-			line.end = NODE_VECTOR[i];
-			if(!smgr->getSceneCollisionManager()->getCollisionPoint(line, selector,intersection, triangle)){
-				
-				closest = (fin - NODE_VECTOR[i]).getLength();
-				sNode2 = i;
-				
-			}
-		}
-	}
-
+	
+ int sNode2 = mg->getClosestNodeUnobstructed(fin,smgr, selector);
 	//get the unobstructed node closest to the agent
-	int sNode1=-1;
-	closest = std::numeric_limits<double>::max();
-	line.start = mynodep->getPosition();
-	for(unsigned int i = 0; i < NODE_VECTOR.size();i++){
-		if((mynodep->getPosition() - NODE_VECTOR[i]).getLength() < closest){
-			line.end = NODE_VECTOR[i];
-			if(!smgr->getSceneCollisionManager()->getCollisionPoint(line, selector,intersection, triangle)){
-				
-				closest = (mynodep->getPosition() - NODE_VECTOR[i]).getLength();
-				sNode1 = i;
-			}
-		}
-	}
+ int sNode1 = mg->getClosestNodeUnobstructed(mynodep->getPosition(), smgr,selector);
 
-	
-	std::vector<int>* result = astarSearch(sNode1, sNode2);
+ std::vector<int>* result = mg->astarSearch(sNode1, sNode2);
 
 	if(result->size()){
 	for(unsigned int i = 0; i < result->size(); i++){
-		pathList.push_front( NODE_VECTOR[(*result)[i]]);
+		pathList.push_front( mg->nodePosition( (*result)[i]));
 	}
 	pathList.push_back(fin);
 
@@ -696,7 +704,9 @@ void Agent::newTargetLocation(irr::core::vector3df fin){
 		pathList.push_back(mynodep->getPosition());
 	}
 	printf("%d %d\n", sNode1, sNode2);
-*/
+
+
+	delete result;
 }
 
 

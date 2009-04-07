@@ -13,6 +13,38 @@ using namespace irr::scene;
 using namespace std;
 
 
+
+
+int mapGraph::getClosestNodeUnobstructed(irr::core::vector3df pos, irr::scene::ISceneManager*, irr::scene::ITriangleSelector* selector){
+
+
+	
+ core::line3d<f32> line;
+ core::vector3df intersection;
+ core::triangle3df triangle;
+ line.start = pos;
+
+
+int sNode1=-1;
+double closest = std::numeric_limits<double>::max();
+	line.start = pos;
+	for(unsigned int i = 0; i < NODE_VECTOR.size();i++){
+		if((pos - NODE_VECTOR[i]).getLength() < closest){
+			line.end = NODE_VECTOR[i];
+			if(!smgr->getSceneCollisionManager()->getCollisionPoint(line, selector,intersection, triangle)){
+				
+				closest = (pos - NODE_VECTOR[i]).getLength();
+				sNode1 = i;
+			}
+		}
+	}
+
+	return sNode1;
+}
+	
+
+
+
 //gets the node from the graph closest to the position passed in
 int mapGraph::getClosestNode(irr::core::vector3df pos){
 
@@ -173,7 +205,7 @@ mapGraph::mapGraph(IrrlichtDevice *device,const char *n, const char *e, const ch
 	
 	 smgr = device->getSceneManager();
 
-ENABLE_DEBUG_OUTPUT = false;
+ENABLE_DEBUG_OUTPUT = true;
 
 	//load in the adjacency list
 FILE *fp = fopen(nodes.c_str(), "r");
@@ -244,7 +276,7 @@ for(int i = 0; i <k; i++){
 
 
 
-depthFirstSearch(0);
+//depthFirstSearch(0);
 
 }
 
