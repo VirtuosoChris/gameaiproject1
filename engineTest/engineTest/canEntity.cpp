@@ -32,8 +32,9 @@ cannode->setPosition(vector3df(107.0f,5.0f,93.0f) + 2.0f*(float)sin((double)time
 }
 
 
-void canEntity::processMessage(Message* m){
+bool canEntity::processMessage(const Message* m){
 
 
 	delete m;
+	return true;
 }

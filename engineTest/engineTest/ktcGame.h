@@ -39,7 +39,7 @@ public:
 
 	ktcGame(IrrlichtDevice *device,irr::scene::ITriangleSelector*);
 	virtual void update(irr::ITimer*);
-	virtual void processMessage(Message*);
+	virtual bool processMessage(const Message*);
 	
 
 };

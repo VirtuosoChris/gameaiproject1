@@ -12,7 +12,7 @@ public:
 	irr::scene::ISceneNode* cannode;
 	canEntity(IrrlichtDevice *device);
 	virtual void update(irr::ITimer* timer);
-	virtual void processMessage(Message*);
+	virtual bool processMessage(const Message*);
 	//canEntity(){};
 
 };

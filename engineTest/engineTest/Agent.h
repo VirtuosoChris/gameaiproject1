@@ -8,20 +8,46 @@
 #include <string>
 #include <list>
 #include "mapGraph.h"
+#include "StateMachine.h"
+#include "AgentStates.h"
+
+enum Agent_Type{PREDATOR, PREY};
 
 class Agent:public GameEntity{
 
+private:
+	
 	irr::core::vector3df currentSeekTarget;
 	std::list<irr::core::vector3df> pathList;
+		
+	//this delegates an agent to one of two types: PREDATOR or PREY
+	Agent_Type type;
+
+	//an object of the state machine that the agent uses to implement an FSM
+	StateMachine<Agent> * AgentStateMachine;
+
+
 
 public:
 	
-	inline std::list<irr::core::vector3df> getPathList(){
-	return pathList;
+	mapGraph* graph;
+
+	inline Agent_Type getAgentType(){
+		return type;
+	}
+
+
+	inline void setAgentType(Agent_Type T){
+		type = T;
+	}
+	inline StateMachine<Agent> * GetFSM() const{ return AgentStateMachine; }
+	
+	inline std::list<irr::core::vector3df>& getPathList(){
+		return pathList;
 	}
 
 	inline void setPathList(std::list<irr::core::vector3df> pl){
-	 pathList = pl;
+		pathList = pl;
 	}
 
 	inline irr::core::vector3df getSeekTarget(){
@@ -49,44 +75,41 @@ public:
 	WallSensorData *s1d;
 	std::vector<ProximitySensorData*> s2d;
 	PieSensor *pie;
+	
+	virtual void update(irr::ITimer*);
+	virtual bool processMessage(const Message*);
 
-virtual void update(irr::ITimer*);
-virtual void processMessage(Message*);
+	//Agent(irr::scene::IAnimatedMeshSceneNode* a, irr::core::vector3df p = irr::core::vector3df(0.0f,0.0f,0.0f));
 
-//Agent(irr::scene::IAnimatedMeshSceneNode* a, irr::core::vector3df p = irr::core::vector3df(0.0f,0.0f,0.0f));
+	virtual ~Agent();
 
-virtual ~Agent();
+	Agent(Model m, irr::core::vector3df p = irr::core::vector3df(0.0f,0.0f,0.0f),irr::scene::ISceneManager* mgr = NULL, Agent_Type T=PREY, mapGraph* g=0);
 
- Agent(Model m, irr::core::vector3df p = irr::core::vector3df(0.0f,0.0f,0.0f),irr::scene::ISceneManager* mgr = NULL);
+	double hypo(double opp, double adj);
 
-double hypo(double opp, double adj);
+	double agentProximity(Agent *nearAgent);
 
-double agentProximity(Agent *nearAgent);
+	double agentBearing(Agent *nearAgent);
 
-double agentBearing(Agent *nearAgent);
+	void proximitySensor(double sensorRange);
 
-void proximitySensor(double sensorRange);
+	void PieDetect();
 
-void PieDetect();
+	void showPieSensor();
 
-void showPieSensor();
+	void createCollisionAnimator(irr::scene::ITriangleSelector* selector ,irr::scene::ISceneManager* mgr);
 
-void createCollisionAnimator(irr::scene::ITriangleSelector* selector ,irr::scene::ISceneManager* mgr);
+	virtual void updateWallSensor();
 
-virtual void updateWallSensor();
+	void updateProximitySensor();
 
-void updateProximitySensor();
+	std::string WallSensorToString();
 
-std::string WallSensorToString();
+	void updatePieSensor();
 
-void updatePieSensor();
-
+	
 irr::core::vector3df seek(irr::core::vector3df);
 void newTargetLocation(irr::core::vector3df,mapGraph* mg);
-
-void createPatrolRoute(mapGraph* mg);
-
-
-};
+void createPatrolRoute(mapGraph* mg);};
 
 #endif

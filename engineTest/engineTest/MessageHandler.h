@@ -10,24 +10,23 @@ class GameEntity;
 
 #include "Message.h"
 
+#define MsgHandler MessageHandler::getInstance()
+
 class MessageHandler{
- 
- std::set<Message> messageQueue;
- 
- MessageHandler();
- ~MessageHandler();
 
- void deliverMessage(Message* m);
-	 	
- public: 
-	 
-	 void postMessage(Message_Type type, int delay, GameEntity *sender, GameEntity *receiver,irr::ITimer* timer);
+private:
+	std::set<Message *> messageQueue;
 	
-	 int update(irr::ITimer*); 
+	MessageHandler();
+	~MessageHandler();
+	void deliverMessage(const Message* m);
 
-	 static MessageHandler *getInstance();
-
-			
+public:
+	void postMessage(Message_Type type, int delay, GameEntity *sender, GameEntity *receiver,irr::ITimer* timer);
+	
+	int update(irr::ITimer*); 
+	
+	static MessageHandler *getInstance();		
 };
 
 #endif
