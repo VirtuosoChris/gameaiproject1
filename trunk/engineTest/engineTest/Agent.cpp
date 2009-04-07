@@ -13,6 +13,7 @@
 
 
 #include "InputHandler.h"
+#include "MessageHandler.h"
 
 
 
@@ -157,7 +158,7 @@ void Agent::updatePieSensor(){
 
 //update method
 void Agent::update(irr::ITimer* timer){
-
+	if(!pathList.empty())std::cout<<"NOT EMPTYWTF\n";
 	
 irr::u32 ctime= 0;
 irr::f32 TIMEELAPSED = (irr::f32)((ctime = timer->getTime()) - LASTUPDATE);
@@ -170,7 +171,8 @@ updateProximitySensor();
 updatePieSensor();
 //irr::f32 MAXSPEED = .3f;
 
-
+//running update() on the state machine
+AgentStateMachine->update();
 
 
 //seek to the current seek target
@@ -248,16 +250,13 @@ position = mynodep->getPosition();
 }
 
 
-void Agent::processMessage(Message* m){
-
-	delete m;
-
+bool Agent::processMessage(const Message* m){
+	return AgentStateMachine->processMessage(m);
 }
 
 
 //ctor
-Agent::Agent(Model m, irr::core::vector3df p, irr::scene::ISceneManager* mgr):position(p),model(m){
-	
+Agent::Agent(Model m, irr::core::vector3df p, irr::scene::ISceneManager* mgr, Agent_Type T,mapGraph* g):position(p),model(m),type(T),graph(g){
 	
 	s1d = new WallSensorData(NUMFEELERS,45);
 	pie = new PieSensor(4);
@@ -266,9 +265,19 @@ Agent::Agent(Model m, irr::core::vector3df p, irr::scene::ISceneManager* mgr):po
 
 	velocity = vector3df(0.0f,0.0f,0.0f);
 
-	//mgr->addBillboardTextSceneNode(0,L"HAI");
-	//mgr->
-	
+	//set up state machine
+	AgentStateMachine = new StateMachine<Agent>(*this);
+
+	//setting the current state for the agent, which'll be different if the agent is a predator that if the agent is prey
+	if(type == PREDATOR){
+		//wait 5 secs 
+		AgentStateMachine->SetCurrentState(Patrol::GetInstance());
+	}
+
+	if(type == PREY){
+		AgentStateMachine->SetCurrentState(Flee::GetInstance());
+	}
+
 	//if(mgr == NULL){
 	//	std::cout<<"NO SCENE MANAGER WTF";}
 	//else{
@@ -331,7 +340,8 @@ orientation = //360.0f -
 
 
 Agent::~Agent(){
-
+	//deleting the state machine
+	delete AgentStateMachine;
 }
 
 

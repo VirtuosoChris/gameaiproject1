@@ -13,7 +13,7 @@ static const float PREY_SPEED = .3f;
 //-442,351,-863
 //-528.744751 0.024357 102.937782
 ktcGame::ktcGame(IrrlichtDevice *device, irr::scene::ITriangleSelector* selector):can (device),camera (device->getSceneManager()->addCameraSceneNodeFPS()) , gun (device, camera), graph (device, "NODE_LIST.txt","ADJACENCY_LIST.txt","EXCLUDE.txt"), 
-agent2 (Model("../media/chuckie.MD2","../media/Chuckie.pcx",device), core::vector3df(-528.744751, 0.024357, 102.937782), device->getSceneManager())
+agent2 (Model("../media/chuckie.MD2","../media/Chuckie.pcx",device), core::vector3df(-528.744751, 0.024357, 102.937782), device->getSceneManager(), PREY, &graph)
 
 {
 	
@@ -114,9 +114,12 @@ device->getVideoDriver()->setTransform(video::ETS_VIEW, abc);
 gun.gun->render();
 device->getVideoDriver()->endScene();//end drawing 
 
-	if(InputHandler::getInstance()->unprocessedMouseMessageLMB){
+if(InputHandler::getInstance()->unprocessedMouseMessageLMB){
 
-		MessageHandler::getInstance()->postMessage(KTC_PLAYER_LEFT_MOUSE_CLICK, 0, this, &gun, timer);
+
+		MessageHandler::getInstance()->postMessage(KTC_PLAYER_LEFT_MOUSE_CLICK, 2000, this, &gun, timer);
+
+		MessageHandler::getInstance()->postMessage(KTC_KILL, 2000, this, &agent2, timer);
 
 #ifdef NODE_MESH_GENERATOR
 			graph.addNode(camera->getPosition);
@@ -154,6 +157,7 @@ device->getVideoDriver()->endScene();//end drawing
 }
 
 
-void ktcGame::processMessage(Message* m){
+bool ktcGame::processMessage(const Message* m){
 delete m;
+return true;
 }

@@ -16,12 +16,11 @@ GameEntity::~GameEntity(){
 }
 
 irr::core::vector3df GameEntity::getPosition(){
-return position;
+	return position;
 }
 
 
 
 void GameEntity::setAgentList(std::vector<Agent*>* abc){
-
 	agentList = abc;
 }

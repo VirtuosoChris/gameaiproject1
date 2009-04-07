@@ -14,7 +14,7 @@ public:
 	//gunEntity(){};
 	gunEntity(IrrlichtDevice *device,irr::scene::ICameraSceneNode *camera);
 	virtual void update(irr::ITimer*);
-	virtual void processMessage(Message*);
+	virtual bool processMessage(const Message*);
 
 };
 

@@ -1,5 +1,5 @@
 #include "gunEntity.h"
-
+#include <iostream>
 using namespace irr;
 using namespace irr::core;
 gunEntity::gunEntity(irr::IrrlichtDevice *device, irr::scene::ICameraSceneNode *camera)
@@ -38,8 +38,10 @@ void gunEntity::update(irr::ITimer*){
 
 }
 
-void gunEntity::processMessage(Message* m){
-
+bool gunEntity::processMessage(const Message* m){
+	std::cout<<"got to gun processmessage\n";
+	if(m == NULL)std::cout<<"WTF THIS IS NULL SOMEHOW\n";
+	
 	switch(m->messageType){
 	
 		case KTC_PLAYER_LEFT_MOUSE_CLICK:
@@ -47,11 +49,12 @@ void gunEntity::processMessage(Message* m){
 				gun->setMD2Animation(irr::scene::EMAT_STAND);
 			gun->setAnimationSpeed(60);
 			}
+			std::cout<<"did stuff\n";
 		break;
-		default:;
+		default:std::cout<<"Wrong message type\n";
 
 	}
 
-	delete m;
+	return true;
 
 }

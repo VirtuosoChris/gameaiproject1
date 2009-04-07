@@ -44,6 +44,7 @@
 #include "SubjectAgent.h"
 #include "Model.h"
 #include "ktcGame.h"
+#include "MessageHandler.h"
 
 #ifdef _IRR_WINDOWS_
 #pragma comment(lib, "Irrlicht.lib")
@@ -66,9 +67,12 @@ int main(int, char**){
 
  //create the irrlicht device
  //IrrlichtDevice *device = createDevice(video::EDT_OPENGL, core::dimension2d<s32>(1440,900), 32, false, true, true, InputHandler::getInstance());
-  device = createDevice(video::EDT_OPENGL, core::dimension2d<s32>(1280,1024), 32, false//fullscreen
-	 , true, true, InputHandler::getInstance());
-	if(device==NULL)return 1;
+  device = createDevice(video::EDT_OPENGL, core::dimension2d<s32>(800,600), 32, false//shadows	 
+	  , true, true, InputHandler::getInstance());
+
+
+	  
+	  if(device==NULL)return 1;
 
  //set the title of the window
  device->setWindowCaption(L"Quake the Can");
@@ -146,6 +150,8 @@ ktcGame game(device, selector);
 /*******************************************************/
 	
 while(device->run()){
+		//run update on the message handler to send any delayed messges that have passed their time stamp
+		MsgHandler->update(device->getTimer());
 		game.update(device->getTimer());
 		guienv->drawAll();
 		if(InputHandler::getInstance()->EXIT_MESSAGE)exit(0);
