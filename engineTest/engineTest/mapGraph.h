@@ -35,6 +35,8 @@ public:
 	
 	//returns a pointer to a vector of integer node id's representing the path from src to target
 	std::vector<int>* astarSearch(unsigned int src, unsigned int tgt);
+	std::vector<int>* depthFirstSearch(unsigned int src);
+	mapGraph* minimumSpanningTree(int src);
 
 	~mapGraph();
 	
