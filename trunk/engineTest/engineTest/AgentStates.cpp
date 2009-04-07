@@ -244,7 +244,7 @@ void Die::Enter(Agent & agt){
 	agt.getPathList().clear();
 	cout<<"cleared";
 	agt.setSeekTarget(agt.mynodep->getPosition());
-	//agt.newTargetLocation(agt.mynodep->getPosition(),agt.graph);
+	
 
 }
 

@@ -158,7 +158,7 @@ void Agent::updatePieSensor(){
 
 //update method
 void Agent::update(irr::ITimer* timer){
-	if(!pathList.empty())std::cout<<"NOT EMPTYWTF\n";
+	//if(!pathList.empty())std::cout<<"NOT EMPTYWTF\n";
 	
 irr::u32 ctime= 0;
 irr::f32 TIMEELAPSED = (irr::f32)((ctime = timer->getTime()) - LASTUPDATE);
@@ -689,11 +689,8 @@ void Agent::newTargetLocation(irr::core::vector3df fin, mapGraph* mg){
 
 	pathList.clear();
 
-	//get the unobstructed node closest to the target location
-	//
-	
 
-	
+	//get the unobstructed node closest to the target location
  int sNode2 = mg->getClosestNodeUnobstructed(fin,smgr, selector);
 	//get the unobstructed node closest to the agent
  int sNode1 = mg->getClosestNodeUnobstructed(mynodep->getPosition(), smgr,selector);
@@ -706,13 +703,14 @@ void Agent::newTargetLocation(irr::core::vector3df fin, mapGraph* mg){
 	}
 	pathList.push_back(fin);
 
-
-	currentSeekTarget = pathList.front();
-
 	}else{
-	
+		velocity = vector3df(0,0,0);
 		pathList.push_back(mynodep->getPosition());
 	}
+
+
+	
+	currentSeekTarget = pathList.front();
 	printf("%d %d\n", sNode1, sNode2);
 
 
