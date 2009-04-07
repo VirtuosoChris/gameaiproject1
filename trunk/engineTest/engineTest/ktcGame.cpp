@@ -10,10 +10,10 @@ static const float PREY_SPEED = .3f;
 
 
 //#define NODE_MESH_GENERATOR //is the program in node mesh generation mode
-
-
+//-442,351,-863
+//-528.744751 0.024357 102.937782
 ktcGame::ktcGame(IrrlichtDevice *device, irr::scene::ITriangleSelector* selector):can (device),camera (device->getSceneManager()->addCameraSceneNodeFPS()) , gun (device, camera), graph (device, "NODE_LIST.txt","ADJACENCY_LIST.txt","EXCLUDE.txt"), 
-agent2 (Model("../media/chuckie.MD2","../media/Chuckie.pcx",device), core::vector3df(-442,351,-863), device->getSceneManager())
+agent2 (Model("../media/chuckie.MD2","../media/Chuckie.pcx",device), core::vector3df(-528.744751, 0.024357, 102.937782), device->getSceneManager())
 
 {
 	
@@ -78,6 +78,9 @@ camera->addAnimator(
 					smgr->createTriangleSelectorFromBoundingBox(agent2.mynodep),camera,agent2.mynodep->getBoundingBox().getExtent(), vector3df(0,0,0),agent2.mynodep->getBoundingBox().getCenter())
 					);
 
+
+
+agent2.createPatrolRoute(&graph);
 
 }
 
