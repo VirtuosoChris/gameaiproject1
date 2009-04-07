@@ -103,6 +103,7 @@ abc.setM(mdat);
 //abc.setTranslation(vector3df(1,1000,10));
 
 //abc.setTranslation(vector3df(0,100,0));
+agent2.drawPieSlices(device->getVideoDriver());
 
 device->getVideoDriver()->setTransform(video::ETS_WORLD,camera->getAbsoluteTransformation());// camera->getAbsoluteTransformation());
 device->getVideoDriver()->setTransform(video::ETS_VIEW, abc);
