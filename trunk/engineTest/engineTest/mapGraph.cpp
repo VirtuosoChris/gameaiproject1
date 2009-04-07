@@ -1,13 +1,17 @@
 #include "mapGraph.h"
 #include <string>
 #include <vector>
-
+#include <stack>
+#include <list>
+#include <ctime>
+#include <cstdlib>
 
 using namespace irr;
 using namespace irr::core;
 using namespace irr::video;
 using namespace irr::scene;
 using namespace std;
+
 
 //gets the node from the graph closest to the position passed in
 int mapGraph::getClosestNode(irr::core::vector3df pos){
@@ -240,7 +244,7 @@ for(int i = 0; i <k; i++){
 
 
 
-
+depthFirstSearch(0);
 
 }
 
@@ -309,4 +313,93 @@ void mapGraph::addNode(irr::core::vector3df pos){
 	node->setPosition(pos);
 	node->setMaterialFlag(video::EMF_LIGHTING, false);
 
+}
+
+
+
+
+std::vector<int>* mapGraph::depthFirstSearch(unsigned int src){
+
+bool* visitedArray = new bool[NODE_VECTOR.size()];
+
+for(int i = 0; i < NODE_VECTOR.size(); i++){
+	visitedArray[i] = false;
+}
+
+
+std::vector<int>* solution = new std::vector<int>;
+
+std::stack<int> sourceNode;
+sourceNode.push(src);
+
+std::vector<std::list<int>> possibleEdges(NODE_VECTOR.size());
+
+visitedArray[src]=true;
+srand(time(0));
+
+////create an edge list
+for(int i = 0; i < NODE_VECTOR.size(); i++){
+for(int j = 0; j < NODE_VECTOR.size(); j++){
+		if(this->adjacencyList[i][j]){
+			possibleEdges[i].push_back(j);
+		}
+}
+}
+
+solution->push_back(src);
+
+unsigned int random;
+std::list<int>::const_iterator i;
+
+while(!sourceNode.empty()){
+  
+//select a random edge
+			
+	if(!possibleEdges[sourceNode.top()].empty()){
+			int tmp;
+
+		while(true){
+			if(possibleEdges[sourceNode.top()].size()==0)break;
+		    random = rand();
+			random %=possibleEdges[sourceNode.top()].size();
+			
+			i = (possibleEdges[sourceNode.top()].begin());
+			for(int p = 0; p < random; p++){
+				i++;
+			}
+
+			tmp = *i;
+			std::cout<<"to:"<<*i<<std::endl;
+
+			possibleEdges[sourceNode.top()].remove(tmp); //remove this from the list of possible edges
+			
+			if(visitedArray[tmp]){
+				std::cout<<"visited edge\n";
+				continue;}
+			else{break;}
+		}
+
+		std::cout<<"done getting edge\n";
+		
+			sourceNode.push(tmp); //go there next 
+		    visitedArray[tmp] = true;
+			solution->push_back(tmp);
+	}else{
+	sourceNode.pop();
+
+	if(!sourceNode.empty()){
+		solution->push_back(sourceNode.top());}
+	}
+
+}
+
+
+delete []visitedArray;
+return solution;
+}
+
+
+
+mapGraph* mapGraph::minimumSpanningTree(int src){
+return 0;
 }
