@@ -46,6 +46,10 @@ double ACCELRATE = MAXSPEED/4;
 
 
 
+std::vector<Agent*>* Agent::agentList;
+
+
+
 //finds the quadrant a vector is in
 inline int quadrant(vector3df a){
 	if(a.X >0 && a.Z>0)return 1;
@@ -169,10 +173,14 @@ void Agent::updatePieSensor(){
 //update method
 void Agent::update(irr::ITimer* timer){
 	//if(!pathList.empty())std::cout<<"NOT EMPTYWTF\n";
-	
+static irr::u32 LASTUPDATE = timer->getTime();
+static bool MOVING = false;
+
 irr::u32 ctime= 0;
 irr::f32 TIMEELAPSED = (irr::f32)((ctime = timer->getTime()) - LASTUPDATE);
 LASTUPDATE = ctime;
+
+LASTUPDATE = timer->getTime();
 
 
 //update sensors
@@ -290,11 +298,11 @@ if(velocity.getLength() > .01f){
 	
 	if(!MOVING){
 	MOVING= true;
-	mynodep->setMD2Animation(scene::EMAT_RUN);
+	((irr::scene::IAnimatedMeshSceneNode*)mynodep)->setMD2Animation(scene::EMAT_RUN);
 	}
 }else if(MOVING){
 MOVING = false;
-mynodep->setMD2Animation(scene::EMAT_STAND);
+((irr::scene::IAnimatedMeshSceneNode*)mynodep)->setMD2Animation(scene::EMAT_STAND);
 }
 
 
@@ -326,6 +334,8 @@ mynodep->setRotation(irr::core::vector3df(0.0f,(irr::f32)fabs(360-orientation),0
 position = mynodep->getPosition();
 
  
+
+
 }
 
 
@@ -335,12 +345,14 @@ bool Agent::processMessage(const Message* m){
 
 
 //ctor
-Agent::Agent(Model m, irr::core::vector3df p, irr::scene::ISceneManager* mgr, Agent_Type T,mapGraph* g):position(p),model(m),type(T),graph(g){
+Agent::Agent(Model m, irr::core::vector3df p, irr::scene::ISceneManager* mgr, Agent_Type T,mapGraph* g):model(m),type(T),graph(g){
 	
 	s1d = new WallSensorData(NUMFEELERS,ANGLE);
 	pie = new PieSensor(4);
 
-	MOVING = false;
+	this->position = p;
+
+	//MOVING = false;
 
 	velocity = vector3df(0.0f,0.0f,0.0f);
 
@@ -370,7 +382,7 @@ Agent::Agent(Model m, irr::core::vector3df p, irr::scene::ISceneManager* mgr, Ag
 	mynodep->setPosition(p);
 	mynodep->setMaterialTexture(0,m.texture);
 	mynodep->setMaterialFlag(video::EMF_LIGHTING, true);
-	mynodep->setMD2Animation(scene::EMAT_STAND);
+	((irr::scene::IAnimatedMeshSceneNode*)mynodep)->setMD2Animation(scene::EMAT_STAND);
 	mynodep->setRotation(irr::core::vector3df(0.0f,(irr::f32)(0.0f),0.0f));
 	mynodep->setScale(irr::core::vector3df((irr::f32)m.scale,(irr::f32)m.scale,(irr::f32)m.scale));
 	mynodep->setMaterialFlag(video::EMF_FOG_ENABLE, true);
@@ -392,7 +404,7 @@ Agent::Agent(Model m, irr::core::vector3df p, irr::scene::ISceneManager* mgr, Ag
 orientation = //360.0f - 
 0.0f;
 
-	LASTUPDATE = 0;
+	//LASTUPDATE = 0;
 
 	smgr= mgr;
 	
@@ -570,7 +582,7 @@ void Agent::proximitySensor(double sensorRange)
 	{
 		//Ignore entry in list that is self
 		if((*agentList)[x]!= this)
-		{
+		{ 
 			//Get relative distance between agents and store in temp
 			temp[x].relDistance = (*agentList)[x]->agentProximity(this);
 

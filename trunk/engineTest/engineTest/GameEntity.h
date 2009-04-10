@@ -7,29 +7,19 @@
 
 class Message;
 class Agent;
+class physicsObject;
 
 class GameEntity{
-	protected:
-	irr::core::vector3df position;
-	irr::core::vector3df velocity;
-	irr::core::vector3df displacement;
+protected:
 
-	static std::vector<Agent*>* agentList;
-	
 	public:
-		double orientation;
-		static void setAgentList(std::vector<Agent*>*);
 		
 		virtual bool processMessage(const Message*)=0;
 		virtual void update(irr::ITimer*)=0;
 		
-		irr::core::vector3df getPosition();
-		double getOrientation() { return orientation; }
 		
-		void setVelocity(irr::core::vector3df vel);
-		
-		GameEntity();
-		virtual ~GameEntity();
+		//GameEntity();
+		//virtual ~GameEntity();
 };
 
 #endif

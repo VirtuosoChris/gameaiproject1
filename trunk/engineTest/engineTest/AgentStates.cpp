@@ -238,12 +238,12 @@ Die* Die::getInstance(){
  
 void Die::Enter(Agent & agt){
 
-	agt.mynodep->setMD2Animation(scene::EMAT_DEATH_FALLFORWARD);
+	((irr::scene::IAnimatedMeshSceneNode*)agt.getSceneNode())->setMD2Animation(scene::EMAT_DEATH_FALLFORWARD);
 	
-	agt.mynodep->setLoopMode(false);
+	((irr::scene::IAnimatedMeshSceneNode*)agt.getSceneNode())->setLoopMode(false);
 	agt.getPathList().clear();
 	cout<<"cleared";
-	agt.setSeekTarget(agt.mynodep->getPosition());
+	agt.setSeekTarget(((irr::scene::IAnimatedMeshSceneNode*)agt.getSceneNode())->getPosition());
 	
 
 }

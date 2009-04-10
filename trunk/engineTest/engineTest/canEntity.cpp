@@ -1,6 +1,7 @@
 #include "canEntity.h"
 using namespace irr;
 using namespace irr::core;
+#include <iostream>
 
 canEntity::canEntity(IrrlichtDevice *device){
 
@@ -14,6 +15,7 @@ cannode->setScale(irr::core::vector3df(5,5,5));
 
 //CPTODO::replace constant with something better
 cannode->setPosition(irr::core::vector3df(107,5,93));
+this->setPosition(cannode->getPosition());
 cannode->setMaterialFlag(irr::video::EMF_LIGHTING, true);
 cannode->setMaterialTexture(0,driver->getTexture("../media/spheremap.jpg"));
 cannode->setMaterialType(irr::video::EMT_SPHERE_MAP);
@@ -28,7 +30,21 @@ cannode->addChild(lightscenenode2);
 
 
 void canEntity::update(irr::ITimer* timer){
-cannode->setPosition(vector3df(107.0f,5.0f,93.0f) + 2.0f*(float)sin((double)timer->getTime()/500)*vector3df(0,1,0));
+	
+	static double LASTUPDATE = timer->getTime();
+	double timeelapsed = timer->getTime() - LASTUPDATE;
+
+	this->velocity = (cannode->getPosition() - this->position) / timeelapsed;
+
+	//std::cout<<"SPEED"<<this->velocity.getLength()<<std::endl;
+	this->setPosition(cannode->getPosition());
+
+	
+	cannode->setPosition(vector3df(107.0f,5.0f,93.0f) + 2.0f*(float)sin((double)timer->getTime()/500)*vector3df(0,1,0));
+
+	LASTUPDATE = timer->getTime();
+
+
 }
 
 

@@ -18,6 +18,8 @@ class ktcGame:public GameEntity{
 	Model CYBERDEMON;
 
 	
+irr::scene::ICameraSceneNode* cam2;
+
 	Agent agent2;
 
 	
