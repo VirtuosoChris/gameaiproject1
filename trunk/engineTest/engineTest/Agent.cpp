@@ -50,14 +50,6 @@ std::vector<Agent*>* Agent::agentList;
 
 
 
-//finds the quadrant a vector is in
-inline int quadrant(vector3df a){
-	if(a.X >0 && a.Z>0)return 1;
-	if(a.X>0 && a.Z<0)return 4;
-	if(a.X < 0 && a.Z>0)return 2;
-	if(a.X< 0 && a.Z < 0) return 3;
-	return 0;
-}
 
 
 void Agent::updateWallSensor(){
