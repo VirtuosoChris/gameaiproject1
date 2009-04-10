@@ -20,7 +20,7 @@ agent2 (Model("../media/chuckie.MD2","../media/Chuckie.pcx",device), core::vecto
 	this->device = device;
 	smgr = device->getSceneManager();
 
-	CHUCKIE = agent2.model;
+	CHUCKIE = agent2.getModel();
 	//can=(device);
 	//gun = gunEntity(device, camera);
 	
@@ -31,7 +31,7 @@ agent2 (Model("../media/chuckie.MD2","../media/Chuckie.pcx",device), core::vecto
 
  agent2.createCollisionAnimator(selector, smgr);
 
- GameEntity::setAgentList(&entities);
+ Agent::setAgentList(&entities);
 
  entities.push_back(&agent2);
 
@@ -63,19 +63,19 @@ if(!nodeAnimator){throw new std::string("Error creating node animator");}
 
  camera->addAnimator(
 					smgr->createCollisionResponseAnimator(
-					smgr->createTriangleSelectorFromBoundingBox(can.cannode),camera,can.cannode->getBoundingBox().getExtent(), vector3df(0,0,0), can.cannode->getBoundingBox().getCenter())
+					smgr->createTriangleSelectorFromBoundingBox(can.getSceneNode()),camera,can.getSceneNode()->getBoundingBox().getExtent(), vector3df(0,0,0), can.getSceneNode()->getBoundingBox().getCenter())
 					);
 
  
- can.cannode->addAnimator(
+ can.getSceneNode()->addAnimator(
 					smgr->createCollisionResponseAnimator(
-					smgr->createTriangleSelectorFromBoundingBox(camera),can.cannode,camera->getBoundingBox().getExtent(), vector3df(0,0,0), camera->getBoundingBox().getCenter())
+					smgr->createTriangleSelectorFromBoundingBox(camera),can.getSceneNode(),camera->getBoundingBox().getExtent(), vector3df(0,0,0), camera->getBoundingBox().getCenter())
 					);
 
 
 camera->addAnimator(
 					smgr->createCollisionResponseAnimator(
-					smgr->createTriangleSelectorFromBoundingBox(agent2.mynodep),camera,agent2.mynodep->getBoundingBox().getExtent(), vector3df(0,0,0),agent2.mynodep->getBoundingBox().getCenter())
+					smgr->createTriangleSelectorFromBoundingBox(((irr::scene::IAnimatedMeshSceneNode*)agent2.getSceneNode())),camera,((irr::scene::IAnimatedMeshSceneNode*)agent2.getSceneNode())->getBoundingBox().getExtent(), vector3df(0,0,0),((irr::scene::IAnimatedMeshSceneNode*)agent2.getSceneNode())->getBoundingBox().getCenter())
 					);
 
 
@@ -110,6 +110,12 @@ for(int i = 0; i < agent2.getPathList().size(); i++){
 		iter2++;
 }std::cout<<std::endl;
 
+//cam2 = smgr->addCameraSceneNode();
+//cam2->setPosition(vector3df(0,0,0));
+//cam2->setRotation(agent2.mynodep->getRotation());
+//agent2.mynodep->addChild(cam2);
+//smgr->setActiveCamera(cam2);
+//agent2.mynodep->setVisible(false);
 
 //std::cout<<"ASLJDjkashd\n"<<graph.minimumSpanningTree(0)->adjacencyList[43][0]<<std::endl;
 
@@ -119,7 +125,8 @@ for(int i = 0; i < agent2.getPathList().size(); i++){
 
 
 void ktcGame::update(irr::ITimer* timer){
-
+	//cam2->setPosition(agent2.getPosition());
+	//std::cout<<float(agent2.getPosition().X)<<":"<<float(agent2.getPosition().Y)<<":"<<float(agent2.getPosition().Z)<<"\n";
 device->getVideoDriver()->beginScene(true, true, video::SColor(255,100,101,140));
 smgr->drawAll();  //draw 3d objects
 agent2.drawPieSlices(device->getVideoDriver());

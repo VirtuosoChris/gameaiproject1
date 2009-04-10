@@ -214,6 +214,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\physicsObject.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Sensors.h"
 				>
 			</File>
@@ -223,10 +227,6 @@
 			</File>
 			<File
 				RelativePath=".\StateMachine.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SubjectAgent.h"
 				>
 			</File>
 		</Filter>
@@ -290,15 +290,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\physicsObject.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\PieSensor.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\ProximitySensorData.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\SubjectAgent.cpp"
 				>
 			</File>
 			<File
