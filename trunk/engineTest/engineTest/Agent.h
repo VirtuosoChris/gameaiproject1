@@ -19,7 +19,7 @@ private:
 	
 	irr::core::vector3df currentSeekTarget;
 	std::list<irr::core::vector3df> pathList;
-		
+	irr::core::vector3df previousSeekTarget;
 	//this delegates an agent to one of two types: PREDATOR or PREY
 	Agent_Type type;
 

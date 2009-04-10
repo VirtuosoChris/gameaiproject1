@@ -10,6 +10,8 @@ WallSensorData::WallSensorData(int nf,double a, float mr){
 	angle = a;
 	numFeelers = nf;
 	feelerDistances = new float[nf];
+	triangle = new irr::core::triangle3df[nf];
+	
 }
 
 WallSensorData::~WallSensorData(){

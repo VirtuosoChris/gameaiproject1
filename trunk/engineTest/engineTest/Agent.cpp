@@ -1,3 +1,7 @@
+//CLUES: 
+//red line
+//error output
+
 //mesh/engine bugs
 //crappiness of steering behaviors
 //redundancy of edges
@@ -7,7 +11,8 @@
 //prevent crashes by not assuming everything will work
 //path smoothing
 
-#define NUMFEELERS 6
+
+#define NUMFEELERS 6//3
 #include "Agent.h"
 #include <iostream>
 
@@ -33,9 +38,11 @@ using namespace irr::video;
 
 //std::vector<int>* astarSearch(unsigned int src, unsigned int tgt);
 extern irr::core::vector3df SEEK_POS;
-double MAXSPEED = .1; //was .3
-double mass = 25; //was 100
-double RADIUS = 25;//was 100
+double MAXSPEED = .15; //was .3
+double mass = 25; //was 100 // was 25
+double RADIUS = 100;//50;//25;//was 100
+double ANGLE = 45;
+double ACCELRATE = MAXSPEED/4;
 
 
 
@@ -57,6 +64,7 @@ void Agent::updateWallSensor(){
  core::vector3df intersection;
  core::triangle3df triangle;
  core::vector3df orientVector;
+ 
 
  orientVector = core::vector3df((float)cos(degreesToRadians(orientation)),0.0f,(float)sin(degreesToRadians(orientation)));
  line.start = mynodep->getPosition();
@@ -112,6 +120,8 @@ void Agent::updateWallSensor(){
 				
 				 
 				 s1d->feelerDistances[i] = sqrt( t2+ t1);
+
+				 s1d->triangle[i] = triangle;
 				
 				// printf("%f\n", s1d->feelerDistances[i]);
 
@@ -181,25 +191,94 @@ tp.Y = 0;
 vector3df ap = mynodep->getPosition();
 ap.Y = 0;
 tp = tp-ap;
-
-core::vector3df tv = (mynodep->getPosition() - currentSeekTarget);
+ 
+core::vector3df tv = (-mynodep->getPosition() + currentSeekTarget);
 tv.Y = 0;
 if( tv.getLength()<RADIUS){
 	if(!pathList.empty()){
+		previousSeekTarget = currentSeekTarget;//mynodep->getPosition();
 		currentSeekTarget = pathList.front();
-		pathList.remove(pathList.front());
+		pathList.erase(pathList.begin()); //ZOMG WTF obscure bug avoidance tip #666 : don't use list.remove(pathList.begin()) when you mean list.erase(pathList.begin())
+	
+		std::cout<<"Arrival\n";
+		int p = this->graph->getClosestNode(previousSeekTarget);
+		int q = this->graph->getClosestNode(currentSeekTarget);
+		std::cout<<"Going from"<<p<<"to"<<q<<std::endl;
+		if(graph->adjacencyList[p][q]){
+			std::cout<<"ok\n";
+		}else{
+			std::cout<<"WTF BAD EDGE POPPED\n";
+		}
+
+
+
 	}else{
 		velocity = core::vector3df(0,0,0);
 		currentSeekTarget = mynodep->getPosition();
+		previousSeekTarget = mynodep->getPosition();
 	}
 }
 
 
-irr::core::vector3df accel = seek(currentSeekTarget);
+irr::core::vector3df wallavoidaccel;
+wallavoidaccel = vector3df(0,0,0);
+for(int i = 0; i < s1d->getNumFeelers(); i++){
+	//if(s1d->feelerDistances[i] < 50){
+//	wallavoidaccel+=s1d->triangle[i].getNormal()*(1/(s1d->feelerDistances[i]*s1d->feelerDistances[i]));
+	//if(velocity.getLength() - s1d->feelerDistances[i] > 0.0){
+	double tmp = (s1d->maxRange - s1d->feelerDistances[i]);
+	tmp/=5000000;//1
+	//if(tmp>0.0f){
+		wallavoidaccel+=s1d->triangle[i].getNormal()*tmp;
+		//std::cout<<s1d->feelerDistances[i]<<"\n";
+
+		
+	//}
+	//}
+	//}
+}
+
+wallavoidaccel.Y = 0;
+//wallavoidaccel = wallavoidaccel.normalize(); 
+
+if(wallavoidaccel.getLength() > .025f){
+
+wallavoidaccel = wallavoidaccel.normalize();
+wallavoidaccel*=.025f;
+}
+/*
+irr::core::vector3df pathseekaccel;
+pathseekaccel = vector3df(0,0,0);
+irr::core::vector3df pathvector = currentSeekTarget - previousSeekTarget;
+pathvector.Y = 0;
+if(pathvector.getLength()!=0.0f){
+	irr::core::vector3df vectorprojection = (pathvector.dotProduct( this->velocity ) / pathvector.getLength()) * pathvector.normalize();
+pathseekaccel = (vectorprojection+-velocity)/mass;
+pathseekaccel = pathseekaccel.normalize()*.015;
+}
+
+if((pathseekaccel).getLength() >.01){
+std::cout<<"magnitude of seek:"<<seek(currentSeekTarget).getLength()<<"\n";
+std::cout<<"magnitude of pathforce:"<<(pathseekaccel).getLength()<<"\n";
+}else{pathseekaccel= vector3df(0,0,0);}
+
+*/
+
+if(wallavoidaccel.getLength() >0.0f){
+//std::cout<<"magnitude of seek:"<<seek(currentSeekTarget).getLength()<<"\n";
+//std::cout<<"magnitude of pathforce:"<<(wallavoidaccel).getLength()<<"\n";
+}
+irr::core::vector3df accel = seek(currentSeekTarget) + wallavoidaccel;//.normalize()*MAXSPEED;// +  .0000001*wallavoidaccel;//- seek(currentSeekTarget).normalize()*wallavoidaccel.getLength();
+
+
 
 if(!(velocity+(accel*TIMEELAPSED)).getLength() == 0.0f){
 	velocity+=accel*TIMEELAPSED;
+	
+	if(velocity.getLength() > MAXSPEED){
 	velocity = velocity.normalize()*MAXSPEED;
+	}
+
 	}else{
 		//velocity = velocity.normalize()*.001; //core::vector3df(0,0,0);
 		velocity = vector3df(0,0,0);
@@ -258,7 +337,7 @@ bool Agent::processMessage(const Message* m){
 //ctor
 Agent::Agent(Model m, irr::core::vector3df p, irr::scene::ISceneManager* mgr, Agent_Type T,mapGraph* g):position(p),model(m),type(T),graph(g){
 	
-	s1d = new WallSensorData(NUMFEELERS,45);
+	s1d = new WallSensorData(NUMFEELERS,ANGLE);
 	pie = new PieSensor(4);
 
 	MOVING = false;
@@ -333,6 +412,7 @@ orientation = //360.0f -
 	a->setVisible(false);
 	//mynodep->addChild(smgr->addLightSceneNode(0,vector3df(-10,25*model.scale,-10),video::SColor(255,255,255,255),1000));
 	currentSeekTarget = mynodep->getPosition();
+	previousSeekTarget = mynodep->getPosition();
 }
 
 
@@ -599,16 +679,29 @@ std::string Agent::WallSensorToString(){
 
 void Agent::drawPieSlices(irr::video::IVideoDriver * driver){
 
-
 	SMaterial m; 
-   m.Lighting=false; 
-   m.ZBuffer = 1;
-   driver->setMaterial(m); 
-   
+		m.Lighting=false; 
+		m.ZBuffer = 1;
+		driver->setMaterial(m); 	
+		//SColor col;
+
+
+   //irr::core::matrix4 abc = irr::core::IdentityMatrix;
+  // const float dat[16] = {1,0,0,0, 0,1,0,0, 0,0,1,0, currentSeekTarget.X, currentSeekTarget.Y, currentSeekTarget.Z, 1};
+   //abc.setM(dat);
+   driver->setTransform(video::ETS_WORLD, graph->SCENE_NODE_VECTOR[ graph->getClosestNode(previousSeekTarget)]->getAbsoluteTransformation() );
+   driver->draw3DLine(vector3df(0,0,0), this->currentSeekTarget-this->previousSeekTarget, SColor(255, 0, 255,0));
    driver->setTransform(video::ETS_WORLD, mynodep->getAbsoluteTransformation());
-
-
+//blue is velocity
 driver->draw3DLine(vector3df(0,0,0), vector3df(500,0,0), SColor(255,0,0,255));
+//red is line to target
+
+//green line is path
+//driver->draw3DLine(this->previousSeekTarget - mynodep->getPosition(), this->currentSeekTarget - mynodep->getPosition(), SColor(255, 0, 255,0));
+
+
+/*
+
 irr::f32 angle = (irr::f32)pie->offset;
 	for(int i = 0; i < pie->num_slices*2;i++){
 		
@@ -624,7 +717,7 @@ irr::f32 angle = (irr::f32)pie->offset;
 	  // core::matrix4()); 
   //driver->draw3DLine(vector3df(0,0,0), vector3df(0,0,250));
 		//driver->draw3DLine(mynodep->getPosition(), mynodep->getPosition()+5000*vector3df(cos(0.0f), mynodep->getAbsolutePosition().Y, sin(0.0f)),video::SColor(255,255,255,255));
-	}
+	}*/
 
 }
 
@@ -638,7 +731,7 @@ irr::core::vector3df Agent::seek(irr::core::vector3df tp){
 		target.Y = 0;
 		if(target.getLength() == 0)return vector3df(0,0,0);
 		target.normalize();
-	target*=MAXSPEED;
+	target*=ACCELRATE;
 	//irr::f32 mass = 10.0f;
 
 	irr::core::vector3df accel = (target-velocity);
@@ -649,30 +742,81 @@ irr::core::vector3df Agent::seek(irr::core::vector3df tp){
 }
 
 
+
 void Agent::createPatrolRoute(mapGraph* mg){
 
 pathList.clear();
-std::vector<int>* result = mg->depthFirstSearch(mg->getClosestNodeUnobstructed(mynodep->getPosition(),smgr, selector));
+
+mapGraph* minspanningtree = mg->minimumSpanningTree(0);
+std::cout<<"got the tree\n";
+std::vector<int>* result = minspanningtree->depthFirstSearch(mg->getClosestNodeUnobstructed(mynodep->getPosition(),smgr, selector));
+//delete minspanningtree;
+//minspanningtree= 0;
+
+//error checking, since it was returning weird paths that go through things they shouldn't.  problem isolated to vec3df path building
+for(int i = result->size()-1; i >0; i--){
+
+	if(((!mg->adjacencyList[ (*result)[i] ] [ (*result)[i-1] ]) || (!mg->adjacencyList[ (*result)[i-1] ] [ (*result)[i] ]))){
+		std::cout<<"UH OH DEPTH FIRST SEARCH SUCKS\n";
+	}
+
+}
+for(int i = 0; i < result->size()-1; i++){
+
+	if(
+		
+		(!mg->adjacencyList[(*result)[i]][(*result)[i+1]]) || (!mg->adjacencyList[(*result)[i+1]][(*result)[i]])
+	){
+		std::cout<<"problem with the result\n";
+	}
+
+}
 
 if(result->size()){
+	//pathList.resize(mg->NODE_VECTOR.size());
 	for(unsigned int i = 0; i < result->size(); i++){
-		pathList.push_front( mg->nodePosition( (*result)[i]));
+	
+		pathList.push_back( mg->nodePosition((*result)[i]));
+					
 	}
 	//pathList.push_back(fin);
 
 
 	currentSeekTarget = pathList.front();
+	previousSeekTarget = mynodep->getPosition();
 
 	}else{
 	
-		pathList.push_back(mynodep->getPosition());
+		this->pathList.push_back(mynodep->getPosition());
+		this->velocity = vector3df(0,0,0);
 	}
 //	printf("%d %d\n", sNode1, sNode2);
 
 
 for(int i = 0; i < result->size(); i++){
 
-	std::cout<<(*result)[i]<<"\n";
+	std::cout<<(*result)[i]<<" ";
+}
+
+
+
+std::list<irr::core::vector3df>::const_iterator iter = pathList.begin();
+for(int i = 0; i < pathList.size()-1; i++){
+
+		
+ core::line3d<f32> line;
+ core::vector3df intersection;
+ core::triangle3df triangle;
+ line.start = *iter;
+ iter++;
+ line.end = *iter;
+
+ if(smgr->getSceneCollisionManager()->getCollisionPoint(line, selector,intersection, triangle)){
+	 std::cout<<"WTF SOMEHOW THE PATH IS WRONG\n";///exit(0);
+	 std::cout<<"From node:"<< mg->getClosestNode(line.start)<<"To Node:"<<mg->getClosestNode(line.end) << std::endl;			
+
+	}
+
 }
 std::cout<<std::endl;
 
@@ -711,7 +855,19 @@ void Agent::newTargetLocation(irr::core::vector3df fin, mapGraph* mg){
 
 	
 	currentSeekTarget = pathList.front();
+	previousSeekTarget = mynodep->getPosition();
 	printf("%d %d\n", sNode1, sNode2);
+
+////
+	//agent2.createPatrolRoute(&graph);
+//mg->selector = selector;
+
+
+//line.start = NODE_VECTOR[
+
+//if(smgr->getSceneCollisionManager()->getCollisionPoint(line, selector,intersection, triangle)){
+//	 std::cout<<"WTF SOMEHOW THE PATH IS WRONG\n";///exit(0);
+//	}
 
 
 	delete result;

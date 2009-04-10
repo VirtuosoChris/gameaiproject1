@@ -13,6 +13,8 @@ using namespace irr::core;
 class mapGraph{
 	
 
+public:
+
 //graph data
 std::vector<irr::core::vector3df> NODE_VECTOR; // a vector containing the position of each node
 bool** adjacencyList;  //a double array containing whether edge i,j exists
@@ -20,12 +22,16 @@ std::vector<irr::scene::ISceneNode*> SCENE_NODE_VECTOR; //a vector containing a 
 double** costList;//a double array of doubles representing the cost of the edge i,j.  This is usually distance
 bool ENABLE_DEBUG_OUTPUT;
 scene::ISceneManager* smgr;
+irr::scene::ITriangleSelector* selector;
+//void output();
 
 std::string exclude;
 std::string edges;
 std::string nodes;
 
-public:
+
+mapGraph(irr::scene::ISceneManager*, int numNodes);
+
 
 	mapGraph(IrrlichtDevice *device,const char* nodes, const char* edges, const char* exclude); //constructor, loads in the graph from 3 files representing the nodes, 
 	//the adjacency list, and any edges to exclude from the graph

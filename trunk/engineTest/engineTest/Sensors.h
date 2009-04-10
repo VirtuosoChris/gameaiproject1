@@ -1,3 +1,9 @@
+//interrupt handle
+//torches
+//circles
+//angle feelers up?
+//corners
+
 #ifndef SENSORS
 #define SENSORS
 
@@ -5,6 +11,7 @@
 #include<iostream>
 #include<vector>
 
+#include "irrlicht.h"
 class Agent;
 
 //Wall feeler sensor
@@ -18,14 +25,18 @@ class WallSensorData{
 		
 	float maxRange;
 
+
 		WallSensorData();
-		WallSensorData(int nf,double a, float mr = 5000.0f);
+		WallSensorData(int nf,double a, float mr = 50
+			//float mr = 5000.0f
+			);
 		~WallSensorData();
 
 		int getNumFeelers();
 		double getAngle();
 
 		float* feelerDistances;
+		irr::core::triangle3df* triangle ;
 
 
 };

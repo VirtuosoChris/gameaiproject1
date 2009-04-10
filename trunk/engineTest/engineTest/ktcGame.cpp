@@ -82,6 +82,37 @@ camera->addAnimator(
 
 agent2.createPatrolRoute(&graph);
 
+
+graph.selector = selector;
+
+/*std::list<irr::core::vector3df>::const_iterator iter = agent2.getPathList().begin();
+for(int i = 0; i < agent2.getPathList().size()-1; i++){
+
+ core::line3d<f32> line;
+ core::vector3df intersection;
+ core::triangle3df triangle;
+ line.start = *iter;
+ iter++;
+ line.end = *iter;
+
+ if(smgr->getSceneCollisionManager()->getCollisionPoint(line, selector,intersection, triangle)){
+	 std::cout<<"WTF SOMEHOW THE PATH IS WRONG\n";///exit(0);
+	 break;
+	}
+
+}*/
+
+std::cout<<"....................................................";
+std::list<vector3df>::const_iterator iter2 = agent2.getPathList().begin();
+for(int i = 0; i < agent2.getPathList().size(); i++){
+	std::cout<<graph.getClosestNode( (*iter2) ) <<" ";
+
+		iter2++;
+}std::cout<<std::endl;
+
+
+//std::cout<<"ASLJDjkashd\n"<<graph.minimumSpanningTree(0)->adjacencyList[43][0]<<std::endl;
+
 }
 
 
@@ -91,7 +122,10 @@ void ktcGame::update(irr::ITimer* timer){
 
 device->getVideoDriver()->beginScene(true, true, video::SColor(255,100,101,140));
 smgr->drawAll();  //draw 3d objects
+agent2.drawPieSlices(device->getVideoDriver());
 
+
+//graph.minimumSpanningTree(0)->render(device->getVideoDriver());
 graph.render(device->getVideoDriver());
 
 device->getVideoDriver()->clearZBuffer();
@@ -103,7 +137,6 @@ abc.setM(mdat);
 //abc.setTranslation(vector3df(1,1000,10));
 
 //abc.setTranslation(vector3df(0,100,0));
-agent2.drawPieSlices(device->getVideoDriver());
 
 device->getVideoDriver()->setTransform(video::ETS_WORLD,camera->getAbsoluteTransformation());// camera->getAbsoluteTransformation());
 device->getVideoDriver()->setTransform(video::ETS_VIEW, abc);
@@ -118,9 +151,11 @@ device->getVideoDriver()->endScene();//end drawing
 if(InputHandler::getInstance()->unprocessedMouseMessageLMB){
 
 
-		MessageHandler::getInstance()->postMessage(KTC_PLAYER_LEFT_MOUSE_CLICK, 2000, this, &gun, timer);
+		//MessageHandler::getInstance()->postMessage(KTC_PLAYER_LEFT_MOUSE_CLICK, 2000, this, &gun, timer);
 
-		MessageHandler::getInstance()->postMessage(KTC_KILL, 2000, this, &agent2, timer);
+	//	MessageHandler::getInstance()->postMessage(KTC_KILL, 2000, this, &agent2, timer);
+
+	//agent2.newTargetLocation(camera->getPosition(), &graph);
 
 #ifdef NODE_MESH_GENERATOR
 			graph.addNode(camera->getPosition);
@@ -132,6 +167,7 @@ if(InputHandler::getInstance()->unprocessedMouseMessageLMB){
 
 
 	if(InputHandler::getInstance()->unprocessedMouseMessageRMB){
+		//graph.output();
 		InputHandler::getInstance()->unprocessedMouseMessageRMB = false;
 	}
 

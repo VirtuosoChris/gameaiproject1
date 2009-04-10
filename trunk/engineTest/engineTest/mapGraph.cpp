@@ -12,7 +12,7 @@ using namespace irr::video;
 using namespace irr::scene;
 using namespace std;
 
-
+//#define NODE_MESH_GENERATOR
 
 
 int mapGraph::getClosestNodeUnobstructed(irr::core::vector3df pos, irr::scene::ISceneManager*, irr::scene::ITriangleSelector* selector){
@@ -148,13 +148,8 @@ using namespace std;
 	return solution;
 }
 
-
-
-
-
-mapGraph::~mapGraph(){
-
-	
+/*
+void mapGraph::output(){
 #ifdef NODE_MESH_GENERATOR
 
 //output node mesh files
@@ -167,7 +162,8 @@ mapGraph::~mapGraph(){
 		 fprintf(fp, "%f %f %f\n", NODE_VECTOR[i].X, NODE_VECTOR[i].Y, NODE_VECTOR[i].Z);
 	 }
 	fclose(fp);
-	fp = fopen(edges.c_str(), "w");
+	 std::cout<<"From node:"<< <<"To Node:"<< << std::endl;			
+	fp = fopen(edges.c_str(), "w")
 	for(int i = 0; i < NODE_VECTOR.size(); i++){
 		for(int j = 0; j < NODE_VECTOR.size(); j++){
 			
@@ -176,7 +172,7 @@ mapGraph::~mapGraph(){
 			line.end = NODE_VECTOR[j];
 
 			if(smgr->getSceneCollisionManager()->getCollisionPoint(line, selector,intersection, triangle)){	
-			;
+				std::cout<<'\a';
 			}else{
 			fprintf(fp, "%d %d\n", i, j);
 			}
@@ -186,6 +182,19 @@ mapGraph::~mapGraph(){
 	fclose(fp);
 #endif
 
+}
+*/
+
+mapGraph::~mapGraph(){
+	if(selector == NULL || edges.length() == 0){
+	delete[] adjacencyList;
+	delete[] costList;
+
+	for(unsigned int i = 0; i < SCENE_NODE_VECTOR.size(); i++){
+		SCENE_NODE_VECTOR[i]->drop();
+	}}
+	
+//output();
 
 	delete[] adjacencyList;
 	delete[] costList;
@@ -401,17 +410,17 @@ while(!sourceNode.empty()){
 			}
 
 			tmp = *i;
-			std::cout<<"to:"<<*i<<std::endl;
+			//std::cout<<"to:"<<*i<<std::endl;
 
 			possibleEdges[sourceNode.top()].remove(tmp); //remove this from the list of possible edges
 			
 			if(visitedArray[tmp]){
-				std::cout<<"visited edge\n";
+				//std::cout<<"visited edge\n";
 				continue;}
 			else{break;}
 		}
 
-		std::cout<<"done getting edge\n";
+		//std::cout<<"done getting edge\n";
 		
 			sourceNode.push(tmp); //go there next 
 		    visitedArray[tmp] = true;
@@ -431,7 +440,143 @@ return solution;
 }
 
 
-
+//returns a mapgraph representing the minimum spanning tree 
 mapGraph* mapGraph::minimumSpanningTree(int src){
-return 0;
+
+bool* visitedArray = new bool[NODE_VECTOR.size()];
+
+std::list<int>::const_iterator iter;
+
+for(int i = 0; i < NODE_VECTOR.size(); i++){
+	visitedArray[i] = false;
+}
+
+
+mapGraph* minGraph = new mapGraph(smgr, NODE_VECTOR.size());
+
+//std::cout<<"created private graph\n";
+minGraph->NODE_VECTOR  = this->NODE_VECTOR;
+minGraph->SCENE_NODE_VECTOR = this->SCENE_NODE_VECTOR;
+
+//copy the cost array from this to the mingraph
+for(int i = 0; i < NODE_VECTOR.size(); i++){
+	for(int j = 0; j < NODE_VECTOR.size();j++){
+	
+		minGraph->costList[i][j] = this->costList[i][j];
+			
+	}
+}
+
+//next use prim's algorithm to get the adjacencyList of the new graph
+visitedArray[src] = true;
+int visitedCount = 1;
+
+//create a table of all the edges in the graph that we can remove from to save search time
+std::vector<std::list<int>> possibleEdges(NODE_VECTOR.size());
+
+
+////create an edge list
+for(int i = 0; i < NODE_VECTOR.size(); i++){
+for(int j = 0; j < NODE_VECTOR.size(); j++){
+		if(this->adjacencyList[i][j] 
+		&& this->adjacencyList[j][i]//HACKHACKHACKHACK
+		){
+			possibleEdges[i].push_back(j);
+		}
+}
+}
+
+
+int src=-1, tgt=-1;
+double shortest;
+//then look at each node in the graph, and look at its edges going to an unvisited node.  add in the edge not 
+while(visitedCount < NODE_VECTOR.size()){//loop until all the nodes in the graph are in the minimum spanning tree.
+
+shortest= std::numeric_limits<double>::max();
+src = -1;
+tgt = -1;
+
+	//look at each visited node in the graph
+	for(int i = 0; i < NODE_VECTOR.size();i++){
+	
+		if(!visitedArray[i])continue;
+
+		if(possibleEdges[i].empty()) continue; //if there's no possible edges from this node continue
+		iter = possibleEdges[i].begin();
+
+		//std::cout<<"got the beginning iterator\n";
+
+		//look at all the edges going out of this node	
+		for(int j = 0; j < possibleEdges[i].size(); j++){
+		
+			int tmp;
+			tmp= *iter; //get the value pointed to by the iterator 
+
+			//if the edge goes to a visited node remove it from the edge list
+			if(visitedArray[tmp]){
+				//possibleEdges[i].remove(tmp); //this won't work?
+			}else{
+			
+				if(this->costList[i][tmp] < shortest){
+				
+					shortest = this->costList[i][tmp];
+					src = i;
+					tgt = tmp;
+					
+		
+				}
+			
+			}
+
+			iter++;
+		
+			//std::cout<<"incrementing iterator\n";
+		}
+
+		
+
+	}//end double for loop through edges
+
+	//now that we've looped through all the edges add in the edge to the new graph that's the lowest cost such that edge(i,j) 
+	//is the minimum edge where i is already in the graph and j isn't
+
+	if(src < 0 || tgt < 0){break;}
+	visitedArray[tgt] = true;
+	visitedCount++;
+	minGraph->adjacencyList[src][tgt] = true;
+	minGraph->adjacencyList[tgt][src] = true;
+	std::cout<<"adjusted list\n";
+	
+}//end :while a node isn't in the graph
+std::cout<<"got to end of function\n";
+
+for(int i = 0; i < NODE_VECTOR.size(); i++){
+
+	for(int j = 0; j < NODE_VECTOR.size(); j++){
+	
+		if(minGraph->adjacencyList[i][j]){
+		//	std::cout<<i<<":"<<j<<std::endl;
+		}
+	
+	}
+
+}
+
+
+return minGraph;
+}
+
+
+mapGraph::mapGraph(irr::scene::ISceneManager* mgr, int numNodes){
+
+	smgr = mgr;
+
+adjacencyList = newDoubleArray<bool>(numNodes,numNodes);
+zero2dArray<bool>(adjacencyList, numNodes, numNodes);
+
+costList = newDoubleArray<double>(numNodes,numNodes);
+
+
+
+
 }
