@@ -33,6 +33,7 @@
 
 //better t key stuff : make the game class BE the input handler? -- no, use message handling -- for now, this is for debugging so not that important
 
+//#define NODE_MESH_GENERATOR
 #include <irrlicht.h>
 #include <vector>
 #include <string>
@@ -58,7 +59,6 @@ using namespace core;
 using namespace scene;
 using namespace video;
 using namespace io;
-
 
 
 int main(int, char**){
