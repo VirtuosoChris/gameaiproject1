@@ -145,9 +145,10 @@ smgr->drawAll();  //draw 3d objects
 
 
 
-
+static mapGraph* mintree = graph.minimumSpanningTree(0);
 //graph.minimumSpanningTree(0)->render(device->getVideoDriver());
-graph.render(device->getVideoDriver());
+mintree->render(device->getVideoDriver());
+//graph.render(device->getVideoDriver());
 //agent2.drawPieSlices(device->getVideoDriver());
 
 //update all entities
