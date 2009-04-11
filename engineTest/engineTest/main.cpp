@@ -150,10 +150,12 @@ ktcGame game(device, selector);
 /*******************************************************/
 /***************GAME UPDATE LOOP************************/
 /*******************************************************/
-//driver->setFog(irr::video::SColor(255,25,25,25), true, 0,750, 0, true, true);//set the fog properties
-driver->setFog(irr::video::SColor(255,0,0,0), true, 0,0, 0, true, true);//set the fog properties
+driver->setFog(irr::video::SColor(255,25,25,25), true, 0,750, 0, true, true);//set the fog properties
+//driver->setFog(irr::video::SColor(255,0,0,0), true, 0,0, 0, true, true);//set the fog properties
 int start = device->getTimer()->getTime();
-int finish = start + 10000;
+int finish = start + 0;//10000;
+
+
 while(device->run()){
 
 	//std::cout<<(device->getTimer()->getTime() - start)<<std::endl;
@@ -161,7 +163,7 @@ while(device->run()){
 	if(device->getTimer()->getTime() < finish){
 	
 		int diff = device->getTimer()->getTime() - start;
-		int range = -1000 + 1750.0f    *((double)diff / (double)((finish- start)));
+		int range = -1500 + 2250.0f    *((double)diff / (double)((finish- start)));
 		int color =  25.0f    *((double)diff / (double)((finish- start))); 
 
 		if(range >= 0){
