@@ -156,6 +156,8 @@ int start = device->getTimer()->getTime();
 int finish = start + 10000;
 while(device->run()){
 
+	//std::cout<<(device->getTimer()->getTime() - start)<<std::endl;
+
 	if(device->getTimer()->getTime() < finish){
 	
 		int diff = device->getTimer()->getTime() - start;
