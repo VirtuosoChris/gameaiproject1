@@ -131,7 +131,7 @@ mapNode->setPosition(core::vector3df(-1300,-144,-1249));
 mapNode->setMaterialFlag(video::EMF_LIGHTING, true);//enable lighting
 mapNode->setMaterialType(irr::video::EMT_LIGHTMAP_LIGHTING_M4);//set the material property of the map to blend the lightmap with dynamic lighting
 smgr->addSkyDomeSceneNode(driver->getTexture("../media/skydome.jpg"),32,32,1.0f,2.0f); //create the skydome
-driver->setFog(irr::video::SColor(255,25,25,25), true, 0,750, 0, true, true);//set the fog properties
+
 mapNode->setMaterialFlag(irr::video::EMF_FOG_ENABLE, true);//enable fogging on the map node
 
 
@@ -142,22 +142,45 @@ irr::scene::ITriangleSelector*  selector = NULL;
  if(!selector)return 1;
  mapNode->setTriangleSelector(selector);
 
+
+ {//block containing the game object
 //create the game object
 ktcGame game(device, selector);
 
 /*******************************************************/
 /***************GAME UPDATE LOOP************************/
 /*******************************************************/
-	
+//driver->setFog(irr::video::SColor(255,25,25,25), true, 0,750, 0, true, true);//set the fog properties
+driver->setFog(irr::video::SColor(255,0,0,0), true, 0,0, 0, true, true);//set the fog properties
+int start = device->getTimer()->getTime();
+int finish = start + 10000;
 while(device->run()){
+
+	if(device->getTimer()->getTime() < finish){
+	
+		int diff = device->getTimer()->getTime() - start;
+		int range = -1000 + 1750.0f    *((double)diff / (double)((finish- start)));
+		int color =  25.0f    *((double)diff / (double)((finish- start))); 
+
+		if(range >= 0){
+		driver->setFog(SColor(255, color,color,color), true, 0,range,0,true, true);
+		}else{
+		driver->setFog(SColor( 255, color, color, color), true, 0, 1, 0, true, true);
+		}
+	}
+
 		//run update on the message handler to send any delayed messges that have passed their time stamp
 		MsgHandler->update(device->getTimer());
 		game.update(device->getTimer());
 		guienv->drawAll();
-		if(InputHandler::getInstance()->EXIT_MESSAGE)exit(0);
+		if(InputHandler::getInstance()->EXIT_MESSAGE)break;
 }
 
-device->drop();
+
+
+}//scope containing the game
+
+//device->drop();
 
 return 0;
 }

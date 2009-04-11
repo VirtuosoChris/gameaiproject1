@@ -11,16 +11,20 @@
 #include "Message.h"
 #include "mapGraph.h"
 
+//#define SPAWN_POINT_CREATOR
+
 class ktcGame:public GameEntity{
 
 	Model CHUCKIE;
 	Model CARTMAN;
 	Model CYBERDEMON;
 
+	std::vector<irr::core::vector3df> spawnPointList;
 	
 irr::scene::ICameraSceneNode* cam2;
 
 	Agent agent2;
+	//Agent agent3;
 
 	
 	std::vector<Agent*> entities;
@@ -42,7 +46,7 @@ public:
 	ktcGame(IrrlichtDevice *device,irr::scene::ITriangleSelector*);
 	virtual void update(irr::ITimer*);
 	virtual bool processMessage(const Message*);
-	
+	~ktcGame();
 
 };
 

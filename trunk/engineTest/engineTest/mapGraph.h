@@ -53,6 +53,7 @@ mapGraph(irr::scene::ISceneManager*, int numNodes);
 	void toggleDebugOutput(bool);
 	void render(video::IVideoDriver* driver);
 	void addNode(irr::core::vector3df);
+	void output();
 
 };
 

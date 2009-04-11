@@ -2,6 +2,9 @@
 #include <iostream>
 using namespace irr;
 using namespace irr::core;
+
+static vector3df previousPos;
+
 gunEntity::gunEntity(irr::IrrlichtDevice *device, irr::scene::ICameraSceneNode *camera)
 {
 
@@ -30,11 +33,20 @@ gun->setLoopMode(false);
 //gun->setRenderFromIdentity(true);
 gun->setPosition(vector3df(0,-1000,0));
 //gun->setMaterialFlag(video::EMF_ZBUFFER, false);
+previousPos = camera->getPosition();
+this->camera = camera;
+basePosition = gun->getPosition();
 
 }
 
 
-void gunEntity::update(irr::ITimer*){
+void gunEntity::update(irr::ITimer* timer){
+
+	if((camera->getPosition() - previousPos).getLength() > .01f){
+	gun->setPosition(basePosition + 1.0f*(float)sin((double)timer->getTime()/200)*vector3df(0,1,0));
+	}else{gun->setPosition(basePosition);}
+	
+	previousPos = camera->getPosition();
 
 }
 

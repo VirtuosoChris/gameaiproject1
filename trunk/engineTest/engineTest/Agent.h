@@ -20,6 +20,10 @@ private:
 
 	double pathStartTime;
 	double expectedArrivalTime;
+
+	irr::u32 LASTUPDATE;
+	
+    bool MOVING;
 	
 	//this delegates an agent to one of two types: PREDATOR or PREY
 	Agent_Type type;

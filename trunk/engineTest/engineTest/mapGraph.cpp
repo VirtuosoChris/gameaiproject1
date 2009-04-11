@@ -148,7 +148,7 @@ using namespace std;
 	return solution;
 }
 
-/*
+
 void mapGraph::output(){
 #ifdef NODE_MESH_GENERATOR
 
@@ -162,8 +162,8 @@ void mapGraph::output(){
 		 fprintf(fp, "%f %f %f\n", NODE_VECTOR[i].X, NODE_VECTOR[i].Y, NODE_VECTOR[i].Z);
 	 }
 	fclose(fp);
-	 std::cout<<"From node:"<< <<"To Node:"<< << std::endl;			
-	fp = fopen(edges.c_str(), "w")
+	 //std::cout<<"From node:"<< <<"To Node:"<< << std::endl;			
+	fp = fopen(edges.c_str(), "w");
 	for(int i = 0; i < NODE_VECTOR.size(); i++){
 		for(int j = 0; j < NODE_VECTOR.size(); j++){
 			
@@ -183,9 +183,11 @@ void mapGraph::output(){
 #endif
 
 }
-*/
+
 
 mapGraph::~mapGraph(){
+
+	std::cout<<"GRAPH DESTRUCTOR\n";
 	if(selector == NULL || edges.length() == 0){
 	delete[] adjacencyList;
 	delete[] costList;
@@ -194,7 +196,7 @@ mapGraph::~mapGraph(){
 		SCENE_NODE_VECTOR[i]->drop();
 	}}
 	
-//output();
+output();
 
 	delete[] adjacencyList;
 	delete[] costList;
@@ -232,7 +234,7 @@ while(!feof(fp)){
 	node->setPosition(vector3df(a[0],a[1],a[2]));
 	node->setMaterialFlag(video::EMF_LIGHTING, false);
 	SCENE_NODE_VECTOR.push_back(node);
-	node->setVisible(ENABLE_DEBUG_OUTPUT);
+	node->setVisible(true);
 
 	irr::scene::IBillboardTextSceneNode* a = 
     smgr->addBillboardTextSceneNode(0,stringw(
@@ -243,7 +245,7 @@ while(!feof(fp)){
 	node->addChild(a);
 	a->setMaterialFlag(irr::video::EMF_ZBUFFER,true);
 	a->setSize(irr::core::dimension2d<f32>(10.0f, 10.0f));
-
+	node->setVisible(ENABLE_DEBUG_OUTPUT);
 	
 }
  
@@ -294,7 +296,7 @@ for(int i = 0; i <k; i++){
 
 void mapGraph::render(video::IVideoDriver* driver){
 
-if(ENABLE_DEBUG_OUTPUT){
+	if(ENABLE_DEBUG_OUTPUT){
 	
 	
 	//then draw lines to show the node mesh graph		
