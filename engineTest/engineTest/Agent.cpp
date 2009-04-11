@@ -164,15 +164,14 @@ void Agent::updatePieSensor(){
 //update method
 void Agent::update(irr::ITimer* timer){
 	//if(!pathList.empty())std::cout<<"NOT EMPTYWTF\n";
-static irr::u32 LASTUPDATE = timer->getTime();
-static bool MOVING = false;
+
 
 irr::u32 ctime= 0;
 irr::f32 TIMEELAPSED = (irr::f32)((ctime = timer->getTime()) - LASTUPDATE);
 LASTUPDATE = ctime;
 //this->expectedArrivalTime = 0;
 //this->pathStartTime = 0;
-LASTUPDATE = timer->getTime();
+//LASTUPDATE = timer->getTime();
 
 
 //update sensors
@@ -352,12 +351,15 @@ bool Agent::processMessage(const Message* m){
 //ctor
 Agent::Agent(Model m, irr::core::vector3df p, irr::scene::ISceneManager* mgr, Agent_Type T,mapGraph* g):model(m),type(T),graph(g){
 	
+
+
+
 	s1d = new WallSensorData(NUMFEELERS,ANGLE);
 	pie = new PieSensor(4);
 
 	this->position = p;
 
-	//MOVING = false;
+	MOVING = false;
 
 	velocity = vector3df(0.0f,0.0f,0.0f);
 
@@ -409,7 +411,7 @@ Agent::Agent(Model m, irr::core::vector3df p, irr::scene::ISceneManager* mgr, Ag
 orientation = //360.0f - 
 0.0f;
 
-	//LASTUPDATE = 0;
+	LASTUPDATE = 0;
 
 	smgr= mgr;
 	
@@ -703,15 +705,19 @@ void Agent::drawPieSlices(irr::video::IVideoDriver * driver){
 		//SColor col;
 
 
+		 driver->setTransform(video::ETS_WORLD, mynodep->getAbsoluteTransformation());
+//blue is velocity
+driver->draw3DLine(vector3df(0,0,0), vector3df(500,0,0), SColor(255,0,0,255));
+//red is line to targets
+
    //irr::core::matrix4 abc = irr::core::IdentityMatrix;
   // const float dat[16] = {1,0,0,0, 0,1,0,0, 0,0,1,0, currentSeekTarget.X, currentSeekTarget.Y, currentSeekTarget.Z, 1};
    //abc.setM(dat);
-   driver->setTransform(video::ETS_WORLD, graph->SCENE_NODE_VECTOR[ graph->getClosestNode(previousSeekTarget)]->getAbsoluteTransformation() );
-   driver->draw3DLine(vector3df(0,0,0), this->currentSeekTarget-this->previousSeekTarget, SColor(255, 0, 255,0));
-   driver->setTransform(video::ETS_WORLD, mynodep->getAbsoluteTransformation());
-//blue is velocity
-driver->draw3DLine(vector3df(0,0,0), vector3df(500,0,0), SColor(255,0,0,255));
-//red is line to target
+ driver->setTransform(video::ETS_WORLD, graph->SCENE_NODE_VECTOR[ graph->getClosestNode(previousSeekTarget)]->getAbsoluteTransformation() );
+ driver->draw3DLine( vector3df(0,0,0), this->currentSeekTarget-this->previousSeekTarget, SColor(255, 0, 255,0));
+   
+   
+  
 
 //green line is path
 //driver->draw3DLine(this->previousSeekTarget - mynodep->getPosition(), this->currentSeekTarget - mynodep->getPosition(), SColor(255, 0, 255,0));

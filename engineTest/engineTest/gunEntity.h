@@ -10,6 +10,8 @@ class gunEntity:public GameEntity{
 
 public:
 	irr::scene::IAnimatedMeshSceneNode* gun;
+	irr::scene::ICameraSceneNode *camera;
+	irr::core::vector3df basePosition;
 
 	//gunEntity(){};
 	gunEntity(IrrlichtDevice *device,irr::scene::ICameraSceneNode *camera);
