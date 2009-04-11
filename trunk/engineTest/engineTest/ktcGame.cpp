@@ -64,7 +64,7 @@ agent2.createCollisionAnimator(selector, smgr);
 core::list<ISceneNodeAnimator*>::ConstIterator anims=camera->getAnimators().begin(); 
 ISceneNodeAnimatorCameraFPS *anim=(ISceneNodeAnimatorCameraFPS*)*anims; 
 anim->setMoveSpeed(PREDATOR_SPEED);
-anim->setVerticalMovement(false);
+//anim->setVerticalMovement(false);
 
 scene::ISceneNode *lightscenenode4 = smgr->addLightSceneNode(0, vector3df(0,0,0), irr::video::SColor(255, 175, 175, 0),200);
 
@@ -81,7 +81,7 @@ scene::ISceneNodeAnimator *nodeAnimator =
 	CHUCKIE.mesh->getBoundingBox().getCenter()//core::vector3df(0,30,0)
 	); //collision volume position
 if(!nodeAnimator){throw new std::string("Error creating node animator");}
- camera->addAnimator(nodeAnimator);
+ //camera->addAnimator(nodeAnimator);
  nodeAnimator->drop();
 
  camera->addAnimator(
@@ -145,12 +145,16 @@ smgr->drawAll();  //draw 3d objects
 
 
 
+
+
+#ifndef NODE_MESH_GENERATOR
 static mapGraph* mintree = graph.minimumSpanningTree(0);
 //graph.minimumSpanningTree(0)->render(device->getVideoDriver());
-mintree->render(device->getVideoDriver());
-//graph.render(device->getVideoDriver());
+//mintree->render(device->getVideoDriver());
+graph.render(device->getVideoDriver());
 //agent2.drawPieSlices(device->getVideoDriver());
 
+agent2.update(timer);
 //update all entities
 		for(int i = 0; i < (int)entities.size();i++){
 			if(entities[i]){
@@ -161,7 +165,7 @@ mintree->render(device->getVideoDriver());
 				}
 			}
 		}
-
+#endif
 device->getVideoDriver()->clearZBuffer();
 
 irr::core::matrix4 abc(irr::core::IdentityMatrix);
@@ -222,7 +226,7 @@ if(InputHandler::getInstance()->unprocessedMouseMessageLMB){
 	//update all entities
 		for(int i = 0; i < (int)entities.size();i++){
 			if(entities[i]){
-				entities[i]->update(timer);
+				//entities[i]->update(timer);
 			//	entities[i]->drawPieSlices(device->getVideoDriver());
 			}
 		}

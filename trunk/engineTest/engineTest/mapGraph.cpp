@@ -144,7 +144,6 @@ using namespace std;
 		//<<(*solution)[i]<<' ';
 	//}cout<<'\n';
 	
-	
 	return solution;
 }
 
@@ -285,6 +284,19 @@ for(int i = 0; i <k; i++){
 	}
 }
 
+
+for(int i = 58; i < 70; i++){
+
+	for(int j = 0; j < NODE_VECTOR.size(); j++){
+	
+		if(adjacencyList[i][j]){
+		
+			std::cout<<"From"<<i<<":"<<j<<" ";
+		
+		}
+	
+	}
+}
 
 
 //depthFirstSearch(0);

@@ -908,7 +908,20 @@ void Agent::newTargetLocation(irr::core::vector3df fin){
 //if the agent needs to correct its path: in the event it gets lost, eg, falls off a bridge, misses a doorway, etc, a-star to the currentSeekTarget and prepend the path to the pathlist
 void Agent::correctPath(){
 
-	std::vector<int>* result = this->graph->astarSearch( this->graph->getClosestNodeUnobstructed(this->getPosition(),smgr,selector), this->graph->getClosestNodeUnobstructed(currentSeekTarget,smgr,selector));
+int src = this->graph->getClosestNodeUnobstructed(this->getPosition(),smgr,selector);
+int tgt = this->graph->getClosestNodeUnobstructed(currentSeekTarget,smgr,selector);
+
+
+//when the agent is getting stuck on the torch, they're closest to the node behind the torch, so source is equal to target and no path correction is getting done
+//this makes the agent backtrack and try again, but it will prevent them from getting stuck permanently
+if(src == tgt){
+	//std::cout<<"Source equal to target in path correction, doing path correction correction\n";
+    src = this->graph->getClosestNodeUnobstructed(this->previousSeekTarget,smgr,selector);
+}
+
+
+
+	std::vector<int>* result = this->graph->astarSearch( src, tgt);
 	pathList.push_front(this->currentSeekTarget);
 	if(result->size()){
 	for(unsigned int i = 0; i < result->size(); i++){
@@ -920,7 +933,7 @@ void Agent::correctPath(){
 	previousSeekTarget = mynodep->getPosition();
 	
 
-	std::cout<<"PATH CORRECTION IN PLACE\n";
+//	std::cout<<"PATH CORRECTION IN PLACE\n";
 	delete result;
 
 }
