@@ -81,7 +81,7 @@ scene::ISceneNodeAnimator *nodeAnimator =
 	CHUCKIE.mesh->getBoundingBox().getCenter()//core::vector3df(0,30,0)
 	); //collision volume position
 if(!nodeAnimator){throw new std::string("Error creating node animator");}
- //camera->addAnimator(nodeAnimator);
+ camera->addAnimator(nodeAnimator);
  nodeAnimator->drop();
 
  camera->addAnimator(

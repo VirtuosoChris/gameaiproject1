@@ -150,10 +150,10 @@ ktcGame game(device, selector);
 /*******************************************************/
 /***************GAME UPDATE LOOP************************/
 /*******************************************************/
-driver->setFog(irr::video::SColor(255,25,25,25), true, 0,750, 0, true, true);//set the fog properties
-//driver->setFog(irr::video::SColor(255,0,0,0), true, 0,0, 0, true, true);//set the fog properties
+//driver->setFog(irr::video::SColor(255,25,25,25), true, 0,750, 0, true, true);//set the fog properties
+driver->setFog(irr::video::SColor(255,0,0,0), true, 0,0, 0, true, true);//set the fog properties
 int start = device->getTimer()->getTime();
-int finish = start + 0;//10000;
+int finish = start + 10000;
 
 
 while(device->run()){
