@@ -102,13 +102,13 @@ for(int i = 0; i < agent2.getPathList().size()-1; i++){
 
 }*/
 
-std::cout<<"....................................................";
-std::list<vector3df>::const_iterator iter2 = agent2.getPathList().begin();
-for(int i = 0; i < agent2.getPathList().size(); i++){
-	std::cout<<graph.getClosestNode( (*iter2) ) <<" ";
+//std::cout<<"....................................................";
+//std::list<vector3df>::const_iterator iter2 = agent2.getPathList().begin();
+//for(int i = 0; i < agent2.getPathList().size(); i++){
+//	std::cout<<graph.getClosestNode( (*iter2) ) <<" ";
 
-		iter2++;
-}std::cout<<std::endl;
+//		iter2++;
+//}std::cout<<std::endl;
 
 //cam2 = smgr->addCameraSceneNode();
 //cam2->setPosition(vector3df(0,0,0));
