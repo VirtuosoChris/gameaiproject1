@@ -18,6 +18,8 @@ class Agent:public physicsObject{
 
 private:
 
+	double pathStartTime;
+	double expectedArrivalTime;
 	
 	//this delegates an agent to one of two types: PREDATOR or PREY
 	Agent_Type type;
@@ -47,11 +49,13 @@ private:
 	scene::ISceneManager* smgr;
 	irr::scene::ITriangleSelector* selector;
 
+	void correctPath();
+
 public:
 	
 	//pathfinding functions
 	irr::core::vector3df seek(irr::core::vector3df);
-	void newTargetLocation(irr::core::vector3df,mapGraph* mg);
+	void newTargetLocation(irr::core::vector3df);
 	void createPatrolRoute(mapGraph* mg);
 
 	//gameEntity functionality

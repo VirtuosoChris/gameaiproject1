@@ -43,12 +43,11 @@ double mass = 25; //was 100 // was 25
 double RADIUS = 100;//50;//25;//was 100
 double ANGLE = 45;
 double ACCELRATE = MAXSPEED/4;
+double TIMEMULTIPLIER = 2.0;
 
 
 
 std::vector<Agent*>* Agent::agentList;
-
-
 
 
 
@@ -171,7 +170,8 @@ static bool MOVING = false;
 irr::u32 ctime= 0;
 irr::f32 TIMEELAPSED = (irr::f32)((ctime = timer->getTime()) - LASTUPDATE);
 LASTUPDATE = ctime;
-
+//this->expectedArrivalTime = 0;
+//this->pathStartTime = 0;
 LASTUPDATE = timer->getTime();
 
 
@@ -200,15 +200,19 @@ if( tv.getLength()<RADIUS){
 		currentSeekTarget = pathList.front();
 		pathList.erase(pathList.begin()); //ZOMG WTF obscure bug avoidance tip #666 : don't use list.remove(pathList.begin()) when you mean list.erase(pathList.begin())
 	
-		std::cout<<"Arrival\n";
+		//std::cout<<"Arrival\n";
 		int p = this->graph->getClosestNode(previousSeekTarget);
 		int q = this->graph->getClosestNode(currentSeekTarget);
-		std::cout<<"Going from"<<p<<"to"<<q<<std::endl;
-		if(graph->adjacencyList[p][q]){
-			std::cout<<"ok\n";
-		}else{
-			std::cout<<"WTF BAD EDGE POPPED\n";
-		}
+		//std::cout<<"Going from"<<p<<"to"<<q<<std::endl;
+		//if(graph->adjacencyList[p][q]){
+		//	std::cout<<"ok\n";
+		//}else{
+		//	std::cout<<"WTF BAD EDGE POPPED\n";
+		//}
+
+		this->pathStartTime = timer->getTime();
+		//correctPath();		
+		this->expectedArrivalTime = pathStartTime+(currentSeekTarget - this->getPosition()).getLength() /  MAXSPEED;
 
 
 
@@ -216,7 +220,16 @@ if( tv.getLength()<RADIUS){
 		velocity = core::vector3df(0,0,0);
 		currentSeekTarget = mynodep->getPosition();
 		previousSeekTarget = mynodep->getPosition();
+		this->pathStartTime = timer->getTime();
+		this->expectedArrivalTime = pathStartTime+(currentSeekTarget - this->getPosition()).getLength() /  MAXSPEED;
 	}
+}
+
+//check to see if the path needs to be corrected
+if( (timer->getTime() - this->pathStartTime) > TIMEMULTIPLIER*(this->expectedArrivalTime - this->pathStartTime) ){
+	this->pathStartTime = timer->getTime();
+	correctPath();		
+	this->expectedArrivalTime = pathStartTime+(pathList.front() - this->getPosition()).getLength() /  MAXSPEED;
 }
 
 
@@ -752,11 +765,12 @@ void Agent::createPatrolRoute(mapGraph* mg){
 pathList.clear();
 
 mapGraph* minspanningtree = mg->minimumSpanningTree(0);
-std::cout<<"got the tree\n";
+//std::cout<<"got the tree\n";
 std::vector<int>* result = minspanningtree->depthFirstSearch(mg->getClosestNodeUnobstructed(mynodep->getPosition(),smgr, selector));
 //delete minspanningtree;
 //minspanningtree= 0;
 
+/*
 //error checking, since it was returning weird paths that go through things they shouldn't.  problem isolated to vec3df path building
 for(int i = result->size()-1; i >0; i--){
 
@@ -775,7 +789,7 @@ for(int i = 0; i < result->size()-1; i++){
 	}
 
 }
-
+*/
 if(result->size()){
 	//pathList.resize(mg->NODE_VECTOR.size());
 	for(unsigned int i = 0; i < result->size(); i++){
@@ -797,13 +811,13 @@ if(result->size()){
 //	printf("%d %d\n", sNode1, sNode2);
 
 
-for(int i = 0; i < result->size(); i++){
+//for(int i = 0; i < result->size(); i++){
 
-	std::cout<<(*result)[i]<<" ";
-}
+//	std::cout<<(*result)[i]<<" ";
+//}
 
 
-
+/*
 std::list<irr::core::vector3df>::const_iterator iter = pathList.begin();
 for(int i = 0; i < pathList.size()-1; i++){
 
@@ -823,6 +837,7 @@ for(int i = 0; i < pathList.size()-1; i++){
 
 }
 std::cout<<std::endl;
+*/
 
 delete result;
 
@@ -831,8 +846,9 @@ delete result;
 
 
 //this function generates a list of waypoints to seek to a target location
-void Agent::newTargetLocation(irr::core::vector3df fin, mapGraph* mg){
+void Agent::newTargetLocation(irr::core::vector3df fin){
 
+	mapGraph* mg = this->graph;
 	//extern std::vector<irr::core::vector3df> NODE_VECTOR;
 
 	pathList.clear();
@@ -881,3 +897,24 @@ void Agent::newTargetLocation(irr::core::vector3df fin, mapGraph* mg){
 
 
 //}
+
+
+//if the agent needs to correct its path: in the event it gets lost, eg, falls off a bridge, misses a doorway, etc, a-star to the currentSeekTarget and prepend the path to the pathlist
+void Agent::correctPath(){
+
+	std::vector<int>* result = this->graph->astarSearch( this->graph->getClosestNodeUnobstructed(this->getPosition(),smgr,selector), this->graph->getClosestNodeUnobstructed(currentSeekTarget,smgr,selector));
+	pathList.push_front(this->currentSeekTarget);
+	if(result->size()){
+	for(unsigned int i = 0; i < result->size(); i++){
+		pathList.push_front( this->graph->nodePosition( (*result)[i]));
+	}
+	}
+
+	currentSeekTarget = pathList.front();
+	previousSeekTarget = mynodep->getPosition();
+	
+
+	std::cout<<"PATH CORRECTION IN PLACE\n";
+	delete result;
+
+}

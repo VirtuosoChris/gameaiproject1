@@ -140,9 +140,9 @@ using namespace std;
 	
 	}//endif
 
-	for(unsigned int i = 0; i < solution->size(); i++){
-		cout<<(*solution)[i]<<' ';
-	}cout<<'\n';
+	//for(unsigned int i = 0; i < solution->size(); i++){
+		//<<(*solution)[i]<<' ';
+	//}cout<<'\n';
 	
 	
 	return solution;
@@ -545,10 +545,10 @@ tgt = -1;
 	visitedCount++;
 	minGraph->adjacencyList[src][tgt] = true;
 	minGraph->adjacencyList[tgt][src] = true;
-	std::cout<<"adjusted list\n";
+	//std::cout<<"adjusted list\n";
 	
 }//end :while a node isn't in the graph
-std::cout<<"got to end of function\n";
+//std::cout<<"got to end of function\n";
 
 for(int i = 0; i < NODE_VECTOR.size(); i++){
 
