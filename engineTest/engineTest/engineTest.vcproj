@@ -186,6 +186,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\gameHUD.h"
+				>
+			</File>
+			<File
 				RelativePath=".\gunEntity.h"
 				>
 			</File>
@@ -254,7 +258,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\configurator.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\GameEntity.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\gameHUD.cpp"
 				>
 			</File>
 			<File

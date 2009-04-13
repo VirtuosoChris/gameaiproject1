@@ -51,6 +51,7 @@ mapGraph(irr::scene::ISceneManager*, int numNodes);
 	inline irr::core::vector3df nodePosition(int i){return NODE_VECTOR[i];}
 	
 	void toggleDebugOutput(bool);
+	void toggleScoreOutput(bool);
 	void render(video::IVideoDriver* driver);
 	void addNode(irr::core::vector3df);
 	void output();

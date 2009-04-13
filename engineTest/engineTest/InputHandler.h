@@ -24,6 +24,7 @@ inline bool InputHandler::isSKeyPressed(){return keyPressed[irr::KEY_KEY_S];}
 inline bool InputHandler::isDKeyPressed(){return keyPressed[irr::KEY_KEY_D];}
 inline bool InputHandler::isCKeyPressed(){return keyPressed[irr::KEY_KEY_C];}
 inline bool InputHandler::isTKeyPressed(){return keyPressed[irr::KEY_KEY_T];}
+inline bool InputHandler::isTabKeyPressed(){return keyPressed[irr::KEY_TAB];}
 
 	bool unprocessedMouseMessageLMB;
 	bool unprocessedMouseMessageRMB;
