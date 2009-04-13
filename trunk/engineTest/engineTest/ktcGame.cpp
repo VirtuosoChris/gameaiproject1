@@ -4,7 +4,6 @@ using namespace irr;
 using namespace irr::scene;
 using namespace irr::core;
 
-
 static const float PREDATOR_SPEED = .15f;
 static const float PREY_SPEED = .3f;
 
@@ -14,31 +13,37 @@ vector3df ppos;
 //#define NODE_MESH_GENERATOR //is the program in node mesh generation mode
 //-442,351,-863
 //-528.744751 0.024357 102.937782
-ktcGame::ktcGame(IrrlichtDevice *device, irr::scene::ITriangleSelector* selector):can (device),camera (device->getSceneManager()->addCameraSceneNodeFPS()) , gun (device, camera), graph (device, "NODE_LIST.txt","ADJACENCY_LIST.txt","EXCLUDE.txt"), 
+ktcGame::ktcGame(IrrlichtDevice *device, irr::scene::ITriangleSelector* selector, gameHUD* display):can (device),camera (device->getSceneManager()->addCameraSceneNodeFPS()) , gun (device, camera), graph (device, "NODE_LIST.txt","ADJACENCY_LIST.txt","EXCLUDE.txt"), 
 agent2 (Model("../media/chuckie.MD2","../media/Chuckie.pcx",device), core::vector3df(-528.744751, 0.024357, 102.937782), device->getSceneManager(), PREY, &graph)
 
 {
-	
+	//Instantiate the Irrlicht Engine Device
 	this->device = device;
+	
+	//Instantiate the Irrlicht Engine Scene Manager
 	smgr = device->getSceneManager();
+
+	//Instantiate the GameHUD Device
+	this->display = display;
 
 	CHUCKIE = agent2.getModel();
 
 
 	
-FILE* fp = fopen("SPAWN_POINTS.txt", "r");
-if(fp){
-float a[3];
-while(!feof(fp)){
-	fscanf(fp, "%f %f %f\n", a, &a[1], &a[2]);
-	this->spawnPointList.push_back(irr::core::vector3df(a[0],a[1],a[2]));
+	FILE* fp = fopen("SPAWN_POINTS.txt", "r");
+	if(fp){
+		float a[3];
+		while(!feof(fp)){
+			fscanf(fp, "%f %f %f\n", a, &a[1], &a[2]);
+			this->spawnPointList.push_back(irr::core::vector3df(a[0],a[1],a[2]));
 
-	irr::scene::ISceneNode* b;
-	b = smgr->addSphereSceneNode(1);
-	b->setMaterialFlag(irr::video::EMF_LIGHTING, true);
-	b->setPosition(irr::core::vector3df(a[0], a[1], a[2]));
-}
-fclose(fp);
+			irr::scene::ISceneNode* b;
+			b = smgr->addSphereSceneNode(1);
+			b->setMaterialFlag(irr::video::EMF_LIGHTING, true);
+			b->setPosition(irr::core::vector3df(a[0], a[1], a[2]));
+		}
+	
+		fclose(fp);
 
 
 	//can=(device);
@@ -125,6 +130,11 @@ entities.push_back(agent3);
 //Agent agent1(CYBERDEMON, spawnPointList[1], smgr, PREY, &this->graph);
 //agent1.createCollisionAnimator(selector, smgr);
 
+
+//Initialize Player Scores
+for(int x=0 ; x<5 ; x++)
+	playerScores[x] = 0;
+
 }
 
 
@@ -139,11 +149,9 @@ void ktcGame::update(irr::ITimer* timer){
 	//std::cout<<float(agent2.getPosition().X)<<":"<<float(agent2.getPosition().Y)<<":"<<float(agent2.getPosition().Z)<<"\n";
 device->getVideoDriver()->beginScene(true, true, video::SColor(255,100,101,140));
 
-
-
 smgr->drawAll();  //draw 3d objects
 
-
+display->render();
 
 
 
@@ -232,9 +240,15 @@ if(InputHandler::getInstance()->unprocessedMouseMessageLMB){
 		}
 
 
+	//Toggle the render output of the Debug visible objects
 	if(InputHandler::getInstance()->isTKeyPressed()){
 		graph.toggleDebugOutput(!graph.isDebugOutput());
 	}
+
+	//Toggle the render output of the GUI scoring mechanism
+	//if(InputHandler::getInstance()->isTabKeyPressed()){
+	//	graph.toggleScoreOutput(!graph.isScoreOutput());
+	//}
 
 	can.update(timer);
 	gun.update(timer);

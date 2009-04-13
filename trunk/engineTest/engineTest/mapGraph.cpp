@@ -347,18 +347,12 @@ void mapGraph::render(video::IVideoDriver* driver){
 
 
 void mapGraph::toggleDebugOutput(bool b){
-ENABLE_DEBUG_OUTPUT = b;
+	ENABLE_DEBUG_OUTPUT = b;
 
-for(unsigned int i = 0; i < SCENE_NODE_VECTOR.size();i++){
-	
-	SCENE_NODE_VECTOR[i]->setVisible(b);
-
-
+	for(unsigned int i = 0; i < SCENE_NODE_VECTOR.size();i++){
+		SCENE_NODE_VECTOR[i]->setVisible(b);
+		}
 }
-
-}
-
-
 
 void mapGraph::addNode(irr::core::vector3df pos){
 

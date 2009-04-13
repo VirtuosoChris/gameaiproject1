@@ -10,6 +10,7 @@
 #include "MessageHandler.h"
 #include "Message.h"
 #include "mapGraph.h"
+#include "gameHUD.h"
 
 //#define SPAWN_POINT_CREATOR
 
@@ -29,21 +30,30 @@ irr::scene::ICameraSceneNode* cam2;
 	
 	std::vector<Agent*> entities;
 
+	//Irrlicht Devices
 	irr::IrrlichtDevice *device;
 	irr::scene::ISceneManager* smgr;
+	irr::gui::IGUIEnvironment* gameUI;
+
+	//Camera Scene Node
 	scene::ICameraSceneNode *camera;
+
+	//HUD
+	gameHUD* display;
 
 	canEntity can;
 	gunEntity gun;
 
 	mapGraph graph;
 
+	int playerScores[5];
+
 
 	 //scene::ICameraSceneNode *camera;
 
 public:
 
-	ktcGame(IrrlichtDevice *device,irr::scene::ITriangleSelector*);
+	ktcGame(IrrlichtDevice *device,irr::scene::ITriangleSelector*, gameHUD* display);
 	virtual void update(irr::ITimer*);
 	virtual bool processMessage(const Message*);
 	~ktcGame();

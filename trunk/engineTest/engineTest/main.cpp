@@ -35,6 +35,7 @@
 
 //#define NODE_MESH_GENERATOR
 #include <irrlicht.h>
+#include <irrklang.h>
 #include <vector>
 #include <string>
 #include <limits>
@@ -46,9 +47,11 @@
 #include "Model.h"
 #include "ktcGame.h"
 #include "MessageHandler.h"
+#include "gameHUD.h"
 
 #ifdef _IRR_WINDOWS_
 #pragma comment(lib, "Irrlicht.lib")
+#pragma comment(lib, "irrKlang.lib")
 //#pragma comment(linker, "/subsystem:windows /ENTRY:mainCRTStartup")
 #endif
 
@@ -59,6 +62,7 @@ using namespace core;
 using namespace scene;
 using namespace video;
 using namespace io;
+using namespace irrklang;
 
 
 int main(int, char**){
@@ -70,9 +74,25 @@ int main(int, char**){
   device = createDevice(video::EDT_OPENGL, core::dimension2d<s32>(800,600), 32, false//shadows	 
 	  , true, true, InputHandler::getInstance());
 
-
-	  
 	  if(device==NULL)return 1;
+
+ //create the irrKlang device
+	// start the sound engine with default parameters
+	ISoundEngine* soundEngine = createIrrKlangDevice();
+	ISound* CurrentPlayingSound = 0;
+	ISoundSource* backgroundMusic = soundEngine->addSoundSourceFromFile("../media/sounds/getout.ogg"); 
+	backgroundMusic->setDefaultVolume(0.1f);
+
+
+	if (!soundEngine)
+	{
+		printf("Could not startup irrKlang sound engine\n");
+		return 0; // error starting up the engine
+	}
+
+	//Play some sound while all this is starting, loop it
+	//CurrentPlayingSound = soundEngine->play2D("../media/sounds/getout.ogg", true);
+	soundEngine->play2D(backgroundMusic);
 
  //set the title of the window
  device->setWindowCaption(L"Quake the Can");
@@ -83,7 +103,10 @@ int main(int, char**){
  //get the driver, scene manager, and gui environment objects
  video::IVideoDriver* driver = device->getVideoDriver();
  scene::ISceneManager* smgr = device->getSceneManager();
+ 
+ //Add this back in with the return of the Main GUI
  gui::IGUIEnvironment* guienv = device->getGUIEnvironment();
+
 
 
  /***Load the map***/
@@ -144,8 +167,11 @@ irr::scene::ITriangleSelector*  selector = NULL;
 
 
  {//block containing the game object
+
+//create game HUD object
+gameHUD* display = new gameHUD(driver,52,37,55,53,100);
 //create the game object
-ktcGame game(device, selector);
+ktcGame game(device, selector, display);
 
 /*******************************************************/
 /***************GAME UPDATE LOOP************************/
@@ -176,7 +202,10 @@ while(device->run()){
 		//run update on the message handler to send any delayed messges that have passed their time stamp
 		MsgHandler->update(device->getTimer());
 		game.update(device->getTimer());
+
+		//this has been taken out for planning based on menu system 
 		guienv->drawAll();
+		
 		if(InputHandler::getInstance()->EXIT_MESSAGE)break;
 }
 
@@ -185,6 +214,7 @@ while(device->run()){
 }//scope containing the game
 
 //device->drop();
+//soundEngine->drop();
 
 return 0;
 }
