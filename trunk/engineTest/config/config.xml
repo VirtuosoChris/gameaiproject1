@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<config>
+<!--This is a config file for the game Quake the Can, based off the Irrlicht Engine.-->
+<roundTimer>5</roundTimer>
+<respawnTime>10</respawnTime>
+<pointLimit>100</pointLimit>
+<resolution_H>1280</resolution_H>
+<resolution_V>1024</resolution_V>
+<colorDepth>32</colorDepth>
+<shadows>true</shadows>
+<backgroundMusic>"C:\some_music_dir\musicILike.ogg"</backgroundMusic>
+
+</config>

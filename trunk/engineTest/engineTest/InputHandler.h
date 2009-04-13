@@ -4,16 +4,30 @@
 
 #include <irrlicht.h>
 
+using namespace irr;
+using namespace gui;
+
+// Define some values that we'll use to identify individual GUI controls.
+enum
+{
+        GUI_ID_QUIT_BUTTON = 101,
+        GUI_ID_START_BUTTON,
+        GUI_ID_CONFIG_BUTTON
+};
 
 class InputHandler: public irr::IEventReceiver{
 
 private:
 	bool keyPressed[irr::KEY_KEY_CODES_COUNT];
+	IrrlichtDevice *device;
+	s32 handler_id ;
+    IGUIEnvironment* guienv;
 	InputHandler();
 	~InputHandler();
 
 public:
 	static InputHandler* getInstance();
+	void setDeviceContext(IrrlichtDevice *inDevice);
 	bool EXIT_MESSAGE;
 	virtual bool OnEvent(const irr::SEvent& event1);
 	bool isKeyPressed(int);
