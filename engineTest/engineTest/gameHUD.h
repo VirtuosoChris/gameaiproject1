@@ -20,7 +20,7 @@ private:
 
 public:
 
-   gameHUD(video::IVideoDriver* videoDriver, int x1, int y1, int x2, int y2, int maxShotTimerValue); //constructor
+   gameHUD(video::IVideoDriver* videoDriver, int maxShotTimerValue); //constructor
    ~gameHUD(); //destructor :O
    void render(); //render the HUD, must be called AFTER the 3D draw, or it  wont show
    void setShotTimerBarValue(int shotTimerValue); //change bar values

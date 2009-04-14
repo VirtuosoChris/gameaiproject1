@@ -4,15 +4,16 @@
 using namespace irr;
 using namespace video;
 
-gameHUD::gameHUD(video::IVideoDriver* videoDriver, int x1, int y1, int x2, int y2, int maxShotTimerValue){
-        //class constructor
+gameHUD::gameHUD(IVideoDriver* videoDriver, int maxShotTimerValue){
+   
+   //class constructor
    driver = videoDriver;
        
    //shot timer bar size
-   x1Bar = x1;
-   y1Bar = y1;
-   x2Bar = x2;
-   y2Bar = y2;
+   x1Bar = 52;
+   y1Bar = 37;
+   x2Bar = 55;
+   y2Bar = 53;
        
         //max bar values
    maxShotTimerBarValue = maxShotTimerValue;
@@ -28,6 +29,10 @@ gameHUD::gameHUD(video::IVideoDriver* videoDriver, int x1, int y1, int x2, int y
    //load some texture for spellbar and make it transparent with ColorKey 0 (black) and put it into a texture array
    GUITextures[0] = driver->getTexture("../Media/Textures/spellbar_smaller.bmp");
    driver->makeColorKeyTexture(GUITextures[0], video::SColor(0,0,0,0));
+
+   //load some texture for crosshair and make it transparent with ColorKey 0 (black)
+   GUITextures[1] = driver->getTexture("../Media/crosshair.bmp");
+   driver->makeColorKeyTexture(GUITextures[1], video::SColor(0,0,0,0));
 } 
 
 void gameHUD::render(){
@@ -46,6 +51,9 @@ void gameHUD::render(){
       if (delta < 0)
          shotTimerBarValue += 0.2;
    }
+
+   //draw the cross hair
+   driver->draw2DImage(GUITextures[1], core::position2d<s32>((screenX/2)-16, (screenY/2)-16), core::rect<s32>(0,0,32,32), 0, video::SColor(255,255,255,255), true);
        
    //draws the timer bar according to its value (green for high, decreasing to yellow till red), and some others rectangles for a cool look
    driver->draw2DImage(GUITextures[0], core::position2d<s32>(screenX - 341, screenY - 73), core::rect<s32>(0,0,341,73), 0, video::SColor(255,255,255,255), true);
