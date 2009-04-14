@@ -381,7 +381,7 @@ std::vector<int>* solution = new std::vector<int>;
 std::stack<int> sourceNode;
 sourceNode.push(src);
 
-std::vector<std::list<int>> possibleEdges(NODE_VECTOR.size());
+std::vector< std::list<int> > possibleEdges(NODE_VECTOR.size());
 
 visitedArray[src]=true;
 srand(time(0));
@@ -480,7 +480,7 @@ visitedArray[src] = true;
 int visitedCount = 1;
 
 //create a table of all the edges in the graph that we can remove from to save search time
-std::vector<std::list<int>> possibleEdges(NODE_VECTOR.size());
+std::vector<std::list<int> > possibleEdges(NODE_VECTOR.size());
 
 
 ////create an edge list

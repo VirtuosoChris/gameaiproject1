@@ -1,4 +1,4 @@
-#include "model.h"
+#include "Model.h"
 #include <string>
 
 //creates a 3d model data structure

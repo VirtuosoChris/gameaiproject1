@@ -1,15 +1,16 @@
 #ifndef KTCGAME
 #define KTCGAME
 
-#include "gameEntity.h"
-#include "model.h"
-#include "agent.h"
+#include "GameEntity.h"
+#include "Model.h"
+#include "Agent.h"
 #include "canEntity.h"
 #include "gunEntity.h"
-#include "inputHandler.h"
+#include "InputHandler.h"
 #include "MessageHandler.h"
 #include "Message.h"
 #include "mapGraph.h"
+#include "coverObject.h"
 #include "gameHUD.h"
 
 //#define SPAWN_POINT_CREATOR
@@ -48,14 +49,19 @@ irr::scene::ICameraSceneNode* cam2;
 
 	int playerScores[5];
 
+	std::vector<coverObject*> coverObjectList;	 //scene::ICameraSceneNode *camera;
 
-	 //scene::ICameraSceneNode *camera;
+
+
 
 public:
 
 	ktcGame(IrrlichtDevice *device,irr::scene::ITriangleSelector*, gameHUD* display);
 	virtual void update(irr::ITimer*);
 	virtual bool processMessage(const Message*);
+
+	std::list<irr::core::vector3df> generateDefenseArc(double startAngleRadians, double endAngleRadians, double radius = 45.0f, double nodeCount = 6); 
+
 	~ktcGame();
 
 };

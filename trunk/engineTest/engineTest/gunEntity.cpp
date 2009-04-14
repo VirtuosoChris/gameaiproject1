@@ -44,7 +44,7 @@ void gunEntity::update(irr::ITimer* timer){
 vector3df t = (camera->getPosition() - previousPos);
 t.Y = 0;
 	if(t.getLength() > .05f){
-	gun->setPosition(basePosition + 1.0f*(float)sin((double)timer->getTime()/200)*vector3df(0,1,0));
+	gun->setPosition(basePosition + 1.0f*(float)sin((double)timer->getTime()/125)*vector3df(.25,1,0));
 	}else{gun->setPosition(basePosition);}
 	
 	previousPos = camera->getPosition();

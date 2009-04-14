@@ -85,7 +85,14 @@ public:
 	
 	//pathlist getter/setter
 	inline std::list<irr::core::vector3df>& getPathList(){return pathList;}
-	inline void setPathList(std::list<irr::core::vector3df> pl){pathList = pl;}
+	inline void setPathList(std::list<irr::core::vector3df> pl){
+		pathList.clear();
+		pathList = pl;
+		pathList.push_front(mynodep->getPosition());
+		currentSeekTarget = pathList.front();
+		previousSeekTarget = mynodep->getPosition();
+		this->velocity = vector3df(0,0,0);
+	}
 
 	//fsm getter
 	inline StateMachine<Agent> * GetFSM() const{ return AgentStateMachine; }
