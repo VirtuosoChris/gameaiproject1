@@ -8,6 +8,8 @@ static vector3df previousPos;
 gunEntity::gunEntity(irr::IrrlichtDevice *device, irr::scene::ICameraSceneNode *camera)
 {
 
+	this->device = device;
+
 irr::scene::ISceneManager* smgr = device->getSceneManager();
 Model GUN = createModel("../media/dreadus_shotgun.md2","../media/shotgun_map.png",device,1.0f);
 //Model GUN = createModel("../media/w_railgun.md2","../media/railgun.pcx",device,1.0f);
@@ -40,7 +42,7 @@ basePosition = gun->getPosition();
 }
 
 
-void gunEntity::update(irr::ITimer* timer){
+void gunEntity::update(const irr::ITimer* timer){
 vector3df t = (camera->getPosition() - previousPos);
 t.Y = 0;
 	if(t.getLength() > .05f){
@@ -69,5 +71,30 @@ bool gunEntity::processMessage(const Message* m){
 	}
 
 	return true;
+
+}
+
+
+
+void gunEntity::render(){
+
+device->getVideoDriver()->clearZBuffer();
+
+irr::core::matrix4 abc(irr::core::IdentityMatrix);
+const float mdat[16] = {1,0,0,0, 0,1,0,0, 0,0,1,0, 0,1000,0,1};
+abc.setM(mdat);
+
+//abc.setTranslation(vector3df(1,1000,10));
+
+//abc.setTranslation(vector3df(0,100,0));
+
+device->getVideoDriver()->setTransform(video::ETS_WORLD,camera->getAbsoluteTransformation());// camera->getAbsoluteTransformation());
+device->getVideoDriver()->setTransform(video::ETS_VIEW, abc);
+
+//gun.gun->setRotation(camera->getAbsoluteTransformation().getRotationDegrees()+ vector3df(0,270,0));
+//gun.gun->setPosition(camera->getAbsoluteTransformation().getTranslation());
+//gun.gun->setScale(camera->getAbsoluteTransformation().getScale());
+
+gun->render();
 
 }

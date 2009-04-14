@@ -15,7 +15,7 @@ protected:
 	public:
 		
 		virtual bool processMessage(const Message*)=0;
-		virtual void update(irr::ITimer*)=0;
+		virtual void update(const irr::ITimer*)=0;
 		
 		
 		//GameEntity();

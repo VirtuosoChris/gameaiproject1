@@ -13,7 +13,7 @@ class State{
 		virtual void Enter(Game_Entity_Type &) = 0;
 
 		//this is the states normal update function
-		virtual void Execute(Game_Entity_Type &) = 0;
+		virtual void Execute(Game_Entity_Type &, const irr::ITimer*) = 0;
 
 		//this will execute when the state is exited
 		virtual void Exit(Game_Entity_Type &) = 0;

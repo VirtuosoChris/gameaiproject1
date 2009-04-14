@@ -36,7 +36,7 @@ public:
 	
 virtual bool processMessage(const Message*){
 return false;}
-virtual void update(irr::ITimer* t){;}
+virtual void update(const irr::ITimer* t){;}
 
 };
 

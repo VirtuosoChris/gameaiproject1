@@ -56,7 +56,7 @@ double increment = (startAngle - endAngle) / nodeCount;
 }
 
 
-void canEntity::update(irr::ITimer* timer){
+void canEntity::update(const irr::ITimer* timer){
 	
 	static double LASTUPDATE = timer->getTime();
 	double timeelapsed = timer->getTime() - LASTUPDATE;

@@ -1,16 +1,3 @@
-//CLUES: 
-//red line
-//error output
-
-//mesh/engine bugs
-//crappiness of steering behaviors
-//redundancy of edges
-//edge disabling/annotating
-//wall avoidance and recovery
-//why i chose a*
-//prevent crashes by not assuming everything will work
-//path smoothing
-
 #define NUMFEELERS 6  //3
 #include "Agent.h"
 #include <iostream>
@@ -25,6 +12,7 @@
 #include <vector>
 #include <limits>
 
+
 #include "mapGraph.h"
 //#include <iostream>
 
@@ -33,307 +21,28 @@ using namespace irr::core;
 using namespace irr::video;
 
 //std::vector<int>* astarSearch(unsigned int src, unsigned int tgt);
-extern irr::core::vector3df SEEK_POS;
-double MAXSPEED = .15; //was .3
-double mass = 25; //was 100 // was 25
-double RADIUS = 100;//50;//25;//was 100
-double ANGLE = 45;
-double ACCELRATE = MAXSPEED/4;
-double TIMEMULTIPLIER = 2.0;
+//extern irr::core::vector3df SEEK_POS;
+
 
 std::vector<Agent*>* Agent::agentList;
 
 
 
-
-void Agent::updateWallSensor(){
-
-
-
- core::line3d<f32> line;
- core::vector3df intersection;
- core::triangle3df triangle;
- core::vector3df orientVector;
- 
-
- orientVector = core::vector3df((float)cos(degreesToRadians(orientation)),0.0f,(float)sin(degreesToRadians(orientation)));
- line.start = mynodep->getPosition();
- line.end = line.start + orientVector * s1d->maxRange;
- 
-	//	billboard->setVisible(true);
-		 
-//std::vector<Agent*> a;
-//a = *agentList;
-//(*agentList)[0] = NULL;
-// a[0] = NULL;
- 
- double  baseAngle = -.5f*s1d->getAngle();
- 
- baseAngle +=orientation;
- 
- double  increment = s1d->getAngle() / (double)s1d->getNumFeelers();
-
-		//	printf("ori%f\n", orientation);
-		////	printf("inc%f\n", increment);
-		//	printf("getA%f\n", s1d->getAngle());
-		//	printf("ba%f\n", baseAngle);
-		//	printf("%f\n", 0.0f-90.0f/2.0);
-
-
-//printf("%d\n",s1d->getNumFeelers()); 
-		 for(int i = 0; i < s1d->getNumFeelers(); i++){
-				
-			double angle = i * increment + baseAngle;
-			
-			//printf("%f\n", angle);
-			
-			core::vector3df feelerVector = core::vector3df((float)cos(degreesToRadians(angle)), 0.0f, (float)sin(degreesToRadians(angle)));
-
-			 float t1 = 0.0f;
-			 
-			 line.start = mynodep->getPosition();
-			 line.end = line.start + feelerVector * s1d->maxRange;
-			 //printf("s1dmr%d\n", s1d->maxRange();
- 
-			 if(smgr->getSceneCollisionManager()->getCollisionPoint(line, selector,intersection, triangle)){
-				 
-	//			 if(feelerParticles.at(i)){
-	//			 feelerParticles.at(i)->setPosition(intersection);
-
-
-					 
-				 float t1 = (intersection.X - mynodep->getPosition().X); 
-				 t1 *= t1; 
-				 float t2 = (intersection.Z - mynodep->getPosition().Z);
-				 t2*=t2;
-				 
-				
-				 
-				 s1d->feelerDistances[i] = sqrt( t2+ t1);
-
-				 s1d->triangle[i] = triangle;
-				
-				// printf("%f\n", s1d->feelerDistances[i]);
-
-				 //if(ENABLE_DEBUG_OUTPUT){
-				 //feelerParticles.at(i)->setVisible(true);
-				// feelerParticles.at(i)->setText(stringw(
-				//	 (int)s1d->feelerDistances[i]
-				 
-				 //).c_str());
-				 //}else{
-				//	 feelerParticles.at(i)->setVisible(false);
-				 //}
-				 
-			 //}
-				 
-			 }
-		    else{
-
-				//if(feelerParticles.at(i))feelerParticles.at(i)->setVisible(false);
-			 s1d->feelerDistances[i] =s1d->maxRange;
-			 
-			}
-		 }}
-
-
-void Agent::updateProximitySensor(){
-	//Clear all previous entries
-	s2d.clear();
-
-	//Run sensor and store values in vector
-	this->proximitySensor(1000.0);
-}
-
-void Agent::updatePieSensor(){
-	//Clear all previous entries
-	pie->clear();
-
-	//Run sensor and store values in array
-	Agent::PieDetect();
-	Agent::showPieSensor();
-
-}
-
-
 //update method
-void Agent::update(irr::ITimer* timer){
-	//if(!pathList.empty())std::cout<<"NOT EMPTYWTF\n";
-
-
+void Agent::update(const irr::ITimer* timer){
+	
+//compute the time interval between now and the last frame for use in time based updating
 irr::u32 ctime= 0;
-irr::f32 TIMEELAPSED = (irr::f32)((ctime = timer->getTime()) - LASTUPDATE);
+TIMEELAPSED = (irr::f32)((ctime = timer->getTime()) - LASTUPDATE);
 LASTUPDATE = ctime;
-//this->expectedArrivalTime = 0;
-//this->pathStartTime = 0;
-//LASTUPDATE = timer->getTime();
-
 
 //update sensors
 updateWallSensor();
 updateProximitySensor();
 updatePieSensor();
-//irr::f32 MAXSPEED = .3f;
 
 //running update() on the state machine
-AgentStateMachine->update();
-return;
-
-
-//seek to the current seek target
-vector3df tp = currentSeekTarget;
-tp.Y = 0;
-vector3df ap = mynodep->getPosition();
-ap.Y = 0;
-tp = tp-ap;
- 
-core::vector3df tv = (-mynodep->getPosition() + currentSeekTarget);
-tv.Y = 0;
-if( tv.getLength()<RADIUS){
-	if(!pathList.empty()){
-		previousSeekTarget = currentSeekTarget;//mynodep->getPosition();
-		currentSeekTarget = pathList.front();
-		pathList.erase(pathList.begin()); //ZOMG WTF obscure bug avoidance tip #666 : don't use list.remove(pathList.begin()) when you mean list.erase(pathList.begin())
-	
-		//std::cout<<"Arrival\n";
-		int p = this->graph->getClosestNode(previousSeekTarget);
-		int q = this->graph->getClosestNode(currentSeekTarget);
-		//std::cout<<"Going from"<<p<<"to"<<q<<std::endl;
-		//if(graph->adjacencyList[p][q]){
-		//	std::cout<<"ok\n";
-		//}else{
-		//	std::cout<<"WTF BAD EDGE POPPED\n";
-		//}
-
-		this->pathStartTime = timer->getTime();
-		//correctPath();		
-		this->expectedArrivalTime = pathStartTime+(currentSeekTarget - this->getPosition()).getLength() /  MAXSPEED;
-
-
-
-	}else{
-		velocity = core::vector3df(0,0,0);
-		currentSeekTarget = mynodep->getPosition();
-		previousSeekTarget = mynodep->getPosition();
-		this->pathStartTime = timer->getTime();
-		this->expectedArrivalTime = pathStartTime+(currentSeekTarget - this->getPosition()).getLength() /  MAXSPEED;
-	}
-}
-
-//check to see if the path needs to be corrected
-if( (timer->getTime() - this->pathStartTime) > TIMEMULTIPLIER*(this->expectedArrivalTime - this->pathStartTime) ){
-	this->pathStartTime = timer->getTime();
-	correctPath();		
-	this->expectedArrivalTime = pathStartTime+(pathList.front() - this->getPosition()).getLength() /  MAXSPEED;
-}
-
-
-irr::core::vector3df wallavoidaccel;
-wallavoidaccel = vector3df(0,0,0);
-for(int i = 0; i < s1d->getNumFeelers(); i++){
-	//if(s1d->feelerDistances[i] < 50){
-//	wallavoidaccel+=s1d->triangle[i].getNormal()*(1/(s1d->feelerDistances[i]*s1d->feelerDistances[i]));
-	//if(velocity.getLength() - s1d->feelerDistances[i] > 0.0){
-	double tmp = (s1d->maxRange - s1d->feelerDistances[i]);
-	tmp/=5000000;//1
-	//if(tmp>0.0f){
-		wallavoidaccel+=s1d->triangle[i].getNormal()*tmp;
-		//std::cout<<s1d->feelerDistances[i]<<"\n";
-
-		
-	//}
-	//}
-	//}
-}
-
-wallavoidaccel.Y = 0;
-//wallavoidaccel = wallavoidaccel.normalize(); 
-
-if(wallavoidaccel.getLength() > .025f){
-
-wallavoidaccel = wallavoidaccel.normalize();
-wallavoidaccel*=.025f;
-}
-/*
-irr::core::vector3df pathseekaccel;
-pathseekaccel = vector3df(0,0,0);
-irr::core::vector3df pathvector = currentSeekTarget - previousSeekTarget;
-pathvector.Y = 0;
-if(pathvector.getLength()!=0.0f){
-	irr::core::vector3df vectorprojection = (pathvector.dotProduct( this->velocity ) / pathvector.getLength()) * pathvector.normalize();
-pathseekaccel = (vectorprojection+-velocity)/mass;
-pathseekaccel = pathseekaccel.normalize()*.015;
-}
-
-if((pathseekaccel).getLength() >.01){
-std::cout<<"magnitude of seek:"<<seek(currentSeekTarget).getLength()<<"\n";
-std::cout<<"magnitude of pathforce:"<<(pathseekaccel).getLength()<<"\n";
-}else{pathseekaccel= vector3df(0,0,0);}
-
-*/
-
-if(wallavoidaccel.getLength() >0.0f){
-//std::cout<<"magnitude of seek:"<<seek(currentSeekTarget).getLength()<<"\n";
-//std::cout<<"magnitude of pathforce:"<<(wallavoidaccel).getLength()<<"\n";
-}
-irr::core::vector3df accel = seek(currentSeekTarget) + wallavoidaccel;//.normalize()*MAXSPEED;// +  .0000001*wallavoidaccel;//- seek(currentSeekTarget).normalize()*wallavoidaccel.getLength();
-
-
-
-if(!(velocity+(accel*TIMEELAPSED)).getLength() == 0.0f){
-	velocity+=accel*TIMEELAPSED;
-	
-	if(velocity.getLength() > MAXSPEED){
-	velocity = velocity.normalize()*MAXSPEED;
-	}
-
-	}else{
-		//velocity = velocity.normalize()*.001; //core::vector3df(0,0,0);
-		velocity = vector3df(0,0,0);
-
-}
-
-if(velocity.getLength() > .01f){
-	mynodep->setPosition(mynodep->getPosition() + (TIMEELAPSED * velocity));
-	
-	if(!MOVING){
-	MOVING= true;
-	((irr::scene::IAnimatedMeshSceneNode*)mynodep)->setMD2Animation(scene::EMAT_RUN);
-	}
-}else if(MOVING){
-MOVING = false;
-((irr::scene::IAnimatedMeshSceneNode*)mynodep)->setMD2Animation(scene::EMAT_STAND);
-}
-
-
-
-vector3df abc = velocity;//SEEK_POS - mynodep->getPosition();
-abc.Y = 0;
-//abc.Z*=-1;
-abc = abc.normalize();
-double tAngle = radiansToDegrees(acos(fabs(abc.X)));
-
-switch(
-	   quadrant(velocity.normalize()
-	   )){
-case 1:break;
-case 2:tAngle = 180-tAngle;break;
-case 3:tAngle = 180+tAngle;break;
-case 4:tAngle = 360-tAngle;break;
-default:;
-}
-
-
-//printf("%f\n", tAngle);
-
-if(velocity.getLength()!=0){
-orientation = tAngle;
-mynodep->setRotation(irr::core::vector3df(0.0f,(irr::f32)fabs(360-orientation),0.0f));
-}
-
-position = mynodep->getPosition();
-
- 
+AgentStateMachine->update(timer);
 
 
 }
@@ -347,8 +56,6 @@ bool Agent::processMessage(const Message* m){
 //ctor
 Agent::Agent(Model m, irr::core::vector3df p, irr::scene::ISceneManager* mgr, Agent_Type T,mapGraph* g):model(m),type(T),graph(g){
 	
-
-
 
 	s1d = new WallSensorData(NUMFEELERS,ANGLE);
 	pie = new PieSensor(4);
@@ -459,13 +166,7 @@ scene::ISceneNodeAnimator *nodeAnimator;
 
 
 }
-//Finds the hypoteneuse
-double Agent::hypo(double opp, double adj)
-{
-	double mag ;
-	mag = sqrt((opp*opp)+(adj*adj)) ; //pythagorean theorem
-	return mag;
-}
+
 
 //This finds the relative distance between two agents
 double Agent::agentProximity(Agent *nearAgent)
@@ -741,42 +442,7 @@ irr::f32 angle = (irr::f32)pie->offset;
 }
 
 
-//generates a seek steering force
-irr::core::vector3df Agent::seek(irr::core::vector3df tp){
 
-	if(tp == mynodep->getPosition())return vector3df(0,0,0);
-	//irr::f32 MAXSPEED = .3f;
-		irr::core::vector3df target = tp - mynodep->getPosition();
-		target.Y = 0;
-		if(target.getLength() == 0)return vector3df(0,0,0);
-		target.normalize();
-	target*=ACCELRATE;
-	//irr::f32 mass = 10.0f;
-
-	irr::core::vector3df accel = (target-velocity);
-	accel/=mass;
-	//accel*= (tp - mynodep->getPosition()).getLength()*.05;
-	return accel;
-	
-}
-
-//generates a flee steering force
-irr::core::vector3df Agent::flee(irr::core::vector3df tp){
-
-	if(tp == mynodep->getPosition())return vector3df(0,0,0);
-	//irr::f32 MAXSPEED = .3f;
-		irr::core::vector3df target = -tp + mynodep->getPosition();
-		target.Y = 0;
-		if(target.getLength() == 0)return vector3df(0,0,0);
-		target.normalize();
-	target*=ACCELRATE;
-	//irr::f32 mass = 10.0f;
-
-	irr::core::vector3df accel = (target-velocity);
-	accel/=mass;
-	//accel*= (tp - mynodep->getPosition()).getLength()*.05;
-	return accel;	
-}
 
 
 
@@ -790,26 +456,7 @@ std::vector<int>* result = minspanningtree->depthFirstSearch(mg->getClosestNodeU
 //delete minspanningtree;
 //minspanningtree= 0;
 
-/*
-//error checking, since it was returning weird paths that go through things they shouldn't.  problem isolated to vec3df path building
-for(int i = result->size()-1; i >0; i--){
 
-	if(((!mg->adjacencyList[ (*result)[i] ] [ (*result)[i-1] ]) || (!mg->adjacencyList[ (*result)[i-1] ] [ (*result)[i] ]))){
-		std::cout<<"UH OH DEPTH FIRST SEARCH SUCKS\n";
-	}
-
-}
-for(int i = 0; i < result->size()-1; i++){
-
-	if(
-		
-		(!mg->adjacencyList[(*result)[i]][(*result)[i+1]]) || (!mg->adjacencyList[(*result)[i+1]][(*result)[i]])
-	){
-		std::cout<<"problem with the result\n";
-	}
-
-}
-*/
 if(result->size()){
 	//pathList.resize(mg->NODE_VECTOR.size());
 	for(unsigned int i = 0; i < result->size(); i++){
@@ -951,3 +598,5 @@ if(src == tgt){
 	delete result;
 
 }
+
+

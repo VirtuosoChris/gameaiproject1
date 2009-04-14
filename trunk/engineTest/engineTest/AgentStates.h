@@ -12,7 +12,7 @@ private:Die(){}
 public :
 	static Die* getInstance();
 	virtual void Enter(Agent & agt);
-	virtual void Execute(Agent & agt);
+	virtual void Execute(Agent & agt, const irr::ITimer*);
 	virtual void Exit(Agent & agt);
 	virtual bool ExecuteMessage(Agent &, const Message*);
 };
@@ -35,7 +35,7 @@ class Defend : public State<Agent>{
 		
 		virtual void Enter(Agent & agt);
 		
-		virtual void Execute(Agent & agt);
+		virtual void Execute(Agent & agt, const irr::ITimer*);
 		
 		virtual void Exit(Agent & agt);
 
@@ -59,7 +59,7 @@ class Patrol : public State<Agent>{
 		
 		virtual void Enter(Agent & agt);
 		
-		virtual void Execute(Agent & agt);
+		virtual void Execute(Agent & agt, const irr::ITimer*);
 		
 		virtual void Exit(Agent & agt);
 
@@ -83,7 +83,7 @@ class Pursue : public State<Agent>{
 		
 		virtual void Enter(Agent & agt);
 		
-		virtual void Execute(Agent & agt);
+		virtual void Execute(Agent & agt, const irr::ITimer*);
 		
 		virtual void Exit(Agent & agt);
 
@@ -107,7 +107,7 @@ class Hide : public State<Agent>{
 		
 		virtual void Enter(Agent & agt);
 		
-		virtual void Execute(Agent & agt);
+		virtual void Execute(Agent & agt, const irr::ITimer*);
 		
 		virtual void Exit(Agent & agt);
 
@@ -131,7 +131,7 @@ class Flee : public State<Agent>{
 		
 		virtual void Enter(Agent & agt);
 		
-		virtual void Execute(Agent & agt);
+		virtual void Execute(Agent & agt, const irr::ITimer*);
 		
 		virtual void Exit(Agent & agt);
 
@@ -155,7 +155,7 @@ class Act_Orb : public State<Agent>{
 		
 		virtual void Enter(Agent & agt);
 		
-		virtual void Execute(Agent & agt);
+		virtual void Execute(Agent & agt, const irr::ITimer* timer);
 		
 		virtual void Exit(Agent & agt);
 

@@ -18,7 +18,7 @@ void PrePlay::Enter(ktcGame & game){
 	//use MsgHandler->postMessage() here to post a message to all other players (use for loop or some shit)
 }
 
-void PrePlay::Execute(ktcGame & game){
+void PrePlay::Execute(ktcGame & game, const irr::ITimer* timer){
 	cout << "Executing PrePlay state.\n";
 
 	//put ChangeState shit here in if conditions
@@ -54,7 +54,7 @@ void Play::Enter(ktcGame & game){
 	//use MsgHandler->postMessage() here to post a message to all other players (use for loop or some shit)
 }
 
-void Play::Execute(ktcGame & game){
+void Play::Execute(ktcGame & game, const irr::ITimer* timer){
 	cout << "Executing Play state.\n";
 
 	//put ChangeState shit here in if conditions
@@ -89,7 +89,7 @@ void Pause::Enter(ktcGame & game){
 	//use MsgHandler->postMessage() here to post a message to all other players (use for loop or some shit)
 }
 
-void Pause::Execute(ktcGame & game){
+void Pause::Execute(ktcGame & game, const irr::ITimer* timer){
 	cout << "Executing Pause state.\n";
 
 	//put ChangeState shit here in if conditions
@@ -124,7 +124,7 @@ void RoundBreak::Enter(ktcGame & game){
 	//use MsgHandler->postMessage() here to post a message to all other players (use for loop or some shit)
 }
 
-void RoundBreak::Execute(ktcGame & game){
+void RoundBreak::Execute(ktcGame & game, const irr::ITimer* timer){
 	cout << "Executing RoundBreak state.\n";
 
 	//put ChangeState shit here in if conditions
@@ -159,7 +159,7 @@ void EndersGame::Enter(ktcGame & game){
 	//use MsgHandler->postMessage() here to post a message to all other players (use for loop or some shit)
 }
 
-void EndersGame::Execute(ktcGame & game){
+void EndersGame::Execute(ktcGame & game, const irr::ITimer* timer){
 	cout << "Executing EndersGame state.\n";
 
 	//put ChangeState shit here in if conditions

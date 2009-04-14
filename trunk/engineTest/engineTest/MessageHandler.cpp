@@ -17,7 +17,7 @@ MessageHandler::~MessageHandler(){
 
 
 
-void MessageHandler::postMessage(Message_Type type, int delay, GameEntity *sender, GameEntity *receiver, irr::ITimer* timer){
+void MessageHandler::postMessage(Message_Type type, int delay, GameEntity *sender, GameEntity *receiver, const irr::ITimer* timer){
 	Message* m = new Message(delay + timer->getTime(), type, sender, receiver);
 	
 	if(delay == 0){
@@ -27,7 +27,7 @@ void MessageHandler::postMessage(Message_Type type, int delay, GameEntity *sende
 }
 	
 
-int MessageHandler::update(irr::ITimer* timer){
+int MessageHandler::update(const irr::ITimer* timer){
 	
 
 	//if(messageQueue.empty())return 0;

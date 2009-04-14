@@ -12,12 +12,19 @@
 #include "AgentStates.h"
 #include "physicsObject.h"
 
+const double MAXSPEED = .15; //was .3
+const double mass = 25; //was 100 // was 25
+const double RADIUS = 100;//50;//25;//was 100
+const double ANGLE = 45;
+const double ACCELRATE = MAXSPEED/4;
+const double TIMEMULTIPLIER = 2.0;
+
 enum Agent_Type{PREDATOR, PREY};
 
 class Agent:public physicsObject{
 
 private:
-
+irr::f32 TIMEELAPSED;
 	double pathStartTime;
 	double expectedArrivalTime;
 
@@ -56,15 +63,19 @@ private:
 	void correctPath();
 
 public:
-	
+
+	irr::f32  getUpdateTimeIncrement(){return this->TIMEELAPSED;}
+
 	//pathfinding functions
 	irr::core::vector3df seek(irr::core::vector3df);
+	irr::core::vector3df wallAvoidance();
+	irr::core::vector3df followPath(const irr::ITimer* timer);
 	irr::core::vector3df flee(irr::core::vector3df);
 	void newTargetLocation(irr::core::vector3df);
 	void createPatrolRoute(mapGraph* mg);
 
 	//gameEntity functionality
-	virtual void update(irr::ITimer*);
+	virtual void update(const irr::ITimer*);
 	virtual bool processMessage(const Message*);
 
 	//model getter/setter
@@ -106,7 +117,7 @@ public:
 	virtual ~Agent();
 
 //i don't think any of this is mine
-	double hypo(double opp, double adj);
+//	double hypo(double opp, double adj);
 	double agentProximity(Agent *nearAgent);
 	double agentBearing(Agent *nearAgent);
 	void proximitySensor(double sensorRange);
@@ -128,6 +139,10 @@ public:
 	//graph getter/setter
 	inline mapGraph* getGraph(){return graph;}
 	inline void setGraph(mapGraph* g){graph=g;}
+
+	void walk(irr::core::vector3df accel);
+	void walk(){
+		walk(irr::core::vector3df(0,0,0));}
 
 };
 

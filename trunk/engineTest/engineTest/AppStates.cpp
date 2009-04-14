@@ -18,7 +18,7 @@ void Init::Enter(App & app){
 	//use MsgHandler->postMessage() here to post a message to all other players (use for loop or some shit)
 }
 
-void Init::Execute(App & app){
+void Init::Execute(App & app, const irr::ITimer* timer){
 	cout << "Executing Init state.\n";
 
 	//put ChangeState shit here in if conditions
@@ -54,7 +54,7 @@ void MainMenu::Enter(App & app){
 	//use MsgHandler->postMessage() here to post a message to all other players (use for loop or some shit)
 }
 
-void MainMenu::Execute(App & app){
+void MainMenu::Execute(App & app, const irr::ITimer* timer){
 	cout << "Executing MainMenu state.\n";
 
 	//put ChangeState shit here in if conditions
@@ -90,7 +90,7 @@ void PlayGame::Enter(App & app){
 	//use MsgHandler->postMessage() here to post a message to all other players (use for loop or some shit)
 }
 
-void PlayGame::Execute(App & app){
+void PlayGame::Execute(App & app, const irr::ITimer* timer){
 	cout << "Executing PlayGame state.\n";
 
 	//put ChangeState shit here in if conditions
@@ -126,7 +126,7 @@ void ConfigGame::Enter(App & app){
 	//use MsgHandler->postMessage() here to post a message to all other players (use for loop or some shit)
 }
 
-void ConfigGame::Execute(App & app){
+void ConfigGame::Execute(App & app, const irr::ITimer* timer){
 	cout << "Executing ConfigGame state.\n";
 
 	//put ChangeState shit here in if conditions
@@ -162,7 +162,7 @@ void ExitApp::Enter(App & app){
 	//use MsgHandler->postMessage() here to post a message to all other players (use for loop or some shit)
 }
 
-void ExitApp::Execute(App & app){
+void ExitApp::Execute(App & app, const irr::ITimer* timer){
 	cout << "Executing ExitApp state.\n";
 
 	//put ChangeState shit here in if conditions

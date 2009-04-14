@@ -14,7 +14,7 @@ public:
 
 	//irr::scene::ISceneNode* cannode;
 	canEntity(IrrlichtDevice *device);
-	virtual void update(irr::ITimer* timer);
+	virtual void update(const irr::ITimer* timer);
 	virtual bool processMessage(const Message*);
 	//canEntity(){};
 
