@@ -250,7 +250,7 @@ mintree->render(device->getVideoDriver());
 //update all entities
 		for(int i = 0; i < (int)entities.size();i++){
 			if(entities[i]){
-				entities[i]->update(timer);
+				//entities[i]->update(timer);
 				
 				if(graph.isDebugOutput()){
 			//	entities[i]->drawPieSlices(device->getVideoDriver());
@@ -328,6 +328,21 @@ if(InputHandler::getInstance()->unprocessedMouseMessageLMB){
 #endif
 
 
+for(int i = 0; i < entities.size(); i++){
+		if(this->pointing() == entities[i]->getSceneNode()){
+			MessageHandler::getInstance()->postMessage(KTC_KILL, 0, this, entities[i], device->getTimer());
+		}
+	}
+
+
+if(this->pointing() == can.getSceneNode() && (camera->getPosition() - can.getSceneNode()->getPosition()).getLength() <= 100.0f){
+	for(int i = 0; i < entities.size(); i++){
+	
+		MessageHandler::getInstance()->postMessage(KTC_REVIVE, 0, this, entities[i], device->getTimer());
+	}
+}
+
+
 			InputHandler::getInstance()->unprocessedMouseMessageLMB = false;
 		}
 
@@ -353,7 +368,7 @@ if(InputHandler::getInstance()->unprocessedMouseMessageLMB){
 	//update all entities
 		for(int i = 0; i < (int)entities.size();i++){
 			if(entities[i]){
-				//entities[i]->update(timer);
+				entities[i]->update(timer);
 			//	entities[i]->drawPieSlices(device->getVideoDriver());
 			}
 		}
@@ -381,6 +396,7 @@ if(InputHandler::getInstance()->unprocessedMouseMessageLMB){
 	if(SceneNodeSeen == agent2.getSceneNode()){
 		std::cout << "I'm looking at Chuckie;\n";
 	}
+
 
 }
 

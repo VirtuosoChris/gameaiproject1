@@ -59,6 +59,7 @@ public:
 	
 	//pathfinding functions
 	irr::core::vector3df seek(irr::core::vector3df);
+	irr::core::vector3df flee(irr::core::vector3df);
 	void newTargetLocation(irr::core::vector3df);
 	void createPatrolRoute(mapGraph* mg);
 

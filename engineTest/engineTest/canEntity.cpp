@@ -29,7 +29,7 @@ cannode->addChild(lightscenenode2);
 
 const double startAngle = 0;
 const double endAngle = 2*3.14159;
-const double nodeCount = 24.0f;
+const double nodeCount =12.0f;
 const double radius = 45.0f;
 double increment = (startAngle - endAngle) / nodeCount;
 
@@ -49,7 +49,7 @@ double increment = (startAngle - endAngle) / nodeCount;
 		a->setPosition(30*vector3df( 0,cos(currentAngle) ,sin(currentAngle) ));
 		this->getSceneNode()->addChild(a);
 		a->setMaterialTexture(0,driver->getTexture("../media/skydome.jpg"));
-		a->setMaterialType(video::EMT_SPHERE_MAP);
+		//a->setMaterialType(video::EMT_SPHERE_MAP);
 	}
 
 
