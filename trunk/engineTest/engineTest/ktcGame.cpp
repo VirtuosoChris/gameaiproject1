@@ -376,12 +376,60 @@ if(InputHandler::getInstance()->unprocessedMouseMessageLMB){
 	///gun.gun->setPosition(camera->getPosition());	
 	//gun.gun->setRotation(camera->getRotation() + vector3df(0,270,0));
 
+	scene::ISceneNode* SceneNodeSeen;
+	SceneNodeSeen = ktcGame::pointing();
+	if(SceneNodeSeen == agent2.getSceneNode()){
+		std::cout << "I'm looking at Chuckie;\n";
+	}
+
 }
 
 
 bool ktcGame::processMessage(const Message* m){
-delete m;
-return true;
+	delete m;
+	return true;
+}
+
+ISceneNode* ktcGame::pointing(){
+	ISceneNode* selectedSceneNode;
+	ISceneNode* returnedSceneNode;
+
+	//get the scene node that the camera is looking at
+	selectedSceneNode = smgr->getSceneCollisionManager()->getSceneNodeFromCameraBB(camera);
+
+	returnedSceneNode = ktcGame::GetCan(selectedSceneNode);
+	if(returnedSceneNode){
+		std::cout << "I'm looking at the can.\n";
+		return returnedSceneNode;
+	}
+
+	returnedSceneNode = ktcGame::GetAgent(selectedSceneNode);
+	if(returnedSceneNode){
+		std::cout << "I'm looking at an agent.\n";
+		return returnedSceneNode;
+	}
+
+	return 0;
+
+	
+}
+
+ISceneNode* ktcGame::GetCan(ISceneNode * node){
+	if(node == can.getSceneNode())
+		return node;
+	else 
+		return 0;
+}
+
+
+ISceneNode* ktcGame::GetAgent(ISceneNode * node){
+	for(int i = 0; i < entities.size(); i++){
+		if(node == entities[i]->getSceneNode())
+			return node;
+	}
+
+	return 0;
+
 }
 
 ktcGame::~ktcGame(){
