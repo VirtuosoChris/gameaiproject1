@@ -75,9 +75,9 @@ int main(int, char**){
  //create the irrKlang device
 	// start the sound engine with default parameters
 	ISoundEngine* soundEngine = createIrrKlangDevice();
-	ISound* CurrentPlayingSound = 0;
-	ISoundSource* backgroundMusic = soundEngine->addSoundSourceFromFile("../media/sounds/getout.ogg"); 
-	backgroundMusic->setDefaultVolume(0.1f);
+	//ISound* CurrentPlayingSound = 0;
+	//ISoundSource* backgroundMusic = soundEngine->addSoundSourceFromFile("../media/sounds/getout.ogg"); 
+	//backgroundMusic->setDefaultVolume(0.3f);
 
 
 	if (!soundEngine)
@@ -88,7 +88,7 @@ int main(int, char**){
 
 	//Play some sound while all this is starting, loop it
 	//CurrentPlayingSound = soundEngine->play2D("../media/sounds/getout.ogg", true);
-	soundEngine->play2D(backgroundMusic);
+	//soundEngine->play2D(backgroundMusic);
 
  //set the title of the window
  device->setWindowCaption(L"Quake the Can");
