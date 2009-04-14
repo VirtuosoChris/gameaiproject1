@@ -18,7 +18,7 @@ void Defend::Enter(Agent & agt){
 	//use MsgHandler->postMessage() here to post a message to all other players (use for loop or some shit)
 }
 
-void Defend::Execute(Agent & agt){
+void Defend::Execute(Agent & agt, const irr::ITimer* timer){
 	cout << "Executing Defend state.\n";
 
 	//put ChangeState shit here in if conditions
@@ -55,10 +55,12 @@ void Patrol::Enter(Agent & agt){
 	//use MsgHandler->postMessage() here to post a message to all other players (use for loop or some shit)
 }
 
-void Patrol::Execute(Agent & agt){
+void Patrol::Execute(Agent & agt, const irr::ITimer* timer){
 	cout << "Executing Patrol state.\n";
 
-	//put ChangeState shit here in if conditions
+	irr::core::vector3df accel = agt.followPath(timer);
+	agt.walk(accel);
+
 }
 
 void Patrol::Exit(Agent & agt){
@@ -92,7 +94,7 @@ void Pursue::Enter(Agent & agt){
 	//use MsgHandler->postMessage() here to post a message to all other players (use for loop or some shit)
 }
 
-void Pursue::Execute(Agent & agt){
+void Pursue::Execute(Agent & agt, const irr::ITimer* timer){
 	cout << "Executing Persue state.\n";
 
 	//put ChangeState shit here in if conditions
@@ -129,7 +131,7 @@ void Hide::Enter(Agent & agt){
 	//use MsgHandler->postMessage() here to post a message to all other players (use for loop or some shit)
 }
 
-void Hide::Execute(Agent & agt){
+void Hide::Execute(Agent & agt, const irr::ITimer* timer){
 	cout << "Executing Hide state.\n";
 
 	//put ChangeState shit here in if conditions
@@ -166,7 +168,7 @@ void Flee::Enter(Agent & agt){
 	//use MsgHandler->postMessage() here to post a message to all other players (use for loop or some shit)
 }
 
-void Flee::Execute(Agent & agt){
+void Flee::Execute(Agent & agt, const irr::ITimer* timer){
 //	cout << "Executing Flee state.\n";
 
 	//put ChangeState shit here in if conditions
@@ -204,7 +206,7 @@ void Act_Orb::Enter(Agent & agt){
 	//use MsgHandler->postMessage() here to post a message to all other players (use for loop or some shit)
 }
 
-void Act_Orb::Execute(Agent & agt){
+void Act_Orb::Execute(Agent & agt, const irr::ITimer* timer){
 	cout << "Executing Act_Orb state.\n";
 
 	//put ChangeState shit here in if conditions
@@ -254,14 +256,14 @@ void Die::Enter(Agent & agt){
 
 }
 
-void Die::Execute(Agent & agt){
+void Die::Execute(Agent & agt, const irr::ITimer* timer){
 	//int frameCount = agt.getSceneNode()
 	//std::cout<<"UADJFHKDHF\n";  
 	if(
 	((irr::scene::IAnimatedMeshSceneNode*)agt.getSceneNode())->getFrameNr()
 	>= ((irr::scene::IAnimatedMeshSceneNode*)agt.getSceneNode())->getEndFrame()){
 	
-		std::cout<<"laksjd\n";
+		//std::cout<<"laksjd\n";
 
 		agt.getSceneNode()->setVisible(false);
 		//((irr::scene::IAnimatedMeshSceneNode*)agt.getSceneNode())->setRotation(vector3df(0, 0, 75));
@@ -278,6 +280,10 @@ void Die::Exit(Agent & agt){
 	((irr::scene::IAnimatedMeshSceneNode*)agt.getSceneNode())->setAnimationSpeed(60);
 	
 	((irr::scene::IAnimatedMeshSceneNode*)agt.getSceneNode())->setLoopMode(true);
+
+	
+	((irr::scene::IAnimatedMeshSceneNode*)agt.getSceneNode())->setMD2Animation(scene::EMAT_STAND);
+	
 }
 
 bool Die::ExecuteMessage(Agent & agt, const Message * msg){
@@ -291,7 +297,7 @@ bool Die::ExecuteMessage(Agent & agt, const Message * msg){
 
 		case KTC_REVIVE: 
 
-			agt.GetFSM()->ChangeState(Patrol::GetInstance());
+			agt.GetFSM()->ChangeState(Flee::GetInstance());
 	}
 
 	//false gets returned if no cases we're matched (we couldn't handle the message)

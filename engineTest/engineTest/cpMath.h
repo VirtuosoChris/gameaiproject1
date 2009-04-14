@@ -20,4 +20,15 @@ inline int quadrant(vector3df a){
 	return 0;
 }
 
+
+//Finds the hypoteneuse
+
+inline double hypo(double opp, double adj)
+{
+	double mag ;
+	mag = sqrt((opp*opp)+(adj*adj)) ; //pythagorean theorem
+	return mag;
+}
+
+
 #endif

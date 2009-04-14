@@ -11,7 +11,7 @@ private:Init(){}
 public :
 	static Init* getInstance();
 	virtual void Enter(App & app);
-	virtual void Execute(App & app);
+	virtual void Execute(App & app, const irr::ITimer* timer);
 	virtual void Exit(App & app);
 	virtual bool ExecuteMessage(App &, const Message*);
 };
@@ -22,7 +22,7 @@ private:MainMenu(){}
 public :
 	static MainMenu* getInstance();
 	virtual void Enter(App & app);
-	virtual void Execute(App & app);
+	virtual void Execute(App & app, const irr::ITimer* timer);
 	virtual void Exit(App & app);
 	virtual bool ExecuteMessage(App &, const Message*);
 };
@@ -33,7 +33,7 @@ private:PlayGame(){}
 public :
 	static PlayGame* getInstance();
 	virtual void Enter(App & app);
-	virtual void Execute(App & app);
+	virtual void Execute(App & app, const irr::ITimer* timer);
 	virtual void Exit(App & app);
 	virtual bool ExecuteMessage(App &, const Message*);
 };
@@ -44,7 +44,7 @@ private:ConfigGame(){}
 public :
 	static ConfigGame* getInstance();
 	virtual void Enter(App & app);
-	virtual void Execute(App & app);
+	virtual void Execute(App & app, const irr::ITimer* timer);
 	virtual void Exit(App & app);
 	virtual bool ExecuteMessage(App &, const Message*);
 };
@@ -55,7 +55,7 @@ private:ExitApp(){}
 public :
 	static ExitApp* getInstance();
 	virtual void Enter(App & app);
-	virtual void Execute(App & app);
+	virtual void Execute(App & app, const irr::ITimer* timer);
 	virtual void Exit(App & app);
 	virtual bool ExecuteMessage(App &, const Message*);
 };

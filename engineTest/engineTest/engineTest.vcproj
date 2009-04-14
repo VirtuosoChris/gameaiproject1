@@ -266,7 +266,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\agentSensor.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\AgentStates.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\agentSteeringBehaviors.cpp"
 				>
 			</File>
 			<File

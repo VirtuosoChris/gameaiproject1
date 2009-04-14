@@ -22,9 +22,9 @@ private:
 	void deliverMessage(const Message* m);
 
 public:
-	void postMessage(Message_Type type, int delay, GameEntity *sender, GameEntity *receiver,irr::ITimer* timer);
+	void postMessage(Message_Type type, int delay, GameEntity *sender, GameEntity *receiver,const irr::ITimer* timer);
 	
-	int update(irr::ITimer*); 
+	int update(const irr::ITimer*); 
 	
 	static MessageHandler *getInstance();		
 };

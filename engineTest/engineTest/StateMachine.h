@@ -36,14 +36,14 @@ class StateMachine{
 		void SetPreviousState(State<Game_Entity_Type>* p){prev_state = p;}
   
 		//call this to update the FSM
-		void update()const{
+		void update(const irr::ITimer* timer)const{
 			//if a global state exists, call its execute method, else do nothing
 			if(glob_state) 
-				glob_state->Execute(agt_owner);
+				glob_state->Execute(agt_owner ,timer);
 			
 			//same for the current state
 			if (cur_state)
-				cur_state->Execute(agt_owner);
+				cur_state->Execute(agt_owner,timer);
 		}
 
 		//change to a new state

@@ -11,7 +11,7 @@ private:PrePlay(){}
 public :
 	static PrePlay* getInstance();
 	virtual void Enter(ktcGame & game);
-	virtual void Execute(ktcGame & game);
+	virtual void Execute(ktcGame & game, const irr::ITimer*);
 	virtual void Exit(ktcGame & game);
 	virtual bool ExecuteMessage(ktcGame &, const Message*);
 };
@@ -22,7 +22,7 @@ private:Play(){}
 public :
 	static Play* getInstance();
 	virtual void Enter(ktcGame & game);
-	virtual void Execute(ktcGame & game);
+	virtual void Execute(ktcGame & game, const irr::ITimer*);
 	virtual void Exit(ktcGame & game);
 	virtual bool ExecuteMessage(ktcGame &, const Message*);
 };
@@ -33,7 +33,7 @@ private:Pause(){}
 public :
 	static Pause* getInstance();
 	virtual void Enter(ktcGame & game);
-	virtual void Execute(ktcGame & game);
+	virtual void Execute(ktcGame & game, const irr::ITimer*);
 	virtual void Exit(ktcGame & game);
 	virtual bool ExecuteMessage(ktcGame &, const Message*);
 };
@@ -44,7 +44,7 @@ private:RoundBreak(){}
 public :
 	static RoundBreak* getInstance();
 	virtual void Enter(ktcGame & game);
-	virtual void Execute(ktcGame & game);
+	virtual void Execute(ktcGame & game, const irr::ITimer*);
 	virtual void Exit(ktcGame & game);
 	virtual bool ExecuteMessage(ktcGame &, const Message*);
 };
@@ -55,7 +55,7 @@ private:EndersGame(){}
 public :
 	static EndersGame* getInstance();
 	virtual void Enter(ktcGame & game);
-	virtual void Execute(ktcGame & game);
+	virtual void Execute(ktcGame & game, const irr::ITimer*);
 	virtual void Exit(ktcGame & game);
 	virtual bool ExecuteMessage(ktcGame &, const Message*);
 };

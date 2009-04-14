@@ -1,3 +1,5 @@
+//make minimum spanning tree method static?
+
 #ifndef KTCGAME
 #define KTCGAME
 
@@ -15,9 +17,11 @@
 #include "StateMachine.h"
 
 //#define SPAWN_POINT_CREATOR
-
+enum debugMode{NONE, MINSPANNINGTREE, FULLGRAPH};
 class ktcGame:public GameEntity{
 
+
+	int dMode;
 	Model CHUCKIE;
 	Model CARTMAN;
 	Model CYBERDEMON;
@@ -57,8 +61,14 @@ irr::scene::ICameraSceneNode* cam2;
 
 public:
 
+
+	void displayMinSpanningTree(){dMode = MINSPANNINGTREE; }	
+	void disableDebugOutput(){dMode = NONE; }
+	void displayFullGraph(){dMode = FULLGRAPH;}
+
+
 	ktcGame(IrrlichtDevice *device,irr::scene::ITriangleSelector*, gameHUD* display);
-	virtual void update(irr::ITimer*);
+	virtual void update(const irr::ITimer*);
 	virtual bool processMessage(const Message*);
 	virtual irr::scene::ISceneNode* pointing();  
 	virtual irr::scene::ISceneNode* GetCan(irr::scene::ISceneNode* );
