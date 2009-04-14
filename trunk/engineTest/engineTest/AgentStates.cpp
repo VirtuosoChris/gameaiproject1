@@ -238,32 +238,64 @@ Die* Die::getInstance(){
  
 void Die::Enter(Agent & agt){
 
-	((irr::scene::IAnimatedMeshSceneNode*)agt.getSceneNode())->setMD2Animation(scene::EMAT_DEATH_FALLFORWARD);
+	((irr::scene::IAnimatedMeshSceneNode*)agt.getSceneNode())->setMD2Animation(scene::EMAT_DEATH_FALLBACKSLOW);
 	
 	((irr::scene::IAnimatedMeshSceneNode*)agt.getSceneNode())->setLoopMode(false);
+
+	((irr::scene::IAnimatedMeshSceneNode*)agt.getSceneNode())->setAnimationSpeed(20);
 	agt.getPathList().clear();
+	
 	cout<<"cleared";
 	agt.setSeekTarget(((irr::scene::IAnimatedMeshSceneNode*)agt.getSceneNode())->getPosition());
 	
+	agt.getSceneNode()->setPosition(agt.getSceneNode()->getPosition() + vector3df(0,20,0));
+	
+
 
 }
 
-void Die::Execute(Agent & agt){}
+void Die::Execute(Agent & agt){
+	//int frameCount = agt.getSceneNode()
+	//std::cout<<"UADJFHKDHF\n";  
+	if(
+	((irr::scene::IAnimatedMeshSceneNode*)agt.getSceneNode())->getFrameNr()
+	>= ((irr::scene::IAnimatedMeshSceneNode*)agt.getSceneNode())->getEndFrame()){
+	
+		std::cout<<"laksjd\n";
 
-void Die::Exit(Agent & agt){}
+		agt.getSceneNode()->setVisible(false);
+		//((irr::scene::IAnimatedMeshSceneNode*)agt.getSceneNode())->setRotation(vector3df(0, 0, 75));
+
+		//agt.getSceneNode()->setPosition( agt.getSceneNode()->getPosition() - vector3df(0, 40,0));
+	}
+	
+}
+
+void Die::Exit(Agent & agt){
+
+		agt.getSceneNode()->setVisible(true);
+		
+	((irr::scene::IAnimatedMeshSceneNode*)agt.getSceneNode())->setAnimationSpeed(60);
+	
+	((irr::scene::IAnimatedMeshSceneNode*)agt.getSceneNode())->setLoopMode(true);
+}
 
 bool Die::ExecuteMessage(Agent & agt, const Message * msg){
-	/*
+	
 	switch(msg->messageType){
 		//put whatever message types you need here, these are just some examples until we change shit up
 		case KTC_KILL:	cout << "I killed you sucka.\n";
 						return true;
 		case KTC_SPOTTED:	cout << "I've been spotted, gotta run!\n";
 							return true;
+
+		case KTC_REVIVE: 
+
+			agt.GetFSM()->ChangeState(Patrol::GetInstance());
 	}
 
 	//false gets returned if no cases we're matched (we couldn't handle the message)
 	return false;
-	*/
+	
 	return true;
 }

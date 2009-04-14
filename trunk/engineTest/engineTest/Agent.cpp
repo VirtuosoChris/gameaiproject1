@@ -11,16 +11,13 @@
 //prevent crashes by not assuming everything will work
 //path smoothing
 
-
-#define NUMFEELERS 6//3
+#define NUMFEELERS 6  //3
 #include "Agent.h"
 #include <iostream>
 
 
 #include "InputHandler.h"
 #include "MessageHandler.h"
-
-
 
 #include "cpMath.h"
 #include <cmath>
@@ -35,7 +32,6 @@ using namespace irr;
 using namespace irr::core;
 using namespace irr::video;
 
-
 //std::vector<int>* astarSearch(unsigned int src, unsigned int tgt);
 extern irr::core::vector3df SEEK_POS;
 double MAXSPEED = .15; //was .3
@@ -45,9 +41,8 @@ double ANGLE = 45;
 double ACCELRATE = MAXSPEED/4;
 double TIMEMULTIPLIER = 2.0;
 
-
-
 std::vector<Agent*>* Agent::agentList;
+
 
 
 
@@ -182,6 +177,7 @@ updatePieSensor();
 
 //running update() on the state machine
 AgentStateMachine->update();
+return;
 
 
 //seek to the current seek target
@@ -762,6 +758,24 @@ irr::core::vector3df Agent::seek(irr::core::vector3df tp){
 	//accel*= (tp - mynodep->getPosition()).getLength()*.05;
 	return accel;
 	
+}
+
+//generates a flee steering force
+irr::core::vector3df Agent::flee(irr::core::vector3df tp){
+
+	if(tp == mynodep->getPosition())return vector3df(0,0,0);
+	//irr::f32 MAXSPEED = .3f;
+		irr::core::vector3df target = -tp + mynodep->getPosition();
+		target.Y = 0;
+		if(target.getLength() == 0)return vector3df(0,0,0);
+		target.normalize();
+	target*=ACCELRATE;
+	//irr::f32 mass = 10.0f;
+
+	irr::core::vector3df accel = (target-velocity);
+	accel/=mass;
+	//accel*= (tp - mynodep->getPosition()).getLength()*.05;
+	return accel;	
 }
 
 
