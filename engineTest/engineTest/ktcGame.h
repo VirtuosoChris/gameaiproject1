@@ -63,7 +63,6 @@ public:
 	std::list<irr::core::vector3df> generateDefenseArc(double startAngleRadians, double endAngleRadians, double radius = 45.0f, double nodeCount = 6); 
 
 	~ktcGame();
-
 };
 
 

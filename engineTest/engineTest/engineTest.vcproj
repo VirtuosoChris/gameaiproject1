@@ -170,6 +170,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\AppStates.h"
+				>
+			</File>
+			<File
 				RelativePath=".\canEntity.h"
 				>
 			</File>
@@ -191,6 +195,10 @@
 			</File>
 			<File
 				RelativePath=".\gameHUD.h"
+				>
+			</File>
+			<File
+				RelativePath=".\GameStates.h"
 				>
 			</File>
 			<File
@@ -258,6 +266,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\AppStates.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\canEntity.cpp"
 				>
 			</File>
@@ -271,6 +283,10 @@
 			</File>
 			<File
 				RelativePath=".\gameHUD.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\GameStates.cpp"
 				>
 			</File>
 			<File
