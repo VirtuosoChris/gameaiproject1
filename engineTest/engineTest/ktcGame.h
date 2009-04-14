@@ -59,6 +59,9 @@ public:
 	ktcGame(IrrlichtDevice *device,irr::scene::ITriangleSelector*, gameHUD* display);
 	virtual void update(irr::ITimer*);
 	virtual bool processMessage(const Message*);
+	virtual irr::scene::ISceneNode* pointing();  
+	virtual irr::scene::ISceneNode* GetCan(irr::scene::ISceneNode* );
+	virtual irr::scene::ISceneNode* GetAgent(irr::scene::ISceneNode* );
 
 	std::list<irr::core::vector3df> generateDefenseArc(double startAngleRadians, double endAngleRadians, double radius = 45.0f, double nodeCount = 6); 
 
