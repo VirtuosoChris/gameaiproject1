@@ -24,11 +24,7 @@
 //get rid of local constants
 
 //grab the gun scene node so its not drawn twice
-
-//fix collisions and gun jitter
 //fix last memory leaks
-//refactor gameEntity
-//refactor math stuff
 //catch exceptions
 
 //better t key stuff : make the game class BE the input handler? -- no, use message handling -- for now, this is for debugging so not that important
@@ -173,15 +169,17 @@ gameHUD* display = new gameHUD(driver,52,37,55,53,100);
 //create the game object
 ktcGame game(device, selector, display);
 
+
 /*******************************************************/
 /***************GAME UPDATE LOOP************************/
 /*******************************************************/
-//driver->setFog(irr::video::SColor(255,25,25,25), true, 0,750, 0, true, true);//set the fog properties
-driver->setFog(irr::video::SColor(255,0,0,0), true, 0,0, 0, true, true);//set the fog properties
+driver->setFog(irr::video::SColor(255,25,25,25), true, 0,750, 0, true, true);//set the fog properties
+//driver->setFog(irr::video::SColor(255,0,0,0), true, 0,0, 0, true, true);//set the fog properties
 int start = device->getTimer()->getTime();
 int finish = start + 10000;
 
 
+//smgr->setAmbientLight(video::SColor(255, 25, 25, 25));
 while(device->run()){
 
 	//std::cout<<(device->getTimer()->getTime() - start)<<std::endl;
@@ -193,9 +191,9 @@ while(device->run()){
 		int color =  25.0f    *((double)diff / (double)((finish- start))); 
 
 		if(range >= 0){
-		driver->setFog(SColor(255, color,color,color), true, 0,range,0,true, true);
+		//driver->setFog(SColor(255, color,color,color), true, 0,range,0,true, true);
 		}else{
-		driver->setFog(SColor( 255, color, color, color), true, 0, 1, 0, true, true);
+		//driver->setFog(SColor( 255, color, color, color), true, 0, 1, 0, true, true);
 		}
 	}
 
