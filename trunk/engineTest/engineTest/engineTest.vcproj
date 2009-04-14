@@ -170,6 +170,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\App.h"
+				>
+			</File>
+			<File
 				RelativePath=".\AppStates.h"
 				>
 			</File>
@@ -263,6 +267,10 @@
 			</File>
 			<File
 				RelativePath=".\AgentStates.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\App.cpp"
 				>
 			</File>
 			<File

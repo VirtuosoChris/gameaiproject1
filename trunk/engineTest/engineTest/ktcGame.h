@@ -12,6 +12,7 @@
 #include "mapGraph.h"
 #include "coverObject.h"
 #include "gameHUD.h"
+#include "StateMachine.h"
 
 //#define SPAWN_POINT_CREATOR
 

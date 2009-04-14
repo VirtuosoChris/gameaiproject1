@@ -32,14 +32,16 @@ public:
 	virtual bool OnEvent(const irr::SEvent& event1);
 	bool isKeyPressed(int);
 	
- bool isAKeyPressed(){return keyPressed[irr::KEY_KEY_A];}
- bool isWKeyPressed(){return keyPressed[irr::KEY_KEY_W];}
- bool isSKeyPressed(){return keyPressed[irr::KEY_KEY_S];}
- bool isDKeyPressed(){return keyPressed[irr::KEY_KEY_D];}
- bool isCKeyPressed(){return keyPressed[irr::KEY_KEY_C];}
- bool isTKeyPressed(){return keyPressed[irr::KEY_KEY_T];}
-inline bool InputHandler::isTabKeyPressed(){return keyPressed[irr::KEY_TAB];}
+	//Particular Key-Depressed functions
+	bool isAKeyPressed(){return keyPressed[irr::KEY_KEY_A];}
+	bool isWKeyPressed(){return keyPressed[irr::KEY_KEY_W];}
+	bool isSKeyPressed(){return keyPressed[irr::KEY_KEY_S];}
+	bool isDKeyPressed(){return keyPressed[irr::KEY_KEY_D];}
+	bool isCKeyPressed(){return keyPressed[irr::KEY_KEY_C];}
+	bool isTKeyPressed(){return keyPressed[irr::KEY_KEY_T];}
+	inline bool InputHandler::isTabKeyPressed(){return keyPressed[irr::KEY_TAB];}
 
+	//Mouse Message functions
 	bool unprocessedMouseMessageLMB;
 	bool unprocessedMouseMessageRMB;
 };

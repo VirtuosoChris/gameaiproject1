@@ -165,7 +165,7 @@ irr::scene::ITriangleSelector*  selector = NULL;
  {//block containing the game object
 
 //create game HUD object
-gameHUD* display = new gameHUD(driver,52,37,55,53,100);
+gameHUD* display = new gameHUD(driver,100);
 //create the game object
 ktcGame game(device, selector, display);
 
