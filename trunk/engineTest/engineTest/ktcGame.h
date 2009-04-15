@@ -15,6 +15,7 @@
 #include "coverObject.h"
 #include "gameHUD.h"
 #include "StateMachine.h"
+#include "player.h"
 
 //#define SPAWN_POINT_CREATOR
 enum debugMode{NONE, MINSPANNINGTREE, FULLGRAPH};
@@ -25,11 +26,10 @@ class ktcGame:public GameEntity{
 	Model CHUCKIE;
 	Model CARTMAN;
 	Model CYBERDEMON;
+	player plyr;
 
 	std::vector<irr::core::vector3df> spawnPointList;
 	
-irr::scene::ICameraSceneNode* cam2;
-
 	Agent agent2;
 	//Agent agent3;
 
@@ -41,22 +41,16 @@ irr::scene::ICameraSceneNode* cam2;
 	irr::scene::ISceneManager* smgr;
 	irr::gui::IGUIEnvironment* gameUI;
 
-	//Camera Scene Node
-	scene::ICameraSceneNode *camera;
-
 	//HUD
 	gameHUD* display;
 
 	canEntity can;
-	gunEntity gun;
 
 	mapGraph graph;
 
 	int playerScores[5];
 
 	std::vector<coverObject*> coverObjectList;	 //scene::ICameraSceneNode *camera;
-
-
 
 
 public:

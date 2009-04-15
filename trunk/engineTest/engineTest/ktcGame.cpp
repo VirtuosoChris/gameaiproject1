@@ -1,5 +1,7 @@
 #include "ktcGame.h"
-
+#include "player.h"
+//todo code
+//entities[1]->setPathList(this->generateDefenseArc(0,2*3.14, 120,8));
 
 //#define COVER_OBJECT_GENERATOR
 
@@ -9,9 +11,6 @@ using namespace irr::core;
 
 static const float PREDATOR_SPEED = .15f;
 static const float PREY_SPEED = .3f;
-
-
-vector3df ppos;
 
 
 
@@ -46,10 +45,12 @@ return result;
 //#define NODE_MESH_GENERATOR //is the program in node mesh generation mode
 //-442,351,-863
 //-528.744751 0.024357 102.937782
-ktcGame::ktcGame(IrrlichtDevice *device, irr::scene::ITriangleSelector* selector, gameHUD* display):can (device),camera (device->getSceneManager()->addCameraSceneNodeFPS()) , gun (device, camera), graph (device, "NODE_LIST.txt","ADJACENCY_LIST.txt","EXCLUDE.txt"), 
+ktcGame::ktcGame(IrrlichtDevice *device, irr::scene::ITriangleSelector* selector, gameHUD* display):can (device), graph (device, "NODE_LIST.txt","ADJACENCY_LIST.txt","EXCLUDE.txt"), 
 agent2 (Model("../media/chuckie.MD2","../media/Chuckie.pcx",device), core::vector3df(-528.744751, 0.024357, 102.937782), device->getSceneManager(), PREY, &graph)
 
 {dMode = NONE;
+plyr = player(device);
+plyr.setCameraSpeed(PREY_SPEED);
 	//Instantiate the Irrlicht Engine Device
 	this->device = device;
 	
@@ -70,10 +71,10 @@ agent2 (Model("../media/chuckie.MD2","../media/Chuckie.pcx",device), core::vecto
 			fscanf(fp, "%f %f %f\n", a, &a[1], &a[2]);
 			this->spawnPointList.push_back(irr::core::vector3df(a[0],a[1],a[2]));
 
-			irr::scene::ISceneNode* b;
-			b = smgr->addSphereSceneNode(1);
-			b->setMaterialFlag(irr::video::EMF_LIGHTING, true);
-			b->setPosition(irr::core::vector3df(a[0], a[1], a[2]));
+			//irr::scene::ISceneNode* b;
+			//b = smgr->addSphereSceneNode(1);
+			//b->setMaterialFlag(irr::video::EMF_LIGHTING, true);
+			//b->setPosition(irr::core::vector3df(a[0], a[1], a[2]));
 		}
 	
 		fclose(fp);
@@ -85,15 +86,7 @@ float a[3];
 while(!feof(fp)){
 	fscanf(fp, "%f %f %f\n", a, &a[1], &a[2]);
 	this->coverObjectList.push_back(new coverObject(vector3df(a[0], a[1], a[2]), device));
-	coverObjectList.back()->getSceneNode()->setVisible(false);
-	//	irr::scene::ISceneNode* t= smgr->addCubeSceneNode(1);
-	//	t->setPosition( irr::core::vector3df(a[0], a[1], a[2]) );
-	//	t->setScale(vector3df(50,75,50));
-	//	t->setMaterialTexture(0, device->getVideoDriver()->getTexture("../media/crate.jpg"));
-	//		t->setMaterialTexture(1, device->getVideoDriver()->getTexture("../media/cratebump.jpg"));
-	//		t->setMaterialFlag(video::EMF_LIGHTING, true);
-	//		t->setMaterialFlag(video::EMF_FOG_ENABLE, true);
-	//		t->setMaterialType(video::EMT_LIGHTMAP_LIGHTING_M4);
+	
 	
 }
 fclose(fp);
@@ -120,44 +113,24 @@ agent2.createCollisionAnimator(selector, smgr);
  //CPTODO: REPLACE HARD CODED CONSTANT WITH SOMETHING BETTER
  //camera->setPosition(core::vector3df(-280,288,-830));
 
-core::list<ISceneNodeAnimator*>::ConstIterator anims=camera->getAnimators().begin(); 
-ISceneNodeAnimatorCameraFPS *anim=(ISceneNodeAnimatorCameraFPS*)*anims; 
-anim->setMoveSpeed(PREDATOR_SPEED);
-anim->setVerticalMovement(false);
 
-scene::ISceneNode *lightscenenode4 = smgr->addLightSceneNode(0, vector3df(0,0,0), irr::video::SColor(255, 100, 100, 0),200);
-
-camera->addChild(lightscenenode4);
-
-
-camera->setPosition( spawnPointList[3] );//- vector3df(-1300,-144,-1249));
+plyr.getSceneNode()->setPosition( spawnPointList[3] );//- vector3df(-1300,-144,-1249));
 
 scene::ISceneNodeAnimator *nodeAnimator = 
 	smgr->createCollisionResponseAnimator(selector,//geometry for collision 
-	camera, //scene node to apply collision to/	
+	plyr.getSceneNode(), //scene node to apply collision to/	
 	CHUCKIE.mesh->getBoundingBox().getExtent(),
 	core::vector3df(0,-10,0),//gravity 
 	CHUCKIE.mesh->getBoundingBox().getCenter()//core::vector3df(0,30,0)
 	); //collision volume position
 if(!nodeAnimator){throw new std::string("Error creating node animator");}
- camera->addAnimator(nodeAnimator);
+plyr.getSceneNode()->addAnimator(nodeAnimator);
  nodeAnimator->drop();
 
- //camera->addAnimator(
-//					smgr->createCollisionResponseAnimator(
-//					smgr->createTriangleSelectorFromBoundingBox(can.getSceneNode()),camera,CHUCKIE.mesh->getBoundingBox().getExtent(), vector3df(0,0,0), CHUCKIE.mesh->getBoundingBox().getCenter())
-//					);
 
- 
-// can.getSceneNode()->addAnimator(
-//					smgr->createCollisionResponseAnimator(
-//					smgr->createTriangleSelectorFromBoundingBox(camera),can.getSceneNode(),CHUCKIE.mesh->getBoundingBox().getExtent(), vector3df(0,0,0), CHUCKIE.mesh->getBoundingBox().getCenter())
-//					);
-
-
-camera->addAnimator(
+ plyr.getSceneNode()->addAnimator(
 					smgr->createCollisionResponseAnimator(
-					smgr->createTriangleSelectorFromBoundingBox(((irr::scene::IAnimatedMeshSceneNode*)agent2.getSceneNode())),camera,((irr::scene::IAnimatedMeshSceneNode*)agent2.getSceneNode())->getBoundingBox().getExtent(), vector3df(0,0,0),((irr::scene::IAnimatedMeshSceneNode*)agent2.getSceneNode())->getBoundingBox().getCenter())
+					smgr->createTriangleSelectorFromBoundingBox(((irr::scene::IAnimatedMeshSceneNode*)agent2.getSceneNode())),plyr.getSceneNode(),((irr::scene::IAnimatedMeshSceneNode*)agent2.getSceneNode())->getBoundingBox().getExtent(), vector3df(0,0,0),((irr::scene::IAnimatedMeshSceneNode*)agent2.getSceneNode())->getBoundingBox().getCenter())
 					);
 
 
@@ -165,13 +138,12 @@ camera->addAnimator(
 //make the camera collide with cover
 for(int i = 0; i < this->coverObjectList.size(); i++){
 
-
-/*
-camera->addAnimator(
+	
+	plyr.getSceneNode()->addAnimator(
 					smgr->createCollisionResponseAnimator(
 					smgr->createTriangleSelectorFromBoundingBox(
 					coverObjectList[i]->getSceneNode()),
-					camera,CHUCKIE.mesh->getBoundingBox().getExtent(), 
+					plyr.getSceneNode(),CHUCKIE.mesh->getBoundingBox().getExtent(), 
 					vector3df(0,0,0), 
 					CHUCKIE.mesh->getBoundingBox().getCenter()
 					)
@@ -179,8 +151,8 @@ camera->addAnimator(
 
  agent2.getSceneNode()->addAnimator(
 	 	smgr->createCollisionResponseAnimator(
-		smgr->createTriangleSelectorFromBoundingBox(coverObjectList[i]->getSceneNode()),agent2.getSceneNode(),CHUCKIE.mesh->getBoundingBox().getExtent(), vector3df(0,0,0), CHUCKIE.mesh->getBoundingBox().getCenter())
-					);*/
+	smgr->createTriangleSelectorFromBoundingBox(coverObjectList[i]->getSceneNode()),agent2.getSceneNode(),CHUCKIE.mesh->getBoundingBox().getExtent(), vector3df(0,0,0), CHUCKIE.mesh->getBoundingBox().getCenter())
+					);
 
 }
 
@@ -194,58 +166,43 @@ agent2.createPatrolRoute(&graph);
 
 graph.selector = selector;
 
-ppos = camera->getPosition();
-
-
-//shit, needs to be relative to map
-//camera->setPosition(this->spawnPointList[0]);
-
-Agent* agent3 = new Agent(CARTMAN, spawnPointList[0], smgr, PREY, &this->graph);
-agent3->createCollisionAnimator(selector, smgr);
-#ifndef NODE_MESH_GENERATOR
-//agent3->createPatrolRoute(this->graph.minimumSpanningTree(0));
-
-
-agent3->setPathList(this->generateDefenseArc(0,2*3.14159, 120, 8));
-
-#endif
-entities.push_back(agent3);
-
-//Agent agent1(CYBERDEMON, spawnPointList[1], smgr, PREY, &this->graph);
-//agent1.createCollisionAnimator(selector, smgr);
 
 //Initialize Player Scoresfor(int x=0 ; x<5 ; x++)	playerScores[x] = 0;}
 
+graph.toggleDebugOutput(false);
 
 }
 
+
+
+
+
+
 void ktcGame::update(const irr::ITimer* timer){
-	//graph.toggleDebugOutput(false);
 
-//	camera->setPosition(ppos);
 
-	//cam2->setPosition(agent2.getPosition());
-	//std::cout<<float(agent2.getPosition().X)<<":"<<float(agent2.getPosition().Y)<<":"<<float(agent2.getPosition().Z)<<"\n";
 device->getVideoDriver()->beginScene(true, true, video::SColor(255,100,101,140));
 
 smgr->drawAll();  //draw 3d objects
-
 display->render();
-
 
 
 #ifndef NODE_MESH_GENERATOR
 static mapGraph* mintree = graph.minimumSpanningTree(0);
 //graph.minimumSpanningTree(0)->render(device->getVideoDriver());
-mintree->render(device->getVideoDriver());
-//graph.render(device->getVideoDriver());
-//agent2.drawPieSlices(device->getVideoDriver());
 
-//agent2.update(timer);
+switch(this->dMode){
+case NONE:break;
+case FULLGRAPH: graph.render(device->getVideoDriver());break;
+case MINSPANNINGTREE: mintree->render(device->getVideoDriver());break;
+}
+
+
+
 //update all entities
 		for(int i = 0; i < (int)entities.size();i++){
 			if(entities[i]){
-				//entities[i]->update(timer);
+				entities[i]->update(timer);
 				
 				if(graph.isDebugOutput()){
 			//	entities[i]->drawPieSlices(device->getVideoDriver());
@@ -255,18 +212,12 @@ mintree->render(device->getVideoDriver());
 #endif
 
 
-		gun.render();
+plyr.getGun().render();
 
 device->getVideoDriver()->endScene();//end drawing 
 
 if(InputHandler::getInstance()->unprocessedMouseMessageLMB){
 
-	entities[1]->setPathList(this->generateDefenseArc(0,2*3.14, 120,8));
-	MessageHandler::getInstance()->postMessage(KTC_PLAYER_LEFT_MOUSE_CLICK, 0, this, &gun, timer);
-
-	//	MessageHandler::getInstance()->postMessage(KTC_KILL, 2000, this, &agent2, timer);
-
-	//agent2.newTargetLocation(camera->getPosition(), &graph);
 
 #ifdef NODE_MESH_GENERATOR
 			graph.addNode(camera->getPosition());
@@ -309,14 +260,19 @@ if(InputHandler::getInstance()->unprocessedMouseMessageLMB){
 #endif
 
 
-for(int i = 0; i < entities.size(); i++){
-		if(this->pointing() == entities[i]->getSceneNode()){
-			MessageHandler::getInstance()->postMessage(KTC_KILL, 0, this, entities[i], device->getTimer());
+if(plyr.getGun().isReady()){
+	
+	MessageHandler::getInstance()->postMessage(KTC_PLAYER_LEFT_MOUSE_CLICK, 0, this, &plyr.getGun(), timer);
+	for(int i = 0; i < entities.size(); i++){
+			if(this->pointing() == entities[i]->getSceneNode()){
+				MessageHandler::getInstance()->postMessage(KTC_KILL, 0, this, entities[i], device->getTimer());
+				break;
+			}
 		}
-	}
+		}
 
 
-if(this->pointing() == can.getSceneNode() && (camera->getPosition() - can.getSceneNode()->getPosition()).getLength() <= 100.0f){
+if(this->pointing() == can.getSceneNode() && (plyr.getSceneNode()->getPosition() - can.getSceneNode()->getPosition()).getLength() <= 100.0f){
 	for(int i = 0; i < entities.size(); i++){
 	
 		MessageHandler::getInstance()->postMessage(KTC_REVIVE, 0, this, entities[i], device->getTimer());
@@ -346,14 +302,6 @@ if(this->pointing() == can.getSceneNode() && (camera->getPosition() - can.getSce
 	}
 
 
-	//update all entities
-		for(int i = 0; i < (int)entities.size();i++){
-			if(entities[i]){
-				entities[i]->update(timer);
-			//	entities[i]->drawPieSlices(device->getVideoDriver());
-			}
-		}
-
 
 	//Toggle the render output of the Debug visible objects
 	if(InputHandler::getInstance()->isTKeyPressed()){
@@ -366,17 +314,17 @@ if(this->pointing() == can.getSceneNode() && (camera->getPosition() - can.getSce
 	//}
 
 	can.update(timer);
-	gun.update(timer);
+	plyr.update(timer);
 
 
 	///gun.gun->setPosition(camera->getPosition());	
 	//gun.gun->setRotation(camera->getRotation() + vector3df(0,270,0));
 
-	scene::ISceneNode* SceneNodeSeen;
-	SceneNodeSeen = ktcGame::pointing();
-	if(SceneNodeSeen == agent2.getSceneNode()){
+	//scene::ISceneNode* SceneNodeSeen;
+	//SceneNodeSeen = ktcGame::pointing();
+	//if(SceneNodeSeen == agent2.getSceneNode()){
 	//	std::cout << "I'm looking at Chuckie;\n";
-	}
+	//}
 
 
 }
@@ -392,7 +340,7 @@ ISceneNode* ktcGame::pointing(){
 	ISceneNode* returnedSceneNode;
 
 	//get the scene node that the camera is looking at
-	selectedSceneNode = smgr->getSceneCollisionManager()->getSceneNodeFromCameraBB(camera);
+	selectedSceneNode = smgr->getSceneCollisionManager()->getSceneNodeFromCameraBB((irr::scene::ICameraSceneNode*)plyr.getSceneNode());
 
 	returnedSceneNode = ktcGame::GetCan(selectedSceneNode);
 	if(returnedSceneNode){

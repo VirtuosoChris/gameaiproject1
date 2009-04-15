@@ -14,7 +14,6 @@ public:
 
 	coverObject(irr::core::vector3df p, irr::IrrlichtDevice* device){
 	
-		setPosition(p);
 		mynodep = device->getSceneManager()->addCubeSceneNode(1);
 		mynodep->setPosition(p);
 		mynodep->setScale(vector3df(50,75,50));
@@ -23,6 +22,9 @@ public:
 		mynodep->setMaterialFlag(video::EMF_LIGHTING, true);
 		mynodep->setMaterialFlag(video::EMF_FOG_ENABLE, true);
 		mynodep->setMaterialType(video::EMT_LIGHTMAP_LIGHTING_M4);
+
+		
+		setPosition(p);
 	}
 
 	~coverObject(){

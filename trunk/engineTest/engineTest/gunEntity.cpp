@@ -7,14 +7,14 @@ static vector3df previousPos;
 
 gunEntity::gunEntity(irr::IrrlichtDevice *device, irr::scene::ICameraSceneNode *camera)
 {
-
+ready = true;
 	this->device = device;
 
 irr::scene::ISceneManager* smgr = device->getSceneManager();
 Model GUN = createModel("../media/dreadus_shotgun.md2","../media/shotgun_map.png",device,1.0f);
-//Model GUN = createModel("../media/w_railgun.md2","../media/railgun.pcx",device,1.0f);
+
  gun = smgr->addAnimatedMeshSceneNode(GUN.mesh);
-//camera->addChild(gun);
+
 gun->setRotation(vector3df(0,270,0));
 gun->setPosition(
 				 (vector3df(.0f,.0f,.0f)
@@ -22,19 +22,14 @@ gun->setPosition(
 				)//.normalize()
 				);
 
-//gun2->remove();
-//gun->setPosition(vector3df(0, 0, gun->getPosition().Z));
-
-//gun->setMaterialFlag(video::EMF_ZBUFFER, false);
 gun->setMD2Animation(irr::scene::EMAT_STAND);
 gun->setAnimationSpeed(60);
 gun->setMaterialTexture(0,GUN.texture);
 gun->setMaterialFlag(video::EMF_FOG_ENABLE, true);
 gun->setLoopMode(false);
-//gun->setPosition(vector3df(-1000,-1000,-1000));//HACKHACKHACK
-//gun->setRenderFromIdentity(true);
+
 gun->setPosition(vector3df(0,-1000,0));
-//gun->setMaterialFlag(video::EMF_ZBUFFER, false);
+
 previousPos = camera->getPosition();
 this->camera = camera;
 basePosition = gun->getPosition();
@@ -51,6 +46,12 @@ t.Y = 0;
 	
 	previousPos = camera->getPosition();
 
+
+	if(gun->getFrameNr() >= gun->getEndFrame()){
+		ready = true;			
+	}
+
+
 }
 
 bool gunEntity::processMessage(const Message* m){
@@ -61,12 +62,15 @@ bool gunEntity::processMessage(const Message* m){
 	
 		case KTC_PLAYER_LEFT_MOUSE_CLICK:
 			if(gun->getFrameNr() >= gun->getEndFrame()){
+				
+			ready = false;
 				gun->setMD2Animation(irr::scene::EMAT_STAND);
 			gun->setAnimationSpeed(60);
 			}
-			std::cout<<"did stuff\n";
+			//std::cout<<"did stuff\n";\
+
 		break;
-		default:std::cout<<"Wrong message type\n";
+		default:;//std::cout<<"Wrong message type\n";
 
 	}
 
@@ -84,16 +88,8 @@ irr::core::matrix4 abc(irr::core::IdentityMatrix);
 const float mdat[16] = {1,0,0,0, 0,1,0,0, 0,0,1,0, 0,1000,0,1};
 abc.setM(mdat);
 
-//abc.setTranslation(vector3df(1,1000,10));
-
-//abc.setTranslation(vector3df(0,100,0));
-
 device->getVideoDriver()->setTransform(video::ETS_WORLD,camera->getAbsoluteTransformation());// camera->getAbsoluteTransformation());
 device->getVideoDriver()->setTransform(video::ETS_VIEW, abc);
-
-//gun.gun->setRotation(camera->getAbsoluteTransformation().getRotationDegrees()+ vector3df(0,270,0));
-//gun.gun->setPosition(camera->getAbsoluteTransformation().getTranslation());
-//gun.gun->setScale(camera->getAbsoluteTransformation().getScale());
 
 gun->render();
 

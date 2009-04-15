@@ -238,6 +238,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\player.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Sensors.h"
 				>
 			</File>
