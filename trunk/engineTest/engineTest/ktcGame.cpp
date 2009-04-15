@@ -101,6 +101,9 @@ fclose(fp);
  CARTMAN  = createModel("../media/ERIC.MD2","../media/ERIC.pcx",device, 1.0f);
  CYBERDEMON = createModel("../media/cyber.md2","../media/cyber.pcx",device,3.0f);
 
+
+agent2.setPosition(this->spawnPointList[2]);
+agent2.getSceneNode()->setPosition(this->spawnPointList[2]);
 agent2.createCollisionAnimator(selector, smgr);
 
  Agent::setAgentList(&entities);
@@ -160,16 +163,13 @@ for(int i = 0; i < this->coverObjectList.size(); i++){
  
 
 
-#ifndef NODE_MESH_GENERATOR
-agent2.createPatrolRoute(&graph);
-#endif
-
 graph.selector = selector;
 
 
 //Initialize Player Scoresfor(int x=0 ; x<5 ; x++)	playerScores[x] = 0;}
 
 graph.toggleDebugOutput(false);
+
 
 }
 
@@ -316,7 +316,10 @@ if(this->pointing() == can.getSceneNode() && (plyr.getSceneNode()->getPosition()
 	can.update(timer);
 	plyr.update(timer);
 
-
+	
+	//agent2.walk(agent2.pursue(&plyr));//);+ agent2.wallAvoidance());
+	//agent2.walk(2*agent2.seek(plyr.getPosition())+ agent2.wallAvoidance());
+	
 	///gun.gun->setPosition(camera->getPosition());	
 	//gun.gun->setRotation(camera->getRotation() + vector3df(0,270,0));
 

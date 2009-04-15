@@ -28,6 +28,9 @@ irr::f32 TIMEELAPSED;
 	double pathStartTime;
 	double expectedArrivalTime;
 
+physicsObject* IT;
+physicsObject* SPOTTED;
+
 	irr::u32 LASTUPDATE;
 	
     bool MOVING;
@@ -63,6 +66,11 @@ irr::f32 TIMEELAPSED;
 	void correctPath();
 
 public:
+
+	void setIt(physicsObject* p){IT = p;}
+	void setSpotted(physicsObject* p){SPOTTED = p;}
+	physicsObject* getIt(){return IT;}
+	physicsObject* getSpottedAgent(){return SPOTTED;}
 
 	irr::f32  getUpdateTimeIncrement(){return this->TIMEELAPSED;}
 
