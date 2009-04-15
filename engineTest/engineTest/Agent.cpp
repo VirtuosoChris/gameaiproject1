@@ -55,7 +55,7 @@ bool Agent::processMessage(const Message* m){
 
 //ctor
 Agent::Agent(Model m, irr::core::vector3df p, irr::scene::ISceneManager* mgr, Agent_Type T,mapGraph* g):model(m),type(T),graph(g){
-	
+	IT = SPOTTED = NULL;
 
 	s1d = new WallSensorData(NUMFEELERS,ANGLE);
 	pie = new PieSensor(4);
