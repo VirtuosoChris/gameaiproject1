@@ -61,6 +61,9 @@ using namespace io;
 using namespace irrklang;
 
 
+std::vector<irr::scene::ISceneNode*> specialWalls;
+
+
 int main(int, char**){
 
 	IrrlichtDevice *device;
@@ -167,6 +170,62 @@ irr::scene::ITriangleSelector*  selector = NULL;
 //create game HUD object
 gameHUD* display = new gameHUD(driver,100);
 //create the game object
+
+
+
+
+
+
+
+irr::scene::ISceneNode* x = smgr->addCubeSceneNode();
+x->setPosition(vector3df(-400,-41,-42));
+x->setScale(vector3df(45,10,5));
+x->setMaterialTexture(0,driver->getTexture("../media/wall.jpg"));
+x->setMaterialTexture(1,driver->getTexture("../media/wall.jpg"));
+x->setMaterialFlag(video::EMF_FOG_ENABLE, true);
+specialWalls.push_back(x);
+
+irr::scene::ISceneNode* x2 = smgr->addCubeSceneNode();
+x2->setPosition(vector3df(-400,-41,232));
+x2->setScale(vector3df(45,10,5));
+x2->setMaterialTexture(0,driver->getTexture("../media/wall.jpg"));
+x2->setMaterialFlag(video::EMF_FOG_ENABLE, true);
+specialWalls.push_back(x2);
+
+irr::scene::ISceneNode* x3 = smgr->addCubeSceneNode();
+x3->setPosition(vector3df(-603,-41,104));
+x3->setScale(vector3df(5,10,45));
+x3->setMaterialTexture(0,driver->getTexture("../media/wall.jpg"));
+x3->setMaterialFlag(video::EMF_FOG_ENABLE, true);
+specialWalls.push_back(x3);
+
+
+ x3 = smgr->addCubeSceneNode();
+x3->setPosition(vector3df(825,-41,104));
+x3->setScale(vector3df(5,10,45));
+x3->setMaterialTexture(0,driver->getTexture("../media/wall.jpg"));
+x3->setMaterialFlag(video::EMF_FOG_ENABLE, true);
+specialWalls.push_back(x3);
+
+
+ x = smgr->addCubeSceneNode();
+x->setPosition(vector3df(-400+1000,-41,-42));
+x->setScale(vector3df(45,10,5));
+x->setMaterialTexture(0,driver->getTexture("../media/wall.jpg"));
+x->setMaterialTexture(1,driver->getTexture("../media/wall.jpg"));
+x->setMaterialFlag(video::EMF_FOG_ENABLE, true);
+specialWalls.push_back(x);
+
+
+x2 = smgr->addCubeSceneNode();
+x2->setPosition(vector3df(-400+1000,-41,232));
+x2->setScale(vector3df(45,10,5));
+x2->setMaterialTexture(0,driver->getTexture("../media/wall.jpg"));
+x2->setMaterialFlag(video::EMF_FOG_ENABLE, true);
+specialWalls.push_back(x2);
+
+
+
 ktcGame game(device, selector, display);
 
 

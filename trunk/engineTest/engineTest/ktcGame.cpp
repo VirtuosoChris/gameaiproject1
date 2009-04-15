@@ -13,6 +13,7 @@ static const float PREDATOR_SPEED = .15f;
 static const float PREY_SPEED = .3f;
 
 
+extern std::vector<irr::scene::ISceneNode*> specialWalls;
 
 //plan for guard can behavior
 //a* to the can
@@ -155,6 +156,27 @@ for(int i = 0; i < this->coverObjectList.size(); i++){
  agent2.getSceneNode()->addAnimator(
 	 	smgr->createCollisionResponseAnimator(
 	smgr->createTriangleSelectorFromBoundingBox(coverObjectList[i]->getSceneNode()),agent2.getSceneNode(),CHUCKIE.mesh->getBoundingBox().getExtent(), vector3df(0,0,0), CHUCKIE.mesh->getBoundingBox().getCenter())
+					);
+
+}
+
+
+for(int i = 0; i < specialWalls.size(); i++){
+
+	std::cout<<"ASdkksjd\n";
+	plyr.getSceneNode()->addAnimator(
+					smgr->createCollisionResponseAnimator(
+					smgr->createTriangleSelectorFromBoundingBox(
+					specialWalls[i]),
+					plyr.getSceneNode(),CHUCKIE.mesh->getBoundingBox().getExtent(), 
+					vector3df(0,0,0), 
+					CHUCKIE.mesh->getBoundingBox().getCenter()
+					)
+					);
+
+ agent2.getSceneNode()->addAnimator(
+	 	smgr->createCollisionResponseAnimator(
+	smgr->createTriangleSelectorFromBoundingBox(specialWalls[i]),agent2.getSceneNode(),CHUCKIE.mesh->getBoundingBox().getExtent(), vector3df(0,0,0), CHUCKIE.mesh->getBoundingBox().getCenter())
 					);
 
 }
@@ -317,6 +339,9 @@ if(this->pointing() == can.getSceneNode() && (plyr.getSceneNode()->getPosition()
 	plyr.update(timer);
 
 	
+
+	//agent2.walk(2*agent2.avoid(&plyr)+ 10*agent2.wallAvoidance());
+
 	//agent2.walk(agent2.pursue(&plyr));//);+ agent2.wallAvoidance());
 	//agent2.walk(2*agent2.seek(plyr.getPosition())+ agent2.wallAvoidance());
 	
