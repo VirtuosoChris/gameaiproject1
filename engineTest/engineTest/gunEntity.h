@@ -13,12 +13,16 @@ public:
 	irr::scene::ICameraSceneNode *camera;
 	irr::core::vector3df basePosition;
 	irr::IrrlichtDevice* device;
+	bool ready; 
 
 	//gunEntity(){};
 	gunEntity(IrrlichtDevice *device,irr::scene::ICameraSceneNode *camera);
 	virtual void update(const irr::ITimer*);
 	virtual bool processMessage(const Message*);
 	void render();
+	bool isReady(){return ready;}
+
+	gunEntity(){}
 
 };
 

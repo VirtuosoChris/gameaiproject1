@@ -74,6 +74,9 @@ public:
 	void newTargetLocation(irr::core::vector3df);
 	void createPatrolRoute(mapGraph* mg);
 
+	irr::core::vector3df pursue(physicsObject* tgt);
+	irr::core::vector3df avoid(physicsObject* tgt);
+
 	//gameEntity functionality
 	virtual void update(const irr::ITimer*);
 	virtual bool processMessage(const Message*);
