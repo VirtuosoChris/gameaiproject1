@@ -70,7 +70,7 @@ public:
 
 
 	virtual void update(const irr::ITimer* timer){
-		std::cout<<"\n"<<position.X <<":"<<position.Y <<":"<< position.Z;
+	//	std::cout<<"\n"<<position.X <<":"<<position.Y <<":"<< position.Z;
 		double timeElapsed = timer->getTime()- lastUpdate;
 		lastUpdate = timer->getTime();
 		velocity = mynodep->getPosition() - ppos / timeElapsed;

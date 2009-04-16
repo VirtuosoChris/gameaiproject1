@@ -120,6 +120,8 @@ wallavoidaccel = wallavoidaccel.normalize();
 wallavoidaccel*=.025f;
 }
 
+if(wallavoidaccel.getLength() != 0){
+	std::cout<<wallavoidaccel.getLength()<<"\n";}
 return wallavoidaccel;
 
 }
@@ -138,6 +140,8 @@ core::vector3df tv = (-mynodep->getPosition() + currentSeekTarget);
 tv.Y = 0;
 if( tv.getLength()<RADIUS){
 	if(!pathList.empty()){
+
+		//std::cout<<"popping node off list\n";
 		previousSeekTarget = currentSeekTarget;//mynodep->getPosition();
 		currentSeekTarget = pathList.front();
 		pathList.erase(pathList.begin()); //ZOMG WTF obscure bug avoidance tip #666 : don't use list.remove(pathList.begin()) when you mean list.erase(pathList.begin())
@@ -153,7 +157,6 @@ if( tv.getLength()<RADIUS){
 		//}
 
 		this->pathStartTime = timer->getTime();
-		//correctPath();		
 		this->expectedArrivalTime = pathStartTime+(currentSeekTarget - this->getPosition()).getLength() /  MAXSPEED;
 
 	}else{
@@ -173,10 +176,7 @@ if( (timer->getTime() - this->pathStartTime) > TIMEMULTIPLIER*(this->expectedArr
 }
 
 
-
-
-
-irr::core::vector3df accel = seek(currentSeekTarget) + this->wallAvoidance();//.normalize()*MAXSPEED;// +  .0000001*wallavoidaccel;//- seek(currentSeekTarget).normalize()*wallavoidaccel.getLength();
+irr::core::vector3df accel = 2*seek(currentSeekTarget) + 2*wallAvoidance();
 return accel;
 
 }
@@ -207,3 +207,5 @@ irr::core::vector3df Agent::avoid(physicsObject* tgt){
 	return flee(tgt->getPosition() + lookAheadTime* tgt->getVelocity());
 
 }
+
+

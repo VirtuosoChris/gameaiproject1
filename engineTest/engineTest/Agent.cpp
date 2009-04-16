@@ -452,7 +452,7 @@ pathList.clear();
 
 mapGraph* minspanningtree = mg->minimumSpanningTree(0);
 //std::cout<<"got the tree\n";
-std::vector<int>* result = minspanningtree->depthFirstSearch(mg->getClosestNodeUnobstructed(mynodep->getPosition(),smgr, selector));
+std::vector<int>* result = minspanningtree->depthFirstSearch(mg->getClosestNodeUnobstructedSpannable(mynodep->getPosition(),smgr, selector));
 //delete minspanningtree;
 //minspanningtree= 0;
 
@@ -478,10 +478,10 @@ if(result->size()){
 //	printf("%d %d\n", sNode1, sNode2);
 
 
-//for(int i = 0; i < result->size(); i++){
+for(int i = 0; i < result->size(); i++){
 
-//	std::cout<<(*result)[i]<<" ";
-//}
+	std::cout<<(*result)[i]<<" ";
+}
 
 
 /*
@@ -569,6 +569,8 @@ void Agent::newTargetLocation(irr::core::vector3df fin){
 //if the agent needs to correct its path: in the event it gets lost, eg, falls off a bridge, misses a doorway, etc, a-star to the currentSeekTarget and prepend the path to the pathlist
 void Agent::correctPath(){
 
+
+	std::cout<<"correcting path\n";
 int src = this->graph->getClosestNodeUnobstructed(this->getPosition(),smgr,selector);
 int tgt = this->graph->getClosestNodeUnobstructed(currentSeekTarget,smgr,selector);
 

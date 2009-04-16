@@ -17,7 +17,7 @@ const double mass = 25; //was 100 // was 25
 const double RADIUS = 100;//50;//25;//was 100
 const double ANGLE = 45;
 const double ACCELRATE = MAXSPEED/4;
-const double TIMEMULTIPLIER = 2.0;
+const double TIMEMULTIPLIER = 2.0f;
 
 enum Agent_Type{PREDATOR, PREY};
 
