@@ -14,6 +14,59 @@ using namespace std;
 
 //#define NODE_MESH_GENERATOR
 
+//returns the closest unobstructed node such that it will be part of the minimum spanning tree: that is, has at least one two sided edge associated with it 
+int mapGraph::getClosestNodeUnobstructedSpannable(irr::core::vector3df pos, irr::scene::ISceneManager*, irr::scene::ITriangleSelector* selector){
+
+
+	
+ core::line3d<f32> line;
+ core::vector3df intersection;
+ core::triangle3df triangle;
+ line.start = pos;
+
+ bool* spannable = new bool[NODE_VECTOR.size()];
+
+ for(int i = 0; i < NODE_VECTOR.size(); i++){
+ 
+	 bool tbool;
+	 tbool = false;
+	 for(int j = 0; j < NODE_VECTOR.size(); j++){
+	 
+		 if(adjacencyList[i][j] && adjacencyList[j][i] && i != j){
+				tbool = true;
+				break;
+		 }
+
+	 }
+
+	 spannable[i] = tbool;
+ 
+ }
+
+
+
+int sNode1=-1;
+double closest = std::numeric_limits<double>::max();
+	line.start = pos;
+	for(unsigned int i = 0; i < NODE_VECTOR.size();i++){
+		if((pos - NODE_VECTOR[i]).getLength() < closest){
+			line.end = NODE_VECTOR[i];
+			if(!smgr->getSceneCollisionManager()->getCollisionPoint(line, selector,intersection, triangle)){
+				if(spannable[i]){
+				closest = (pos - NODE_VECTOR[i]).getLength();
+				sNode1 = i;
+				}
+			}
+		}
+	}
+
+	std::cout<<"the closest is"<<sNode1<<std::endl;
+
+	delete []spannable;
+	return sNode1;
+}
+	
+
 
 int mapGraph::getClosestNodeUnobstructed(irr::core::vector3df pos, irr::scene::ISceneManager*, irr::scene::ITriangleSelector* selector){
 

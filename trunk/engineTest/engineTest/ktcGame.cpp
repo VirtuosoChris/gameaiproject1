@@ -49,7 +49,10 @@ return result;
 ktcGame::ktcGame(IrrlichtDevice *device, irr::scene::ITriangleSelector* selector, gameHUD* display):can (device), graph (device, "NODE_LIST.txt","ADJACENCY_LIST.txt","EXCLUDE.txt"), 
 agent2 (Model("../media/chuckie.MD2","../media/Chuckie.pcx",device), core::vector3df(-528.744751, 0.024357, 102.937782), device->getSceneManager(), PREY, &graph)
 
-{dMode = NONE;
+{
+	
+	
+	dMode = NONE;
 plyr = player(device);
 plyr.setCameraSpeed(PREY_SPEED);
 	//Instantiate the Irrlicht Engine Device
@@ -111,6 +114,8 @@ agent2.createCollisionAnimator(selector, smgr);
 
  entities.push_back(&agent2);
 
+
+
  //camera = 
 //	 smgr->addCameraSceneNodeFPS();// addCameraSceneNodeFPS();
 
@@ -119,6 +124,9 @@ agent2.createCollisionAnimator(selector, smgr);
 
 
 plyr.getSceneNode()->setPosition( spawnPointList[3] );//- vector3df(-1300,-144,-1249));
+
+
+agent2.createPatrolRoute(&graph);
 
 scene::ISceneNodeAnimator *nodeAnimator = 
 	smgr->createCollisionResponseAnimator(selector,//geometry for collision 
@@ -153,17 +161,17 @@ for(int i = 0; i < this->coverObjectList.size(); i++){
 					)
 					);
 
- agent2.getSceneNode()->addAnimator(
-	 	smgr->createCollisionResponseAnimator(
-	smgr->createTriangleSelectorFromBoundingBox(coverObjectList[i]->getSceneNode()),agent2.getSceneNode(),CHUCKIE.mesh->getBoundingBox().getExtent(), vector3df(0,0,0), CHUCKIE.mesh->getBoundingBox().getCenter())
-					);
+ //agent2.getSceneNode()->addAnimator(
+//	 	smgr->createCollisionResponseAnimator(
+//	smgr->createTriangleSelectorFromBoundingBox(coverObjectList[i]->getSceneNode()),agent2.getSceneNode(),CHUCKIE.mesh->getBoundingBox().getExtent(), vector3df(0,0,0), CHUCKIE.mesh->getBoundingBox().getCenter())
+//					);
 
 }
 
 
 for(int i = 0; i < specialWalls.size(); i++){
 
-	std::cout<<"ASdkksjd\n";
+	//std::cout<<"ASdkksjd\n";
 	plyr.getSceneNode()->addAnimator(
 					smgr->createCollisionResponseAnimator(
 					smgr->createTriangleSelectorFromBoundingBox(
@@ -185,12 +193,18 @@ for(int i = 0; i < specialWalls.size(); i++){
  
 
 
-graph.selector = selector;
 
+graph.selector = selector;
+agent2.setIt(&plyr);
 
 //Initialize Player Scoresfor(int x=0 ; x<5 ; x++)	playerScores[x] = 0;}
 
-graph.toggleDebugOutput(false);
+agent2.GetFSM()->ChangeState(Patrol::GetInstance());
+
+
+
+//graph.toggleDebugOutput(false);
+
 
 
 }
@@ -220,9 +234,7 @@ case MINSPANNINGTREE: mintree->render(device->getVideoDriver());break;
 }
 
 
-
-//update all entities
-		for(int i = 0; i < (int)entities.size();i++){
+for(int i = 0; i < (int)entities.size();i++){
 			if(entities[i]){
 				entities[i]->update(timer);
 				
@@ -231,8 +243,15 @@ case MINSPANNINGTREE: mintree->render(device->getVideoDriver());break;
 				}
 			}
 		}
+
+
 #endif
 
+
+		
+for(int i = 0; i < this->coverObjectList.size(); i++){
+		coverObjectList[i]->getCoverPosition(&agent2);
+	}
 
 plyr.getGun().render();
 
@@ -340,6 +359,9 @@ if(this->pointing() == can.getSceneNode() && (plyr.getSceneNode()->getPosition()
 
 	
 
+
+	//update all entities
+		
 	//agent2.walk(2*agent2.avoid(&plyr)+ 10*agent2.wallAvoidance());
 
 	//agent2.walk(agent2.pursue(&plyr));//);+ agent2.wallAvoidance());
@@ -353,6 +375,8 @@ if(this->pointing() == can.getSceneNode() && (plyr.getSceneNode()->getPosition()
 	//if(SceneNodeSeen == agent2.getSceneNode()){
 	//	std::cout << "I'm looking at Chuckie;\n";
 	//}
+
+	
 
 
 }

@@ -28,7 +28,7 @@ irr::scene::ITriangleSelector* selector;
 std::string exclude;
 std::string edges;
 std::string nodes;
-
+int mapGraph::getClosestNodeUnobstructedSpannable(irr::core::vector3df pos, irr::scene::ISceneManager*, irr::scene::ITriangleSelector* selector);
 
 mapGraph(irr::scene::ISceneManager*, int numNodes);
 

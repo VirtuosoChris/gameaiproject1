@@ -52,13 +52,16 @@ Patrol* Patrol::GetInstance(){
 
 void Patrol::Enter(Agent & agt){
 	cout << "Entering Patrol state.\n";
+
+//	agt.create
 	//use MsgHandler->postMessage() here to post a message to all other players (use for loop or some shit)
 }
 
 void Patrol::Execute(Agent & agt, const irr::ITimer* timer){
-	cout << "Executing Patrol state.\n";
+	//cout << "Executing Patrol state.\n";
 
-	irr::core::vector3df accel = agt.followPath(timer);
+	irr::core::vector3df accel;
+	accel= agt.followPath(timer);
 	agt.walk(accel);
 
 }
