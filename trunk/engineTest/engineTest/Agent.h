@@ -108,7 +108,14 @@ public:
 	inline static void setAgentList(std::vector<Agent*>* abc){agentList = abc;}
 	inline static std::vector<Agent*>* getAgentList(){return agentList;}
 
-	//cover node list getter/setter		inline static void setCoverObjectList(std::vector<coverObject*>* abc){coverObjectList = abc;}	inline static std::vector<coverObject*>* getCoverObjectList(){return coverObjectList;}	//agent type getter/setter	inline Agent_Type getAgentType(){return type;}	inline void setAgentType(Agent_Type T){	type = T;}	//seek target getter/setter
+	//cover node list getter/setter		
+	inline static void setCoverObjectList(std::vector<coverObject*>* abc){coverObjectList = abc;}
+	inline static std::vector<coverObject*>* getCoverObjectList(){return coverObjectList;}	
+
+	//agent type getter/setter	
+	//inline GamePlayer_Type getAgentType(){return type;}	
+	//inline void setAgentType(GamePlayer_Type T){	type = T;}	
+	//seek target getter/setter
 	inline irr::core::vector3df getSeekTarget(){return currentSeekTarget;}
 	inline void setSeekTarget(irr::core::vector3df pl){ currentSeekTarget = pl;}
 	inline irr::core::vector3df getPreviousSeekTarget(){return previousSeekTarget;}
