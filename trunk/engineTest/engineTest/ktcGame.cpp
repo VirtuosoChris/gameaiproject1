@@ -9,10 +9,13 @@ using namespace irr;
 using namespace irr::scene;
 using namespace irr::core;
 
+using std::cout;
+
 static const float PREDATOR_SPEED = .15f;
 static const float PREY_SPEED = .3f;
 
-
+//initializing the playerList
+std::vector<GamePlayer *> ktcGame::playerList;
 
 extern std::vector<irr::scene::ISceneNode*> specialWalls;
 
@@ -48,16 +51,17 @@ return result;
 //-442,351,-863
 //-528.744751 0.024357 102.937782
 ktcGame::ktcGame(IrrlichtDevice *device, irr::scene::ITriangleSelector* selector, gameHUD* display):can (device), graph (device, "NODE_LIST.txt","ADJACENCY_LIST.txt","EXCLUDE.txt"), 
-agent2 (Model("../media/chuckie.MD2","../media/Chuckie.pcx",device), core::vector3df(-528.744751, 0.024357, 102.937782), device->getSceneManager(), PREY, &graph)
-
+agent2 (Model("../media/chuckie.MD2","../media/Chuckie.pcx",device), core::vector3df(-528.744751, 0.024357, 102.937782), device->getSceneManager(), PREY, &graph),
+plyr(device, irr::core::vector3df(0,0,0), 15000, 0, PREDATOR)
 {
 	
-	
 	dMode = NONE;
-plyr = player(device);
-plyr.setCameraSpeed(PREY_SPEED);
+	
 	//Instantiate the Irrlicht Engine Device
 	this->device = device;
+
+	plyr.setCameraSpeed(PREY_SPEED);
+	playerList.push_back(&plyr);
 	
 	//Instantiate the Irrlicht Engine Scene Manager
 	smgr = device->getSceneManager();
@@ -97,6 +101,7 @@ while(!feof(fp)){
 fclose(fp);
 }
 
+else cout << "Bad pointer.\n";
 
 	//can=(device);
 	//gun = gunEntity(device, camera);
@@ -125,6 +130,7 @@ entities.push_back(agent3);
  Agent::setCoverObjectList(&coverObjectList);
 
  entities.push_back(&agent2);
+ playerList.push_back(&agent2);
 
 
 
@@ -135,7 +141,7 @@ entities.push_back(agent3);
  //camera->setPosition(core::vector3df(-280,288,-830));
 
 
-plyr.setPosition( spawnPointList[3] );//- vector3df(-1300,-144,-1249));
+plyr.getSceneNode()->setPosition( spawnPointList[0] );
 
 agent2.createPatrolRoute(&graph);
 
@@ -221,7 +227,6 @@ agent2.setSpotted(&plyr);
 
 //Initialize Player Scoresfor(int x=0 ; x<5 ; x++)	playerScores[x] = 0;}
 
-agent2.GetFSM()->ChangeState(Patrol::GetInstance());
 
 graph.selector = selector; 
 //graph.toggleDebugOutput(false);
@@ -236,7 +241,27 @@ graph.selector = selector;
 
 
 void ktcGame::update(const irr::ITimer* timer){
-//
+
+	//if time is up, then round robin shit so that we get new predator and prey
+	if(plyr.pl_time.getTime() <= 0){
+		RoundRobin(playerList);
+		for(int i = 0; i < playerList.size(); i++){
+			(*playerList[i]).setInvTimer(5000);
+			(*playerList[i]).setTimer(6000);
+		}
+	}
+
+	/*
+	if(agent2.getPlayerType() == PREY) 
+		std::cout << "I'm an agent and i'm PREY\n";
+	else std::cout << "I'm an agent and i'm a PREDATOR\n";
+	
+	if(plyr.getPlayerType() == PREY) 
+		std::cout << "I'm a player and i'm PREY\n";
+	else std::cout << "I'm a player and i'm a PREDATOR\n";
+	*/
+
+
 //	core::line3d<irr::f32> line;
 //	line.start = plyr.getSceneNode()->getPosition();
 	//line.end = //line.start +  vector3df(0,1000,0);
@@ -424,9 +449,25 @@ for(int i = 0; i < (int)entities.size();i++){
 
 }
 
+void ktcGame::RoundRobin(std::vector<GamePlayer *> plst){
+	for(int i = 0; i < plst.size(); i++){
+		if( ( (*plst[i]).getPlayerType() == PREDATOR) && (i+1 != plst.size()) ){
+			(*plst[i]).setPlayerType(PREY);
+			//change state to init of pred and prey
+			(*plst[i+1]).setPlayerType(PREDATOR);
+			break;
+		}
+
+		else if( ((*plst[i]).getPlayerType() == PREDATOR) && ( (i+1) == plst.size() ) ){
+			//change state to init of pred and prey
+			(*plst[i]).setPlayerType(PREY);
+			(*plst[i% (plst.size() - 1) ]).setPlayerType(PREDATOR);
+			break;
+		}
+	}
+}
 
 bool ktcGame::processMessage(const Message* m){
-	delete m;
 	return true;
 }
 
