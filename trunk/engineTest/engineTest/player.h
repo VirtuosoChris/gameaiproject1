@@ -2,96 +2,59 @@
 #define PLAYER
 #include "irrlicht.h"
 #include "gunEntity.h"
+#include "GamePlayer.h"
+#include "StateMachine.h"
+#include "PlayerStates.h"
+#include "Timer.h"
 #include <string>
 
 using namespace irr;
+using namespace irr::core;
 using namespace irr::scene;
 
-class player:public physicsObject{
 
+class player : public GamePlayer{
 
+private:
 	//Camera Scene Node
+	irr::IrrlichtDevice *pl_device;
 	scene::ICameraSceneNode *camera;
 	
 	gunEntity gun;
 	vector3df ppos; 
 	double lastUpdate;
 
+	StateMachine<player> * PlayerStateMachine;
 
 public:
+	void setCameraSpeed(double ns);
 
+	void useSpectatorCamera();
 
-	void setCameraSpeed(double ns){
-	core::list<ISceneNodeAnimator*>::ConstIterator anims=camera->getAnimators().begin(); 
-	ISceneNodeAnimatorCameraFPS *anim=(ISceneNodeAnimatorCameraFPS*)*anims; 
-	anim->setMoveSpeed(ns);
+	void useShooterCamera();
 	
+	irr::IrrlichtDevice * getDevice(){ return pl_device; }
+	
+	virtual void setPosition(irr::core::vector3df n);
+
+	
+	player(irr::IrrlichtDevice* dev, irr::core::vector3df sp, Timer tim, Timer inv, GamePlayer_Type T);
+	
+	player(){
+		PlayerStateMachine = 0;
 	}
 
-	void useSpectatorCamera(){
-	
-	core::list<ISceneNodeAnimator*>::ConstIterator anims=camera->getAnimators().begin(); 
-	ISceneNodeAnimatorCameraFPS *anim=(ISceneNodeAnimatorCameraFPS*)*anims; 
-	
-	//anim->setVerticalMovement(true);
-	throw std::string("Not done yet");
-	
+	virtual ~player();
 
 	
-	}
+	//fsm getter
+	inline StateMachine<player> * GetFSM() const{ return PlayerStateMachine; }
 
-	void useShooterCamera(){
+	virtual void update(const irr::ITimer* timer);
 
-	core::list<ISceneNodeAnimator*>::ConstIterator anims=camera->getAnimators().begin(); 
-	ISceneNodeAnimatorCameraFPS *anim=(ISceneNodeAnimatorCameraFPS*)*anims; 
-	anim->setVerticalMovement(false);
+	virtual bool processMessage(const Message* msg);
 
-	}
-	
-	
-	virtual void setPosition(irr::core::vector3df n){
-		mynodep->setPosition(n);
-		this->position = n;
-		ppos = n;
-	
-	}
-
-	
-	player(irr::IrrlichtDevice* device):camera (device->getSceneManager()->addCameraSceneNodeFPS()) , gun (device, camera){
-		
-	this->mynodep = camera;
-	lastUpdate = 0;
-	
-	scene::ISceneNode *lightscenenode4 = device->getSceneManager()->addLightSceneNode(0, vector3df(0,0,0), irr::video::SColor(255, 100, 100, 0),200);
-	camera->addChild(lightscenenode4);
-	
-	useShooterCamera();
-	}
-
-
-	virtual void update(const irr::ITimer* timer){
-	//	std::cout<<"\n"<<position.X <<":"<<position.Y <<":"<< position.Z;
-		double timeElapsed = timer->getTime()- lastUpdate;
-		lastUpdate = timer->getTime();
-		velocity = mynodep->getPosition() - ppos / timeElapsed;
-		this->setPosition(mynodep->getPosition());
-		ppos = mynodep->getPosition();
-		gun.update(timer);
-	
-	}
-
-
-	virtual bool processMessage(const Message* msg){
-	return false;
-	}
-
-
-
-	player(){}
-
-	gunEntity& getGun(){return this->gun;}
-
-
+	inline gunEntity& getGun(){return this->gun;}
 
 };
 
