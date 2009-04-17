@@ -2,6 +2,8 @@
 #define CPMATH
 #include "irrlicht.h"
 
+
+#define PI 3.14159
 inline double degreesToRadians(double degrees){
 return 2*3.14159*degrees/360;
 }
@@ -28,6 +30,28 @@ inline double hypo(double opp, double adj)
 	double mag ;
 	mag = sqrt((opp*opp)+(adj*adj)) ; //pythagorean theorem
 	return mag;
+}
+
+
+
+inline double vectorAngle(irr::core::vector3df t){
+	//t.X = fabs(t.X);
+	t.Y = 0;
+	//t.Z = fabs(t.Z);
+
+double tAngle = acos(fabs(t.X));
+
+	switch(
+	   quadrant(t.normalize()
+	   )){
+		case 1:break;
+case 2:tAngle = PI-tAngle;break;
+case 3:tAngle = PI+tAngle;break;
+case 4:tAngle = 2*PI-tAngle;break;
+default:;
+}
+return tAngle;
+
 }
 
 

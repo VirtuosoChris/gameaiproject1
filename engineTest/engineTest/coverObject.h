@@ -33,7 +33,7 @@ public:
 	}
 	
 	static double getRadius(){return 50;}
-
+	static double getBoundaryRadius(){return getRadius() + 10;}
 
 
 

@@ -13,6 +13,7 @@ static const float PREDATOR_SPEED = .15f;
 static const float PREY_SPEED = .3f;
 
 
+
 extern std::vector<irr::scene::ISceneNode*> specialWalls;
 
 //plan for guard can behavior
@@ -111,6 +112,7 @@ agent2.getSceneNode()->setPosition(this->spawnPointList[2]);
 agent2.createCollisionAnimator(selector, smgr);
 
  Agent::setAgentList(&entities);
+ Agent::setCoverObjectList(&coverObjectList);
 
  entities.push_back(&agent2);
 
@@ -123,8 +125,7 @@ agent2.createCollisionAnimator(selector, smgr);
  //camera->setPosition(core::vector3df(-280,288,-830));
 
 
-plyr.getSceneNode()->setPosition( spawnPointList[3] );//- vector3df(-1300,-144,-1249));
-
+plyr.setPosition( spawnPointList[3] );//- vector3df(-1300,-144,-1249));
 
 agent2.createPatrolRoute(&graph);
 
@@ -146,7 +147,6 @@ plyr.getSceneNode()->addAnimator(nodeAnimator);
 					);
 
 
-
 //make the camera collide with cover
 for(int i = 0; i < this->coverObjectList.size(); i++){
 
@@ -161,10 +161,10 @@ for(int i = 0; i < this->coverObjectList.size(); i++){
 					)
 					);
 
- //agent2.getSceneNode()->addAnimator(
-//	 	smgr->createCollisionResponseAnimator(
-//	smgr->createTriangleSelectorFromBoundingBox(coverObjectList[i]->getSceneNode()),agent2.getSceneNode(),CHUCKIE.mesh->getBoundingBox().getExtent(), vector3df(0,0,0), CHUCKIE.mesh->getBoundingBox().getCenter())
-//					);
+ agent2.getSceneNode()->addAnimator(
+	 	smgr->createCollisionResponseAnimator(
+	smgr->createTriangleSelectorFromBoundingBox(coverObjectList[i]->getSceneNode()),agent2.getSceneNode(),CHUCKIE.mesh->getBoundingBox().getExtent(), vector3df(0,0,0), CHUCKIE.mesh->getBoundingBox().getCenter())
+					);
 
 }
 
@@ -187,20 +187,34 @@ for(int i = 0; i < specialWalls.size(); i++){
 	smgr->createTriangleSelectorFromBoundingBox(specialWalls[i]),agent2.getSceneNode(),CHUCKIE.mesh->getBoundingBox().getExtent(), vector3df(0,0,0), CHUCKIE.mesh->getBoundingBox().getCenter())
 					);
 
+
+
+ scene::ISceneNodeAnimator *nodeAnimator = 
+	smgr->createCollisionResponseAnimator(selector,//geometry for collision 
+	specialWalls[i], //scene node to apply collision to/	
+	specialWalls[i]->getBoundingBox().getExtent()
+	,
+	core::vector3df(0,-10,0),//gravity 
+	specialWalls[i]->getBoundingBox().getCenter()//core::vector3df(0,30,0)
+	); //collision volume position
+if(!nodeAnimator){throw new std::string("Error creating node animator");}
+specialWalls[i]->addAnimator(nodeAnimator);
+ nodeAnimator->drop();
+
 }
 
 
  
-
+//Agent* agent3 = new Agent(CARTMAN, this->spawnPointList[2], smgr, PREY, &graph);
 
 
 graph.selector = selector;
 agent2.setIt(&plyr);
+agent2.setSpotted(&plyr);
 
 //Initialize Player Scoresfor(int x=0 ; x<5 ; x++)	playerScores[x] = 0;}
 
 agent2.GetFSM()->ChangeState(Patrol::GetInstance());
-
 
 
 //graph.toggleDebugOutput(false);
@@ -215,6 +229,25 @@ agent2.GetFSM()->ChangeState(Patrol::GetInstance());
 
 
 void ktcGame::update(const irr::ITimer* timer){
+//
+//	core::line3d<irr::f32> line;
+//	line.start = plyr.getSceneNode()->getPosition();
+	//line.end = //line.start +  vector3df(0,1000,0);
+	
+//	for(int i = 0; i < this->coverObjectList.size();i++){
+//		line.end = this->coverObjectList[i]->getSceneNode()->getBoundingBox().getCenter();
+//		
+//		if(this->coverObjectList[i]->getSceneNode()->getBoundingBox().intersectsWithLine(line)){
+//			std::cout<<"ZOMG INTERSECTED\n";
+//
+//			if(this->coverObjectList[i]->getSceneNode()->getBoundingBox().isEmpty()){
+//				std::cout<<"WTFLOL\n";
+//			}
+//
+//		//	this->coverObjectList[i]->getSceneNode()->getBoundingBox().
+//		}
+//	}
+
 
 
 device->getVideoDriver()->beginScene(true, true, video::SColor(255,100,101,140));
@@ -222,30 +255,6 @@ device->getVideoDriver()->beginScene(true, true, video::SColor(255,100,101,140))
 smgr->drawAll();  //draw 3d objects
 display->render();
 
-
-#ifndef NODE_MESH_GENERATOR
-static mapGraph* mintree = graph.minimumSpanningTree(0);
-//graph.minimumSpanningTree(0)->render(device->getVideoDriver());
-
-switch(this->dMode){
-case NONE:break;
-case FULLGRAPH: graph.render(device->getVideoDriver());break;
-case MINSPANNINGTREE: mintree->render(device->getVideoDriver());break;
-}
-
-
-for(int i = 0; i < (int)entities.size();i++){
-			if(entities[i]){
-				entities[i]->update(timer);
-				
-				if(graph.isDebugOutput()){
-			//	entities[i]->drawPieSlices(device->getVideoDriver());
-				}
-			}
-		}
-
-
-#endif
 
 
 		
@@ -360,7 +369,34 @@ if(this->pointing() == can.getSceneNode() && (plyr.getSceneNode()->getPosition()
 	
 
 
+#ifndef NODE_MESH_GENERATOR
+static mapGraph* mintree = graph.minimumSpanningTree(0);
+//graph.minimumSpanningTree(0)->render(device->getVideoDriver());
+
+switch(this->dMode){
+case NONE:break;
+case FULLGRAPH: graph.render(device->getVideoDriver());break;
+case MINSPANNINGTREE: mintree->render(device->getVideoDriver());break;
+}
+
+
+for(int i = 0; i < (int)entities.size();i++){
+			if(entities[i]){
+				entities[i]->update(timer);
+				
+				if(graph.isDebugOutput()){
+			//	entities[i]->drawPieSlices(device->getVideoDriver());
+				}
+			}
+		}
+
+
+#endif
+
 	//update all entities
+
+	//agent2.walk(agent2.followPath(timer));
+	//agent2.walk(agent2.seek(agent2.getCurrentSeekTarget()) + agent2.wallAvoidance());
 		
 	//agent2.walk(2*agent2.avoid(&plyr)+ 10*agent2.wallAvoidance());
 

@@ -101,7 +101,8 @@ void Pursue::Execute(Agent & agt, const irr::ITimer* timer){
 	cout << "Executing Persue state.\n";
 
 	if(agt.getSpottedAgent()){
-	agt.walk(2*agt.seek(agt.getSpottedAgent()->getPosition())+ agt.wallAvoidance());
+	//agt.walk(2*agt.seek(agt.getSpottedAgent()->getPosition())+ agt.wallAvoidance());
+		agt.walk(agt.seek(agt.getSpottedAgent()->getPosition())+ agt.wallAvoidance());
 	}
 
 	//put ChangeState shit here in if conditions
@@ -179,7 +180,8 @@ void Flee::Execute(Agent & agt, const irr::ITimer* timer){
 //	cout << "Executing Flee state.\n";
 
 	if(agt.getIt()){
-	agt.walk(2*agt.avoid(agt.getIt())+ 10*agt.wallAvoidance());
+	//agt.walk(2*agt.avoid(agt.getIt())+ 10*agt.wallAvoidance());
+		agt.walk(agt.avoid(agt.getIt())+ agt.wallAvoidance());
 	}
 
 	//put ChangeState shit here in if conditions

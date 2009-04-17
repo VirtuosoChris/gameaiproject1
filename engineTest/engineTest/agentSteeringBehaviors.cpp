@@ -1,5 +1,6 @@
 #include "agent.h"
 #include "cpMath.h"
+#include "coverObject.h"
 
 //generates a seek steering force
 irr::core::vector3df Agent::seek(irr::core::vector3df tp){
@@ -45,7 +46,7 @@ irr::core::vector3df Agent::flee(irr::core::vector3df tp){
 void Agent::walk(irr::core::vector3df accel){
 
 if(!(velocity+(accel*TIMEELAPSED)).getLength() == 0.0f){
-	velocity+=accel*TIMEELAPSED;
+	velocity+= accel*TIMEELAPSED;
 
 	if(velocity.getLength() > MAXSPEED){
 	velocity = velocity.normalize()*MAXSPEED;
@@ -121,13 +122,48 @@ wallavoidaccel*=.025f;
 }
 
 if(wallavoidaccel.getLength() != 0){
-	std::cout<<wallavoidaccel.getLength()<<"\n";}
+	//std::cout<<wallavoidaccel.getLength()<<"\n";
+}
 return wallavoidaccel;
 
 }
 
 
+
+static const double EXTRA_RADIUS = 30;
+
+
 irr::core::vector3df Agent::followPath(const irr::ITimer* timer){
+
+
+/*
+//if there's special parts to the path
+if(!this->pathListAvd.empty()){
+static int run= 0;
+run++;
+
+if(run%150 == 0)
+std::cout<<"pathlistavd not empty\n";
+	
+	
+	irr::core::vector3df tv = (pathListAvd.front() - mynodep->getPosition());
+	tv.Y = 0;
+	irr::core::vector3df accel = tv.normalize() * ACCELRATE/mass;
+	//accel+=this->wallAvoidance();
+
+	if((mynodep->getPosition() - pathListAvd.front()).getLength() < 100.0f){
+
+
+		std::cout<<"erasing front of list\n";
+		pathListAvd.erase(pathListAvd.begin());
+
+	}
+
+return accel;
+
+}*/
+
+
 
 //seek to the current seek target
 vector3df tp = currentSeekTarget;
@@ -138,6 +174,9 @@ tp = tp-ap;
  
 core::vector3df tv = (-mynodep->getPosition() + currentSeekTarget);
 tv.Y = 0;
+
+
+
 if( tv.getLength()<RADIUS){
 	if(!pathList.empty()){
 
@@ -176,9 +215,93 @@ if( (timer->getTime() - this->pathStartTime) > TIMEMULTIPLIER*(this->expectedArr
 }
 
 
-irr::core::vector3df accel = 2*seek(currentSeekTarget) + 2*wallAvoidance();
-return accel;
+irr::core::vector3df accel;
+accel = seek(currentSeekTarget) + wallAvoidance();
 
+
+/////////////////////////////////////////////////begin new obstacle avoidance code:keeping this isolated!
+if( timer->getTime() - this->LAST_OBSTACLE_CORRECTANCE > 2000){
+//create the line from the agent extending outward through its velocity
+irr::core::line3d<irr::f32> line;
+line.start = mynodep->getPosition();
+line.end = line.start + (this->getVelocity().normalize() *(coverObject::getRadius() + 50));
+
+//get the scene node it intersects
+irr::scene::ISceneNode* tnode; 
+tnode= smgr->getSceneCollisionManager()->getSceneNodeFromRayBB(line);
+coverObject* coverObj= NULL;
+
+if(tnode){
+//get the cover object it represents;
+	for(int i = 0; i < (*this->coverObjectList).size(); i++){
+	
+		if(tnode == (*this->coverObjectList)[i]->getSceneNode()){
+		
+			coverObj = (*this->coverObjectList)[i];
+			break;
+
+		}
+	}
+//if its a cover object
+	if(coverObj){
+	
+		//and i'm close to it
+		if( (this->getSceneNode()->getPosition() - coverObj->getSceneNode()->getPosition()).getLength() < coverObj->getBoundaryRadius()){
+		
+			std::cout<<"I'm too near the cover objects!\n";
+
+			irr::core::vector3df startVector;
+			irr::core::vector3df endVector;
+
+			startVector =  mynodep->getPosition() - coverObj->getSceneNode()->getPosition();
+			startVector = startVector.normalize();
+
+			endVector = this->currentSeekTarget - coverObj->getSceneNode()->getPosition();
+			endVector = endVector.normalize();
+
+			double startAngle = vectorAngle(startVector);
+			double endAngle = vectorAngle(endVector);
+			const double nodeCount = 8;
+			//get the angle of each of these vectors so we can generate a path correction arc
+			
+			std::list<irr::core::vector3df> result(nodeCount);
+
+			const irr::core::vector3df& canPos =coverObj->getSceneNode()->getPosition();
+
+			double increment = (startAngle - endAngle) / nodeCount;
+
+			for(int i = 0; i < nodeCount; i++){
+				double currentAngle = endAngle + increment*i;
+				
+				//this->pathListAvd.push_front(
+				//result.push_back(
+
+				pathList.push_front(
+					 (coverObj->getBoundaryRadius() + EXTRA_RADIUS)*vector3df( cos(currentAngle)  ,0,sin(currentAngle) ) + canPos);
+		//irr::scene::ISceneNode* a = this->smgr->addSphereSceneNode(5);
+		//a->setPosition(result.back());
+			}
+
+			previousSeekTarget = mynodep->getPosition();
+			currentSeekTarget = pathList.front();
+			this->pathStartTime = timer->getTime();
+		this->expectedArrivalTime = pathStartTime+(currentSeekTarget - this->getPosition()).getLength() /  MAXSPEED;
+		this->LAST_OBSTACLE_CORRECTANCE = timer->getTime();
+		this->setVelocity(vector3df(0,0,0));
+			
+		
+		}
+			
+	
+	}
+}
+
+}
+/////////////////////////////////////////end new obstacle avoidance code
+
+
+return accel;
+//return vector3df(0,0,0);
 }
 
 
@@ -189,7 +312,6 @@ irr::core::vector3df Agent::pursue(physicsObject* tgt){
 	double lookAheadTime = (this->getPosition() - tgt->getPosition()).getLength();
 	lookAheadTime /= (.45);//(this->getVelocity().getLength() + tgt->getVelocity().getLength());
 	lookAheadTime *= constant;
-
 	return seek(tgt->getPosition() + lookAheadTime* tgt->getVelocity());
 
 }
@@ -197,8 +319,6 @@ irr::core::vector3df Agent::pursue(physicsObject* tgt){
 
 irr::core::vector3df Agent::avoid(physicsObject* tgt){
 
-
-	
 	const double constant = 1.0f;
 	double lookAheadTime = (this->getPosition() - tgt->getPosition()).getLength();
 	lookAheadTime /= (this->getVelocity().getLength() + tgt->getVelocity().getLength());

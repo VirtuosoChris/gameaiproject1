@@ -11,11 +11,11 @@ void Agent::updateWallSensor(){
  core::triangle3df triangle;
  core::vector3df orientVector;
  
-
  orientVector = core::vector3df((float)cos(degreesToRadians(orientation)),0.0f,(float)sin(degreesToRadians(orientation)));
  line.start = mynodep->getPosition();
  line.end = line.start + orientVector * s1d->maxRange;
  
+
 	//	billboard->setVisible(true);
 		 
 //std::vector<Agent*> a;
@@ -35,10 +35,37 @@ void Agent::updateWallSensor(){
 		//	printf("ba%f\n", baseAngle);
 		//	printf("%f\n", 0.0f-90.0f/2.0);
 
+// double* coverDistances = new double[this->coverObjectList->size()];
+ //double* coverFeelerDistances = new double[this->coverObjectList->size()];
+
+
+ //precompute the distance to each cover object
+ //for(int k = 0; k < coverObjectList->size(); k++){
+ 
+	 //coverDistances[k] = (this->mynodep->getPosition() - ((*coverObjectList)[k])->getSceneNode()->getPosition()).getLength();
+
+////	 if(coverDistances[k] > s1d->maxRange){
+	//	 coverDistances[k] = std::numeric_limits<double>::max();
+	//	 }
+
+		 //optimization: rule out ones not facing. later, to avoid bugs
+	// coverFeelerDistances[k] = std::numeric_limits<double>::max();
+ //}
+
+ //for(int p = 0; p < (*this->coverObjectList).size(); p++){
+//				 if(smgr->getSceneCollisionManager()->getSceneNodeFromRayBB(line) == (*this->coverObjectList)[p]->getSceneNode()){
+//					 std::cout<<"ZOMG DETECTED\n";
+//				 }
+//			 }
 
 //printf("%d\n",s1d->getNumFeelers()); 
 		 for(int i = 0; i < s1d->getNumFeelers(); i++){
 				
+
+		
+//irr::scene::ISceneNode* tnode; 
+//tnode= smgr->getSceneCollisionManager()->getSceneNodeFromRayBB(line);
+
 			double angle = i * increment + baseAngle;
 			
 			//printf("%f\n", angle);
@@ -49,8 +76,14 @@ void Agent::updateWallSensor(){
 			 
 			 line.start = mynodep->getPosition();
 			 line.end = line.start + feelerVector * s1d->maxRange;
-			 //printf("s1dmr%d\n", s1d->maxRange();
+
+			 
+			
+
+					
+					//printf("s1dmr%d\n", s1d->maxRange();
  
+			 
 			 if(smgr->getSceneCollisionManager()->getCollisionPoint(line, selector,intersection, triangle)){
 				 
 	//			 if(feelerParticles.at(i)){
@@ -90,7 +123,69 @@ void Agent::updateWallSensor(){
 			 s1d->feelerDistances[i] =s1d->maxRange;
 			 
 			}
-		 }}
+
+
+
+
+			/*
+ for(int p = 0; p < (*this->coverObjectList).size(); p++){
+
+	 if( tnode == (*this->coverObjectList)[p]->getSceneNode()){
+				 std::cout<<"ZOMG DETECTED\n";
+
+					irr::core::vector3df ipoint;
+					ipoint = (*this->coverObjectList)[p]->getSceneNode()->getPosition();
+					ipoint = this->getSceneNode()->getPosition() - ipoint;
+					ipoint = ipoint.normalize();
+					ipoint*= (*this->coverObjectList)[p]->getRadius() + 20;
+					double tDistance = (ipoint - this->getSceneNode()->getPosition()).getLength();
+							
+					if(tDistance < s1d->feelerDistances[i]){
+						s1d->feelerDistances[i] = tDistance;
+					}
+
+				 }
+			 }
+*/
+
+/*
+			//***go though each cover object, and record the intersection point along this feeler line
+			for(int xyzzy = 0; xyzzy < s1d->getNumFeelers(); xyzzy++){
+			
+				if((*this->coverObjectList)[xyzzy]->getSceneNode()->getBoundingBox().intersectsWithLine(line)){
+				
+					std::cout<<"line intersects cover\n";
+					irr::core::vector3df ipoint;
+					ipoint = (*this->coverObjectList)[xyzzy]->getSceneNode()->getPosition();
+					ipoint = this->getSceneNode()->getPosition() - ipoint;
+					ipoint = ipoint.normalize();
+					ipoint*= (*this->coverObjectList)[xyzzy]->getRadius();
+					coverFeelerDistances[xyzzy] = (ipoint - this->getSceneNode()->getPosition()).getLength();
+				}
+			
+			}
+
+
+			//*****now go through the values gathered from the level selector and all the physics objects, and pick the closest distance along this feeler
+			for(int x = 0; x < s1d->getNumFeelers(); x++){
+				
+
+				if(coverFeelerDistances[x] < s1d->feelerDistances[i]){
+				s1d->feelerDistances[i] = coverFeelerDistances[x];
+
+				std::cout<<"Cover replaces wall\n";
+				}
+				
+			}//****end for
+*/
+
+		 }
+
+	//	 delete []coverDistances;
+	//	 delete []coverFeelerDistances;
+
+
+}
 
 
 void Agent::updateProximitySensor(){
