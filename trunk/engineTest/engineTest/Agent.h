@@ -1,6 +1,10 @@
 #ifndef AGENT
 #define AGENT
 
+//vsync bug
+//dropped behavior
+//quick hacks
+
 #include "irrlicht.h"
 #include "GameEntity.h"
 #include "Sensors.h"
@@ -11,13 +15,17 @@
 #include "StateMachine.h"
 #include "AgentStates.h"
 #include "physicsObject.h"
+#include "coverObject.h"
+#include <vector>
 
-const double MAXSPEED = .15; //was .3
-const double mass = 25; //was 100 // was 25
-const double RADIUS = 100;//50;//25;//was 100
-const double ANGLE = 45;
-const double ACCELRATE = MAXSPEED/4;
-const double TIMEMULTIPLIER = 2.0f;
+
+
+const double MAXSPEED = .15; //was .3 
+const double mass = 25; //was 100 // was 25 
+const double RADIUS = 100;//50;//25;//was 100 double ANGLE = 45; 
+const double ACCELRATE = MAXSPEED/4; 
+const double TIMEMULTIPLIER = 2.0; 
+const double ANGLE = 45.0f;
 
 enum Agent_Type{PREDATOR, PREY};
 
@@ -25,6 +33,7 @@ class Agent:public physicsObject{
 
 private:
 irr::f32 TIMEELAPSED;
+double LAST_OBSTACLE_CORRECTANCE;
 	double pathStartTime;
 	double expectedArrivalTime;
 
@@ -44,6 +53,7 @@ physicsObject* SPOTTED;
 	//pathfinding information
 	irr::core::vector3df currentSeekTarget;
 	std::list<irr::core::vector3df> pathList;
+	std::list<irr::core::vector3df> pathListAvd;
 	irr::core::vector3df previousSeekTarget;
 	mapGraph* graph;
 
@@ -54,8 +64,10 @@ physicsObject* SPOTTED;
 	PieSensor *pie;
 
 	//list of all the agents other agents can "see"
-	static std::vector<Agent*>* agentList;
-	
+	 static std::vector<Agent*>* agentList;
+	 static std::vector<coverObject*>* coverObjectList;
+
+
 	//data structure representing the 3d model
 	Model model;
 
@@ -66,7 +78,7 @@ physicsObject* SPOTTED;
 	void correctPath();
 
 public:
-
+	irr::core::vector3df getCurrentSeekTarget(){return currentSeekTarget;}
 	void setIt(physicsObject* p){IT = p;}
 	void setSpotted(physicsObject* p){SPOTTED = p;}
 	physicsObject* getIt(){return IT;}
@@ -96,6 +108,12 @@ public:
 	//agentlist getter/setter
 	inline static void setAgentList(std::vector<Agent*>* abc){agentList = abc;}
 	inline static std::vector<Agent*>* getAgentList(){return agentList;}
+
+	//cover node list getter/setter
+	
+	inline static void setCoverObjectList(std::vector<coverObject*>* abc){coverObjectList = abc;}
+	inline static std::vector<coverObject*>* getCoverObjectList(){return coverObjectList;}
+
 
 	//agent type getter/setter
 	inline Agent_Type getAgentType(){return type;}
@@ -150,6 +168,8 @@ public:
 	//graph getter/setter
 	inline mapGraph* getGraph(){return graph;}
 	inline void setGraph(mapGraph* g){graph=g;}
+
+	
 
 	void walk(irr::core::vector3df accel);
 	void walk(){
