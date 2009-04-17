@@ -52,7 +52,7 @@ return result;
 //-528.744751 0.024357 102.937782
 ktcGame::ktcGame(IrrlichtDevice *device, irr::scene::ITriangleSelector* selector, gameHUD* display):can (device), graph (device, "NODE_LIST.txt","ADJACENCY_LIST.txt","EXCLUDE.txt"), 
 agent2 (Model("../media/chuckie.MD2","../media/Chuckie.pcx", device), irr::core::vector3df(0,0,0), 15000, 10000, PREY, core::vector3df(-528.744751, 0.024357, 102.937782), device->getSceneManager(), &graph),
-plyr(device, irr::core::vector3df(0,0,0), 15000, 0, PREDATOR)
+plyr(device, irr::core::vector3df(0,0,0), 15000, 0, PREY)
 {
 	
 	dMode = NONE;
@@ -112,8 +112,8 @@ else cout << "Bad pointer.\n";
  CYBERDEMON = createModel("../media/cyber.md2","../media/cyber.pcx",device,3.0f);
 
 
-agent2.setPosition(this->spawnPointList[2]);
-agent2.getSceneNode()->setPosition(this->spawnPointList[2]);
+//agent2.setPosition(this->spawnPointList[2]);
+//agent2.getSceneNode()->setPosition(this->spawnPointList[2]);
 agent2.createCollisionAnimator(selector, smgr);
 
 
@@ -140,9 +140,11 @@ agent2.createCollisionAnimator(selector, smgr);
  //CPTODO: REPLACE HARD CODED CONSTANT WITH SOMETHING BETTER
  //camera->setPosition(core::vector3df(-280,288,-830));
 
-
+plyr.setSpawnPoint(spawnPointList[0]);
 plyr.getSceneNode()->setPosition( spawnPointList[0] );
 
+agent2.setPosition(spawnPointList[1]);
+agent2.setSpawnPoint(spawnPointList[1]);
 agent2.createPatrolRoute(&graph);
 
 scene::ISceneNodeAnimator *nodeAnimator = 
