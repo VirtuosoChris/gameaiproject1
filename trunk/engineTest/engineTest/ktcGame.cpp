@@ -118,12 +118,12 @@ agent2.createCollisionAnimator(selector, smgr);
 
 
 
-Agent* agent3 = new Agent(CARTMAN, this->spawnPointList[2], device->getSceneManager(), PREY, &graph);
+//Agent* agent3 = new Agent(CARTMAN, this->spawnPointList[2], device->getSceneManager(), PREY, &graph);
 
-agent3->setPosition(this->spawnPointList[2]);
-agent3->GetFSM()->ChangeState(Patrol::GetInstance());
-agent3->createCollisionAnimator(selector, smgr);
-entities.push_back(agent3);
+//agent3->setPosition(this->spawnPointList[2]);
+//agent3->GetFSM()->ChangeState(Patrol::GetInstance());
+//agent3->createCollisionAnimator(selector, smgr);
+//entities.push_back(agent3);
 
 
  Agent::setAgentList(&entities);
