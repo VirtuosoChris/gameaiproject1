@@ -15,38 +15,36 @@
 #include "StateMachine.h"
 #include "AgentStates.h"
 #include "physicsObject.h"
+#include "Timer.h"
+#include "GamePlayer.h"
 #include "coverObject.h"
 #include <vector>
 
 
-
 const double MAXSPEED = .15; //was .3 
 const double mass = 25; //was 100 // was 25 
-const double RADIUS = 100;//50;//25;//was 100 double ANGLE = 45; 
+const double RADIUS = 100;//50;//25;//was 100 
+//double ANGLE = 45; 
 const double ACCELRATE = MAXSPEED/4; 
 const double TIMEMULTIPLIER = 2.0; 
 const double ANGLE = 45.0f;
 
-enum Agent_Type{PREDATOR, PREY};
 
-class Agent:public physicsObject{
+class Agent : public GamePlayer{
 
 private:
-irr::f32 TIMEELAPSED;
+	irr::f32 TIMEELAPSED;
 double LAST_OBSTACLE_CORRECTANCE;
 	double pathStartTime;
 	double expectedArrivalTime;
 
-physicsObject* IT;
-physicsObject* SPOTTED;
-
+	physicsObject* IT;
+	physicsObject* SPOTTED;
+	
 	irr::u32 LASTUPDATE;
 	
     bool MOVING;
 	
-	//this delegates an agent to one of two types: PREDATOR or PREY
-	Agent_Type type;
-
 	//an object of the state machine that the agent uses to implement an FSM
 	StateMachine<Agent> * AgentStateMachine;
 
@@ -77,6 +75,7 @@ physicsObject* SPOTTED;
 
 	void correctPath();
 
+
 public:
 	irr::core::vector3df getCurrentSeekTarget(){return currentSeekTarget;}
 	void setIt(physicsObject* p){IT = p;}
@@ -105,21 +104,11 @@ public:
 	inline void setModel(Model m){model = m;}
 	inline Model& getModel(){return model;} 
 
-	//agentlist getter/setter
+	//agentList getter/setter
 	inline static void setAgentList(std::vector<Agent*>* abc){agentList = abc;}
 	inline static std::vector<Agent*>* getAgentList(){return agentList;}
 
-	//cover node list getter/setter
-	
-	inline static void setCoverObjectList(std::vector<coverObject*>* abc){coverObjectList = abc;}
-	inline static std::vector<coverObject*>* getCoverObjectList(){return coverObjectList;}
-
-
-	//agent type getter/setter
-	inline Agent_Type getAgentType(){return type;}
-	inline void setAgentType(Agent_Type T){	type = T;}
-
-	//seek target getter/setter
+	//cover node list getter/setter		inline static void setCoverObjectList(std::vector<coverObject*>* abc){coverObjectList = abc;}	inline static std::vector<coverObject*>* getCoverObjectList(){return coverObjectList;}	//agent type getter/setter	inline Agent_Type getAgentType(){return type;}	inline void setAgentType(Agent_Type T){	type = T;}	//seek target getter/setter
 	inline irr::core::vector3df getSeekTarget(){return currentSeekTarget;}
 	inline void setSeekTarget(irr::core::vector3df pl){ currentSeekTarget = pl;}
 	inline irr::core::vector3df getPreviousSeekTarget(){return previousSeekTarget;}
@@ -142,11 +131,11 @@ public:
 	void drawPieSlices(irr::video::IVideoDriver*);
 
 
-	Agent(Model m, irr::core::vector3df p = irr::core::vector3df(0.0f,0.0f,0.0f),irr::scene::ISceneManager* mgr = NULL, Agent_Type T=PREY, mapGraph* g=0);
+	Agent(Model m, irr::core::vector3df sp, Timer tim, Timer inv, GamePlayer_Type T, irr::core::vector3df p = irr::core::vector3df(0.0f,0.0f,0.0f),irr::scene::ISceneManager* mgr = NULL, mapGraph* g=0);
 	virtual ~Agent();
 
-//i don't think any of this is mine
-//	double hypo(double opp, double adj);
+	//i don't think any of this is mine
+	//double hypo(double opp, double adj);
 	double agentProximity(Agent *nearAgent);
 	double agentBearing(Agent *nearAgent);
 	void proximitySensor(double sensorRange);
@@ -172,8 +161,7 @@ public:
 	
 
 	void walk(irr::core::vector3df accel);
-	void walk(){
-		walk(irr::core::vector3df(0,0,0));}
+	void walk(){ walk(irr::core::vector3df(0,0,0)); }
 
 };
 

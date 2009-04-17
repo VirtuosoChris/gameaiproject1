@@ -39,7 +39,6 @@ int MessageHandler::update(const irr::ITimer* timer){
 		
 		const Message* a = (*(messageQueue.begin()));
 		deliverMessage(a);
-		delete a;
 		messageQueue.erase(messageQueue.begin());
 	}
 
@@ -49,12 +48,12 @@ int MessageHandler::update(const irr::ITimer* timer){
 
 
 void MessageHandler::deliverMessage(const Message* m){
-	cout<<"Message Got here\n";
-	if(m == NULL)std::cout<<"WTFLOL\n";
+
 	if(m->receiver->processMessage(m))
 		cout << "Message was handled.\n";
 
 	else cout<< "uh oh, message not handled\n";
+	delete m;
 }
 
  MessageHandler* MessageHandler::getInstance(){

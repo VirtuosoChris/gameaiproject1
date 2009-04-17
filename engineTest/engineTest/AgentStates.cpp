@@ -31,7 +31,12 @@ void Defend::Exit(Agent & agt){
 bool Defend::ExecuteMessage(Agent & agt, const Message *msg){
 	switch(msg->messageType){
 		//put whatever message types you need here, these are just some examples until we change shit up
-		case KTC_KILL:	cout << "I killed you sucka.\n";
+		case KTC_KILL:	if(agt.pl_inv.getTime() > 0){
+							//don't kill agent cause he's invincible
+							return true;
+						}
+						cout << "I killed you sucka.\n";
+						agt.GetFSM()->ChangeState(Die::GetInstance());
 						return true;
 		case KTC_SPOTTED:	cout << "I've been spotted, gotta run!\n";
 							return true;
@@ -73,7 +78,12 @@ void Patrol::Exit(Agent & agt){
 bool Patrol::ExecuteMessage(Agent & agt, const Message *msg){
 	switch(msg->messageType){
 		//put whatever message types you need here, these are just some examples until we change shit up
-		case KTC_KILL:	cout << "I killed you sucka.\n";
+		case KTC_KILL:	if(agt.pl_inv.getTime() > 0){
+							//don't kill agent cause he's invincible
+							return true;
+						}
+						cout << "I killed you sucka.\n";
+						agt.GetFSM()->ChangeState(Die::GetInstance());
 						return true;
 		case KTC_SPOTTED:	cout << "I've been spotted, gotta run!\n";
 							return true;
@@ -115,7 +125,12 @@ void Pursue::Exit(Agent & agt){
 bool Pursue::ExecuteMessage(Agent & agt, const Message *msg){
 	switch(msg->messageType){
 		//put whatever message types you need here, these are just some examples until we change shit up
-		case KTC_KILL:	cout << "I killed you sucka.\n";
+		case KTC_KILL:	if(agt.pl_inv.getTime() > 0){
+							//don't kill agent cause he's invincible
+							return true;
+						}
+						cout << "I killed you sucka.\n";
+						agt.GetFSM()->ChangeState(Die::GetInstance());
 						return true;
 		case KTC_SPOTTED:	cout << "I've been spotted, gotta run!\n";
 							return true;
@@ -152,7 +167,12 @@ void Hide::Exit(Agent & agt){
 bool Hide::ExecuteMessage(Agent & agt, const Message *msg){
 	switch(msg->messageType){
 		//put whatever message types you need here, these are just some examples until we change shit up
-		case KTC_KILL:	cout << "I killed you sucka.\n";
+		case KTC_KILL:	if(agt.pl_inv.getTime() > 0){
+							//don't kill agent cause he's invincible
+							return true;
+						}
+						cout << "I killed you sucka.\n";
+						agt.GetFSM()->ChangeState(Die::GetInstance());
 						return true;
 		case KTC_SPOTTED:	cout << "I've been spotted, gotta run!\n";
 							return true;
@@ -177,11 +197,11 @@ void Flee::Enter(Agent & agt){
 }
 
 void Flee::Execute(Agent & agt, const irr::ITimer* timer){
-//	cout << "Executing Flee state.\n";
+	cout << "\nExecuting Flee state.\n";
 
 	if(agt.getIt()){
 	//agt.walk(2*agt.avoid(agt.getIt())+ 10*agt.wallAvoidance());
-		agt.walk(agt.avoid(agt.getIt())+ agt.wallAvoidance());
+	agt.walk(agt.avoid(agt.getIt())+ agt.wallAvoidance());
 	}
 
 	//put ChangeState shit here in if conditions
@@ -194,8 +214,12 @@ void Flee::Exit(Agent & agt){
 bool Flee::ExecuteMessage(Agent & agt, const Message *msg){
 	switch(msg->messageType){
 		//put whatever message types you need here, these are just some examples until we change shit up
-		case KTC_KILL:	cout << "I killed you sucka.\n";
-						agt.GetFSM()->ChangeState(Die::getInstance());
+		case KTC_KILL:	if(agt.pl_inv.getTime() > 0){
+							//don't kill agent cause he's invincible
+							return true;
+						}
+						cout << "I killed you sucka.\n";
+						agt.GetFSM()->ChangeState(Die::GetInstance());
 						return true;
 		case KTC_SPOTTED:	cout << "I've been spotted, gotta run!\n";
 							return true;
@@ -232,7 +256,12 @@ void Act_Orb::Exit(Agent & agt){
 bool Act_Orb::ExecuteMessage(Agent & agt, const Message *msg){
 	switch(msg->messageType){
 		//put whatever message types you need here, these are just some examples until we change shit up
-		case KTC_KILL:	cout << "I killed you sucka.\n";
+		case KTC_KILL:	if(agt.pl_inv.getTime() > 0){
+							//don't kill agent cause he's invincible
+							return true;
+						}
+						cout << "I killed you sucka.\n";
+						agt.GetFSM()->ChangeState(Die::GetInstance());
 						return true;
 		case KTC_SPOTTED:	cout << "I've been spotted, gotta run!\n";
 							return true;
@@ -245,7 +274,7 @@ bool Act_Orb::ExecuteMessage(Agent & agt, const Message *msg){
 
 
 
-Die* Die::getInstance(){
+Die* Die::GetInstance(){
 	static Die only_inst;
 	return &only_inst;
 
@@ -271,12 +300,11 @@ void Die::Enter(Agent & agt){
 
 void Die::Execute(Agent & agt, const irr::ITimer* timer){
 	//int frameCount = agt.getSceneNode()
-	//std::cout<<"UADJFHKDHF\n";  
+	//std::cout<<"\nExecuting die state\n";  
 	if(
 	((irr::scene::IAnimatedMeshSceneNode*)agt.getSceneNode())->getFrameNr()
 	>= ((irr::scene::IAnimatedMeshSceneNode*)agt.getSceneNode())->getEndFrame()){
 	
-		//std::cout<<"laksjd\n";
 
 		agt.getSceneNode()->setVisible(false);
 		//((irr::scene::IAnimatedMeshSceneNode*)agt.getSceneNode())->setRotation(vector3df(0, 0, 75));
@@ -287,8 +315,10 @@ void Die::Execute(Agent & agt, const irr::ITimer* timer){
 }
 
 void Die::Exit(Agent & agt){
-
-		agt.getSceneNode()->setVisible(true);
+	cout << "I'm about to reset the time.\n";
+	agt.pl_inv.setTime(10000);
+	
+	agt.getSceneNode()->setVisible(true);
 		
 	((irr::scene::IAnimatedMeshSceneNode*)agt.getSceneNode())->setAnimationSpeed(60);
 	
@@ -303,18 +333,40 @@ bool Die::ExecuteMessage(Agent & agt, const Message * msg){
 	
 	switch(msg->messageType){
 		//put whatever message types you need here, these are just some examples until we change shit up
-		case KTC_KILL:	cout << "I killed you sucka.\n";
-						return true;
 		case KTC_SPOTTED:	cout << "I've been spotted, gotta run!\n";
 							return true;
 
-		case KTC_REVIVE: 
-
-			agt.GetFSM()->ChangeState(Flee::GetInstance());
+		case KTC_REVIVE:	agt.GetFSM()->ChangeState(Flee::GetInstance());
+							return true;
 	}
 
 	//false gets returned if no cases we're matched (we couldn't handle the message)
 	return false;
+}
+
+
+Wait* Wait::GetInstance(){
+	static Wait only_inst;
+	return &only_inst;
+
+}
+ 
+void Wait::Enter(Agent & agt){
+	//set anim to stand
+}
+
+void Wait::Execute(Agent & agt, const irr::ITimer* timer){
 	
-	return true;
+	if(agt.getTimer().getTime() >= 10000)
+		agt.GetFSM()->ChangeState(Patrol::GetInstance());
+}
+
+void Wait::Exit(Agent & agt){
+
+}
+
+bool Wait::ExecuteMessage(Agent & agt, const Message * msg){
+
+	//false always gets returned here because we don't want to handle any messages in the wait state
+	return false;
 }
