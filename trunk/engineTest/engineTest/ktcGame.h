@@ -21,15 +21,21 @@
 enum debugMode{NONE, MINSPANNINGTREE, FULLGRAPH};
 class ktcGame:public GameEntity{
 
+private:
+
+	//vector of the four AI players and the user as an array of GamePlayer references
+	static std::vector<GamePlayer *> playerList;
+	
+	void RoundRobin(std::vector<GamePlayer *> plst);
 
 	int dMode;
 	Model CHUCKIE;
 	Model CARTMAN;
 	Model CYBERDEMON;
-	player plyr;
 
 	std::vector<irr::core::vector3df> spawnPointList;
 	
+	player plyr;
 	Agent agent2;
 	//Agent agent3;
 
@@ -50,6 +56,7 @@ class ktcGame:public GameEntity{
 
 	int playerScores[5];
 
+
 	std::vector<coverObject*> coverObjectList;	 //scene::ICameraSceneNode *camera;
 
 
@@ -60,8 +67,7 @@ public:
 	void disableDebugOutput(){dMode = NONE; }
 	void displayFullGraph(){dMode = FULLGRAPH;}
 
-
-	ktcGame(IrrlichtDevice *device,irr::scene::ITriangleSelector*, gameHUD* display);
+	ktcGame(irr::IrrlichtDevice *device,irr::scene::ITriangleSelector*, gameHUD* display);
 	virtual void update(const irr::ITimer*);
 	virtual bool processMessage(const Message*);
 	virtual irr::scene::ISceneNode* pointing();  

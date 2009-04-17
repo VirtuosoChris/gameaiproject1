@@ -202,6 +202,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\GamePlayer.h"
+				>
+			</File>
+			<File
 				RelativePath=".\GameStates.h"
 				>
 			</File>
@@ -242,6 +246,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\PlayerStates.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Sensors.h"
 				>
 			</File>
@@ -251,6 +259,10 @@
 			</File>
 			<File
 				RelativePath=".\StateMachine.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Timer.h"
 				>
 			</File>
 		</Filter>
@@ -306,6 +318,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\GamePlayer.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\GameStates.cpp"
 				>
 			</File>
@@ -350,7 +366,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\player.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PlayerStates.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ProximitySensorData.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Timer.cpp"
 				>
 			</File>
 			<File

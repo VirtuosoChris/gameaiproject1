@@ -7,7 +7,7 @@ static vector3df previousPos;
 
 gunEntity::gunEntity(irr::IrrlichtDevice *device, irr::scene::ICameraSceneNode *camera)
 {
-ready = true;
+	ready = true;
 	this->device = device;
 
 irr::scene::ISceneManager* smgr = device->getSceneManager();
@@ -33,6 +33,8 @@ gun->setPosition(vector3df(0,-1000,0));
 previousPos = camera->getPosition();
 this->camera = camera;
 basePosition = gun->getPosition();
+
+//std::cout << "I just made the gun.\n";
 
 }
 
@@ -81,16 +83,15 @@ bool gunEntity::processMessage(const Message* m){
 
 
 void gunEntity::render(){
-
-device->getVideoDriver()->clearZBuffer();
-
-irr::core::matrix4 abc(irr::core::IdentityMatrix);
-const float mdat[16] = {1,0,0,0, 0,1,0,0, 0,0,1,0, 0,1000,0,1};
-abc.setM(mdat);
-
-device->getVideoDriver()->setTransform(video::ETS_WORLD,camera->getAbsoluteTransformation());// camera->getAbsoluteTransformation());
-device->getVideoDriver()->setTransform(video::ETS_VIEW, abc);
-
-gun->render();
-
+	//std::cout << "I'm in the gun renderer.\n";
+	device->getVideoDriver()->clearZBuffer();
+	
+	irr::core::matrix4 abc(irr::core::IdentityMatrix);
+	const float mdat[16] = {1,0,0,0, 0,1,0,0, 0,0,1,0, 0,1000,0,1};
+	abc.setM(mdat);
+	
+	device->getVideoDriver()->setTransform(video::ETS_WORLD,camera->getAbsoluteTransformation());// camera->getAbsoluteTransformation());
+	device->getVideoDriver()->setTransform(video::ETS_VIEW, abc);
+	
+	gun->render();
 }

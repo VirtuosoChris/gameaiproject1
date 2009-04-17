@@ -26,7 +26,7 @@ class StateMachine{
 
 	public:
 
-		StateMachine(Game_Entity_Type & owner):agt_owner(owner), cur_state(NULL), prev_state(NULL), glob_state(NULL) {}
+		StateMachine(Game_Entity_Type & owner):agt_owner(owner), cur_state(0), prev_state(0), glob_state(0) {}
 
 		virtual ~StateMachine(){}
 
@@ -35,15 +35,36 @@ class StateMachine{
 		void SetGlobalState(State<Game_Entity_Type>* g) {glob_state = g;}
 		void SetPreviousState(State<Game_Entity_Type>* p){prev_state = p;}
   
+		void StartCurrentState(){
+			//start the entry method of the new state
+			cur_state->Enter(agt_owner);
+		}
+
+		void StartGlobalState(){
+			//start the entry method of the new state
+			glob_state->Enter(agt_owner);
+		}
+
+		void StartPrevState(){
+			//start the entry method of the new state
+			prev_state->Enter(agt_owner);
+		}
+
 		//call this to update the FSM
 		void update(const irr::ITimer* timer)const{
+			//std::cout << "I'm in state machine update.\n";
+
 			//if a global state exists, call its execute method, else do nothing
-			if(glob_state) 
+			if(glob_state){
+				//std::cout << "I'm in glob-state update.\n";
 				glob_state->Execute(agt_owner ,timer);
+			}
 			
 			//same for the current state
-			if (cur_state)
+			if (cur_state){
+				//std::cout << "I'm in cur-state update.\n";
 				cur_state->Execute(agt_owner,timer);
+			}
 		}
 
 		//change to a new state
@@ -57,7 +78,8 @@ class StateMachine{
 
 			//keep a record of the previous state
 			prev_state = cur_state;
-
+			
+			std::cout << "\nI'm about to exit.\n";
 			//call the exit method of the existing state
 			cur_state->Exit(agt_owner);
 

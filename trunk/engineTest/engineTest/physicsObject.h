@@ -12,6 +12,8 @@ protected:
 	irr::scene::ISceneNode* mynodep;
 
 public:
+	physicsObject(){}
+
 	inline irr::core::vector3df getPosition(){return position;}
 	inline double getOrientation() { return orientation; }
 	inline void setVelocity(irr::core::vector3df vel){velocity = vel;}
