@@ -239,7 +239,7 @@ int finish = start + 10000;
 while(device->run()){
 	//std::cout<<device->getVideoDriver()->getFPS()<<"\n";
 	//std::cout<<(device->getTimer()->getTime() - start)<<std::endl;
-
+//j
 	if(device->getTimer()->getTime() < finish){
 	
 		int diff = device->getTimer()->getTime() - start;
