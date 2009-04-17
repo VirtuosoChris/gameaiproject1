@@ -237,9 +237,12 @@ int start = device->getTimer()->getTime();
 int finish = start + 10000;
 //smgr->setAmbientLight(video::SColor(255, 25, 25, 25));
 while(device->run()){
-	//std::cout<<device->getVideoDriver()->getFPS()<<"\n";
+	
+	if(driver->getFPS() < 60){
+	std::cout<<device->getVideoDriver()->getFPS()<<"\n";
+	}
 	//std::cout<<(device->getTimer()->getTime() - start)<<std::endl;
-//j
+    //j
 	if(device->getTimer()->getTime() < finish){
 	
 		int diff = device->getTimer()->getTime() - start;
