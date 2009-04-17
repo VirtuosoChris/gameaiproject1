@@ -111,6 +111,16 @@ agent2.setPosition(this->spawnPointList[2]);
 agent2.getSceneNode()->setPosition(this->spawnPointList[2]);
 agent2.createCollisionAnimator(selector, smgr);
 
+
+
+Agent* agent3 = new Agent(CARTMAN, this->spawnPointList[2], device->getSceneManager(), PREY, &graph);
+
+agent3->setPosition(this->spawnPointList[2]);
+agent3->GetFSM()->ChangeState(Patrol::GetInstance());
+agent3->createCollisionAnimator(selector, smgr);
+entities.push_back(agent3);
+
+
  Agent::setAgentList(&entities);
  Agent::setCoverObjectList(&coverObjectList);
 
@@ -204,11 +214,8 @@ specialWalls[i]->addAnimator(nodeAnimator);
 }
 
 
- 
-//Agent* agent3 = new Agent(CARTMAN, this->spawnPointList[2], smgr, PREY, &graph);
 
 
-graph.selector = selector;
 agent2.setIt(&plyr);
 agent2.setSpotted(&plyr);
 
@@ -216,7 +223,7 @@ agent2.setSpotted(&plyr);
 
 agent2.GetFSM()->ChangeState(Patrol::GetInstance());
 
-
+graph.selector = selector; 
 //graph.toggleDebugOutput(false);
 
 
