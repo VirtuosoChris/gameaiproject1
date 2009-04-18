@@ -47,10 +47,10 @@ void gameHUD::render(){
    }
 
    //draw the clock	
-   driver->draw2DImage(ClockTextures[0], core::position2d<s32>((screenX/2)-96, (screenY/24)), core::rect<s32>(0,0,96,96), 0, video::SColor(255,255,255,255), true);
-   driver->draw2DImage(CharTextures[10], core::position2d<s32>((screenX/2)-48, (screenY/24)), core::rect<s32>(0,0,96,96), 0, video::SColor(255,255,255,255), true);
-   driver->draw2DImage(ClockTextures[1], core::position2d<s32>((screenX/2), (screenY/24)), core::rect<s32>(0,0,96,96), 0, video::SColor(255,255,255,255), true);
-   driver->draw2DImage(ClockTextures[2], core::position2d<s32>((screenX/2)+60, (screenY/24)), core::rect<s32>(0,0,96,96), 0, video::SColor(255,255,255,255), true);
+   driver->draw2DImage(ClockTextures[0], core::position2d<s32>((screenX/2)-72, (screenY/24)), core::rect<s32>(0,0,72,72), 0, video::SColor(255,255,255,255), true);
+   driver->draw2DImage(CharTextures[10], core::position2d<s32>((screenX/2)-36, (screenY/24)), core::rect<s32>(0,0,72,72), 0, video::SColor(255,255,255,255), true);
+   driver->draw2DImage(ClockTextures[1], core::position2d<s32>((screenX/2), (screenY/24)), core::rect<s32>(0,0,72,72), 0, video::SColor(255,255,255,255), true);
+   driver->draw2DImage(ClockTextures[2], core::position2d<s32>((screenX/2)+50, (screenY/24)), core::rect<s32>(0,0,72,72), 0, video::SColor(255,255,255,255), true);
 
    //draw the cross hair
    driver->draw2DImage(GUITextures[1], core::position2d<s32>((screenX/2)-16, (screenY/2)-16), core::rect<s32>(0,0,32,32), 0, video::SColor(255,255,255,255), true);
@@ -177,6 +177,7 @@ void gameHUD::loadTextures()
    CharTextures[10] = driver->getTexture("../Media/Textures/colon.bmp");
    driver->makeColorKeyTexture(CharTextures[10], video::SColor(0,0,0,0));
 
+   
    //Load textures for score keeping
    //label
    ScoreTextures[0] = driver->getTexture("../Media/Textures/scores.bmp");
