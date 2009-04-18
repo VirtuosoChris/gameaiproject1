@@ -41,6 +41,9 @@ double LAST_OBSTACLE_CORRECTANCE;
 	physicsObject* IT;
 	physicsObject* SPOTTED;
 	
+
+	coverObject* myCoverObject;
+
 	irr::u32 LASTUPDATE;
 	
     bool MOVING;
@@ -165,10 +168,14 @@ public:
 	inline mapGraph* getGraph(){return graph;}
 	inline void setGraph(mapGraph* g){graph=g;}
 
-	
+	irr::core::vector3df Agent::hide();
 
 	void walk(irr::core::vector3df accel);
 	void walk(){ walk(irr::core::vector3df(0,0,0)); }
+
+	coverObject* getMyCoverObject(){return myCoverObject;}
+	void setMyCoverObject(coverObject* c){myCoverObject = c;}
+
 
 };
 

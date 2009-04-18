@@ -236,7 +236,10 @@ ktcGame game(device, selector);
 /*******************************************************/
 
 while(device->run()){
-		if(driver->getFPS() < 60){	std::cout<<device->getVideoDriver()->getFPS()<<"\n";	}	//std::cout<<(device->getTimer()->getTime() - start)<<std::endl;
+		if(driver->getFPS() < 58){	
+			
+			//std::cout<<device->getVideoDriver()->getFPS()<<"\n";	
+		}	//std::cout<<(device->getTimer()->getTime() - start)<<std::endl;
 		//run update on the message handler to send any delayed messges that have passed their time stamp
 		MsgHandler->update(device->getTimer());
 		game.update(device->getTimer());

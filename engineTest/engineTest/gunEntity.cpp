@@ -78,8 +78,8 @@ void gunEntity::update(const irr::ITimer* timer){
 }
 
 bool gunEntity::processMessage(const Message* m){
-	std::cout<<"got to gun processmessage\n";
-	if(m == NULL)std::cout<<"WTF THIS IS NULL SOMEHOW\n";
+	//std::cout<<"got to gun processmessage\n";
+//	if(m == NULL)std::cout<<"WTF THIS IS NULL SOMEHOW\n";
 	
 	switch(m->messageType){
 	
@@ -109,7 +109,7 @@ bool gunEntity::processMessage(const Message* m){
 
 
 void gunEntity::render(){
-	std::cout << "I'm in the gun renderer.\n";	
+	//std::cout << "I'm in the gun renderer.\n";	
 	device->getVideoDriver()->clearZBuffer();		
 	irr::core::matrix4 abc(irr::core::IdentityMatrix);	
 	const float mdat[16] = {1,0,0,0, 0,1,0,0, 0,0,1,0, 0,1000,0,1};	
