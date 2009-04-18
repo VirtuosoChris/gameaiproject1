@@ -1,6 +1,7 @@
 #include "AgentStates.h"
 #include "Agent.h"
 #include "MessageHandler.h"
+#include "cpMath.h"
 
 #include <iostream>
 using std::cout;
@@ -150,14 +151,91 @@ Hide* Hide::GetInstance(){
 }
 
 void Hide::Enter(Agent & agt){
+	agt.getPathList().clear();
+
+	agt.newTargetLocation(agt.getMyCoverObject()->getCoverPosition(agt.getIt()));
 	cout << "Entering Hide state.\n";
 	//use MsgHandler->postMessage() here to post a message to all other players (use for loop or some shit)
 }
 
 void Hide::Execute(Agent & agt, const irr::ITimer* timer){
-	cout << "Executing Hide state.\n";
+	
+	static bool there = true;//false;//temp
+///	cout << "Executing Hide state.\n";
 
-	//put ChangeState shit here in if conditions
+
+	
+	double agtAngle = vectorAngle((agt.getPosition() - agt.getMyCoverObject()->getPosition()).normalize()); 
+
+	double r =agt.getMyCoverObject()->getBoundaryRadius();
+
+
+	if(there){
+	double ANGULARVELOCITY = .1 / r;
+
+	double timeElapsed = agt.getUpdateTimeIncrement();
+
+	double angle1 = agtAngle;
+	double angle2 =  vectorAngle((agt.getMyCoverObject()->getCoverPosition(agt.getIt()) - agt.getMyCoverObject()->getPosition()).normalize()); 
+
+double transl = 0;
+
+	if( fabs(angle1 - angle2) < fabs(angle2 - angle1)){
+	
+		transl = (angle1 - angle2) /  fabs(angle1 - angle2);
+
+	}else{
+	
+		transl = (angle2 - angle1) / fabs(angle2- angle1);
+	}
+
+
+	transl = (angle2 - angle1);
+	transl = transl / fabs(transl);
+	if(fabs(angle2 - angle1) > PI){transl*=-1;}
+
+	//if( agtAngle > angle2){transl = 1;}
+	//if(agtAngle < angle2){transl = -1;}
+	//if(agtAngle == angle2){transl = 0;}
+
+
+	//transl = (angle2 - agtAngle) / fabs(angle2 - agtAngle);
+	double newAngle = agtAngle + (ANGULARVELOCITY * timeElapsed * transl);
+
+	std::cout<<"AV * T:"<<(ANGULARVELOCITY*timeElapsed)<<std::endl;
+
+//	newAngle = fmod(newAngle, 2*PI);
+//	if(newAngle < 0){
+//	
+//		newAngle = 2*PI - fabs(newAngle);
+//
+//	}
+
+	irr::core::vector3df newPos = agt.getMyCoverObject()->getPosition() + vector3df(r * cos(newAngle), agt.getPosition().Y - agt.getMyCoverObject()->getPosition().Y, r*sin(newAngle)); ;
+
+
+	//std::cout<<"oldAngle:"<<agtAngle<<" newAngle:"<<newAngle<<" transl:"<<transl<<" angular vel:"<<ANGULARVELOCITY<<" TARGETANGLE "<<angle2<<"\n";
+	std::cout<<radiansToDegrees(newAngle)<<std::endl;
+
+
+	agt.setPosition(newPos);
+	}
+
+
+//agt.walk(agt.followPath(timer));
+
+
+	//agt.getPathList().push_back(agt.getMyCoverObject()->getCoverPosition(agt.getIt()));
+	if(!there)agt.walk(agt.followPath(timer));
+	
+	if(!there &&(agt.getMyCoverObject()->getPosition() - agt.getPosition()).getLength() < r){
+	agt.getPathList().clear();
+	//agt.setPosition(vector3df(r*cos(agtAngle),agt.getPosition().Y, r*sin(agtAngle)));
+	there = true;
+	std::cout<<"THERE\n";
+	}
+	
+
 }
 
 void Hide::Exit(Agent & agt){

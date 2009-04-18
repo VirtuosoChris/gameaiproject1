@@ -329,3 +329,10 @@ irr::core::vector3df Agent::avoid(physicsObject* tgt){
 }
 
 
+
+irr::core::vector3df Agent::hide(){
+	if(!myCoverObject)	
+		return vector3df(0,0,0);
+	return this->seek(myCoverObject->getCoverPosition(this->getIt()));
+}
+

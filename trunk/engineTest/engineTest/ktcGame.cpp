@@ -75,6 +75,7 @@ plyr(device, irr::core::vector3df(0,0,0), 300000, 0, PREDATOR)
 	CHUCKIE = agent2.getModel();
 
 
+
 	
 	FILE* fp = fopen("SPAWN_POINTS.txt", "r");
 	if(fp){
@@ -237,6 +238,10 @@ graph.selector = selector;
 //graph.toggleDebugOutput(false);
 
 
+agent2.setMyCoverObject(this->coverObjectList[0]);
+agent2.GetFSM()->ChangeState(Hide::GetInstance());
+	
+
 
 }
 
@@ -303,9 +308,9 @@ display->render();
 
 
 		
-for(int i = 0; i < this->coverObjectList.size(); i++){
-		coverObjectList[i]->getCoverPosition(&agent2);
-	}
+//for(int i = 0; i < this->coverObjectList.size(); i++){
+//	coverObjectList[i]->getCoverPosition(agent2.getIt());
+//	}
 
 plyr.getGun().render();
 
