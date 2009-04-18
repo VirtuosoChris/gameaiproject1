@@ -46,11 +46,20 @@ void gameHUD::render(){
          shotTimerBarValue += 0.2;
    }
 
+   //draw the score Table	
+   driver->draw2DImage(ScoreTextures[0], core::position2d<s32>((screenX)-192, (screenY/24)), core::rect<s32>(0,0,192,92), 0, video::SColor(255,255,255,255), true);
+   driver->draw2DImage(ScoreTextures[1], core::position2d<s32>((screenX)-168, (screenY/24)+60), core::rect<s32>(0,0,96,48), 0, video::SColor(255,255,255,255), true);
+   driver->draw2DImage(ScoreTextures[2], core::position2d<s32>((screenX)-168, (screenY/24)+84), core::rect<s32>(0,0,96,48), 0, video::SColor(255,255,255,255), true);
+   driver->draw2DImage(ScoreTextures[3], core::position2d<s32>((screenX)-168, (screenY/24)+108), core::rect<s32>(0,0,96,48), 0, video::SColor(255,255,255,255), true);
+   driver->draw2DImage(ScoreTextures[4], core::position2d<s32>((screenX)-168, (screenY/24)+132), core::rect<s32>(0,0,96,48), 0, video::SColor(255,255,255,255), true);
+   driver->draw2DImage(ScoreTextures[5], core::position2d<s32>((screenX)-168, (screenY/24)+156), core::rect<s32>(0,0,96,48), 0, video::SColor(255,255,255,255), true);
+   driver->draw2DImage(ScoreTextures[6], core::position2d<s32>((screenX)-200, (screenY/24)+60), core::rect<s32>(0,0,50,50), 0, video::SColor(255,255,255,255), true);
+
    //draw the clock	
-   driver->draw2DImage(ClockTextures[0], core::position2d<s32>((screenX/2)-72, (screenY/24)), core::rect<s32>(0,0,72,72), 0, video::SColor(255,255,255,255), true);
-   driver->draw2DImage(CharTextures[10], core::position2d<s32>((screenX/2)-36, (screenY/24)), core::rect<s32>(0,0,72,72), 0, video::SColor(255,255,255,255), true);
-   driver->draw2DImage(ClockTextures[1], core::position2d<s32>((screenX/2), (screenY/24)), core::rect<s32>(0,0,72,72), 0, video::SColor(255,255,255,255), true);
-   driver->draw2DImage(ClockTextures[2], core::position2d<s32>((screenX/2)+50, (screenY/24)), core::rect<s32>(0,0,72,72), 0, video::SColor(255,255,255,255), true);
+   driver->draw2DImage(ClockTextures[0], core::position2d<s32>((screenX/24)-36, (screenY/24)), core::rect<s32>(0,0,48,48), 0, video::SColor(255,255,255,255), true);
+   driver->draw2DImage(CharTextures[10], core::position2d<s32>((screenX/24)-12, (screenY/24)), core::rect<s32>(0,0,48,48), 0, video::SColor(255,255,255,255), true);
+   driver->draw2DImage(ClockTextures[1], core::position2d<s32>((screenX/24)+12, (screenY/24)), core::rect<s32>(0,0,48,48), 0, video::SColor(255,255,255,255), true);
+   driver->draw2DImage(ClockTextures[2], core::position2d<s32>((screenX/24)+48, (screenY/24)), core::rect<s32>(0,0,48,48), 0, video::SColor(255,255,255,255), true);
 
    //draw the cross hair
    driver->draw2DImage(GUITextures[1], core::position2d<s32>((screenX/2)-16, (screenY/2)-16), core::rect<s32>(0,0,32,32), 0, video::SColor(255,255,255,255), true);
@@ -193,10 +202,10 @@ void gameHUD::loadTextures()
    driver->makeColorKeyTexture(ScoreTextures[3], video::SColor(0,0,0,0));
    //Player 4
    ScoreTextures[4] = driver->getTexture("../Media/Textures/player4.bmp");
-   driver->makeColorKeyTexture(ScoreTextures[1], video::SColor(0,0,0,0));
+   driver->makeColorKeyTexture(ScoreTextures[4], video::SColor(0,0,0,0));
    //Player 5
    ScoreTextures[5] = driver->getTexture("../Media/Textures/player5.bmp");
-   driver->makeColorKeyTexture(ScoreTextures[1], video::SColor(0,0,0,0));
+   driver->makeColorKeyTexture(ScoreTextures[5], video::SColor(0,0,0,0));
    //Gun Identifier
    ScoreTextures[6] = driver->getTexture("../Media/Textures/gun.bmp");
    driver->makeColorKeyTexture(ScoreTextures[6], video::SColor(0,0,0,0));
