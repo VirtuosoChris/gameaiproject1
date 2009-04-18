@@ -160,23 +160,42 @@ void Hide::Enter(Agent & agt){
 
 void Hide::Execute(Agent & agt, const irr::ITimer* timer){
 	
-	static bool there = true;//false;//temp
+
+	agt.getPathList().clear();
+	agt.createPatrolRoute(agt.getGraph());
+	agt.GetFSM()->ChangeState(Patrol::GetInstance());
+
+	static bool there = false;//false;//temp
 ///	cout << "Executing Hide state.\n";
 
 
 	
 	double agtAngle = vectorAngle((agt.getPosition() - agt.getMyCoverObject()->getPosition()).normalize()); 
+	double r =agt.getMyCoverObject()->getBoundaryRadius()+10;
 
-	double r =agt.getMyCoverObject()->getBoundaryRadius();
 
 
-	if(there){
+	//agt.getPathList().push_back(agt.getMyCoverObject()->getCoverPosition(agt.getIt()));
+	
+	if(!there &&(agt.getMyCoverObject()->getPosition() - agt.getPosition()).getLength() < r){
+	agt.getPathList().clear();
+
+	irr::scene::ISceneNode* a = agt.smgr->addSphereSceneNode(5);
+	a->setPosition(agt.getPosition());
+
+	//agt.setPosition(vector3df(r*cos(agtAngle),agt.getPosition().Y, r*sin(agtAngle)));
+	there = true;
+	//std::cout<<"THERE\n";
+	}
+
+	if(!there)agt.walk(agt.followPath(timer));
+	else if(there){
 	double ANGULARVELOCITY = .1 / r;
 
 	double timeElapsed = agt.getUpdateTimeIncrement();
 
 	double angle1 = agtAngle;
-	double angle2 =  vectorAngle((agt.getMyCoverObject()->getCoverPosition(agt.getIt()) - agt.getMyCoverObject()->getPosition()).normalize()); 
+	double angle2 =  vectorAngle((agt.getMyCoverObject()->getCoverPosition(agt.getIt()) - agt.getMyCoverObject()->getSceneNode()->getPosition()).normalize()); 
 
 double transl = 0;
 
@@ -202,7 +221,7 @@ double transl = 0;
 	//transl = (angle2 - agtAngle) / fabs(angle2 - agtAngle);
 	double newAngle = agtAngle + (ANGULARVELOCITY * timeElapsed * transl);
 
-	std::cout<<"AV * T:"<<(ANGULARVELOCITY*timeElapsed)<<std::endl;
+	//std::cout<<"AV * T:"<<(ANGULARVELOCITY*timeElapsed)<<std::endl;
 
 //	newAngle = fmod(newAngle, 2*PI);
 //	if(newAngle < 0){
@@ -211,7 +230,7 @@ double transl = 0;
 //
 //	}
 
-	irr::core::vector3df newPos = agt.getMyCoverObject()->getPosition() + vector3df(r * cos(newAngle), agt.getPosition().Y - agt.getMyCoverObject()->getPosition().Y, r*sin(newAngle)); ;
+	irr::core::vector3df newPos = agt.getMyCoverObject()->getSceneNode()->getPosition() + vector3df(r * cos(newAngle), agt.getPosition().Y - agt.getMyCoverObject()->getSceneNode()->getPosition().Y, r*sin(newAngle)); ;
 
 
 	//std::cout<<"oldAngle:"<<agtAngle<<" newAngle:"<<newAngle<<" transl:"<<transl<<" angular vel:"<<ANGULARVELOCITY<<" TARGETANGLE "<<angle2<<"\n";
@@ -225,15 +244,7 @@ double transl = 0;
 //agt.walk(agt.followPath(timer));
 
 
-	//agt.getPathList().push_back(agt.getMyCoverObject()->getCoverPosition(agt.getIt()));
-	if(!there)agt.walk(agt.followPath(timer));
 	
-	if(!there &&(agt.getMyCoverObject()->getPosition() - agt.getPosition()).getLength() < r){
-	agt.getPathList().clear();
-	//agt.setPosition(vector3df(r*cos(agtAngle),agt.getPosition().Y, r*sin(agtAngle)));
-	there = true;
-	std::cout<<"THERE\n";
-	}
 	
 
 }

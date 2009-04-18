@@ -52,7 +52,7 @@ return result;
 //-528.744751 0.024357 102.937782
 ktcGame::ktcGame(IrrlichtDevice *device, irr::scene::ITriangleSelector* selector):can (device), graph (device, "NODE_LIST.txt","ADJACENCY_LIST.txt","EXCLUDE.txt"), 
 agent2 (Model("../media/chuckie.MD2","../media/Chuckie.pcx", device), irr::core::vector3df(0,0,0), 300000, 10000, PREY, core::vector3df(-528.744751, 0.024357, 102.937782), device->getSceneManager(), &graph),
-plyr(device, irr::core::vector3df(0,0,0), 300000, 0, PREDATOR)
+plyr(device, irr::core::vector3df(0,0,0), 300000, 0, PREY)
 {
 	
 	dMode = NONE;
