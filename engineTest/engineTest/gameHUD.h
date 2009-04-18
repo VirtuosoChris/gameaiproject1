@@ -18,6 +18,7 @@ private:
    double shotTimerBarValue;  //current bar value
    double screenX, screenY;
    bool gunTimerReady;		//current gun readiness
+   bool showScore;			//score display flag
 
    //Texture Storage for random GUI HUD elements
    //Assignments:
@@ -37,6 +38,13 @@ private:
    //	1 : Seconds (1x10^1)
    //	2 : Seconds (1x10^0)
    video::ITexture* ClockTextures[3];
+
+   //Texture Storage for score counters
+   //Assignments:
+   //	0   : Label
+   //	1-5	: Player Identifiers
+   //	6	: gun identifier
+   video::ITexture* ScoreTextures[7];
 
    gameHUD(); //constructor
    ~gameHUD(); //destructor :O

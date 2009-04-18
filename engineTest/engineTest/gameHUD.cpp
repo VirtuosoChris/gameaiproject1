@@ -8,6 +8,9 @@ gameHUD::gameHUD()
 {
 	//set gun to ready
 	gunTimerReady = true;
+
+	//set visibility of score graphics
+	showScore = false;
        
    //shot timer bar size
    x1Bar = 52;
@@ -205,6 +208,30 @@ void gameHUD::loadTextures()
    //Colon Character
    CharTextures[10] = driver->getTexture("../Media/Textures/colon.bmp");
    driver->makeColorKeyTexture(CharTextures[10], video::SColor(0,0,0,0));
+
+   //Load textures for score keeping
+   //label
+   ScoreTextures[0] = driver->getTexture("../Media/Textures/scores.bmp");
+   driver->makeColorKeyTexture(ScoreTextures[0], video::SColor(0,0,0,0));
+   //Player 1
+   ScoreTextures[1] = driver->getTexture("../Media/Textures/player1.bmp");
+   driver->makeColorKeyTexture(ScoreTextures[1], video::SColor(0,0,0,0));
+   //Player 2
+   ScoreTextures[2] = driver->getTexture("../Media/Textures/player2.bmp");
+   driver->makeColorKeyTexture(ScoreTextures[2], video::SColor(0,0,0,0));
+   //Player 3
+   ScoreTextures[3] = driver->getTexture("../Media/Textures/player3.bmp");
+   driver->makeColorKeyTexture(ScoreTextures[3], video::SColor(0,0,0,0));
+   //Player 4
+   ScoreTextures[4] = driver->getTexture("../Media/Textures/player4.bmp");
+   driver->makeColorKeyTexture(ScoreTextures[1], video::SColor(0,0,0,0));
+   //Player 5
+   ScoreTextures[5] = driver->getTexture("../Media/Textures/player5.bmp");
+   driver->makeColorKeyTexture(ScoreTextures[1], video::SColor(0,0,0,0));
+   //Gun Identifier
+   ScoreTextures[6] = driver->getTexture("../Media/Textures/gun.bmp");
+   driver->makeColorKeyTexture(ScoreTextures[6], video::SColor(0,0,0,0));
+
 
    //Initialize clock
    updateRoundTimer(0);
