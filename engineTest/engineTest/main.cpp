@@ -170,7 +170,8 @@ irr::scene::ITriangleSelector*  selector = NULL;
  {//block containing the game object
 
 //create game HUD object
-gameHUD* display = new gameHUD(driver,100);
+	 gameHUD* display = gameHUD::getInstance();
+	 display->setVideoDriver(driver);
 //create the game object
 
 
@@ -227,7 +228,7 @@ x2->setMaterialFlag(video::EMF_FOG_ENABLE, true);
 specialWalls.push_back(x2);
 
 
-ktcGame game(device, selector, display);
+ktcGame game(device, selector);
 
 
 /*******************************************************/
