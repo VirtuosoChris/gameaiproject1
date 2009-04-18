@@ -58,7 +58,7 @@ runs+=1;
 runningAverage += TIMEELAPSED;
 
 if(runs%100 == 0){	
-	std::cout<< (runningAverage/ (double) runs)<<"\n" ;
+	//std::cout<< (runningAverage/ (double) runs)<<"\n" ;
 	runningAverage = runs = 0;
 }
 
@@ -547,12 +547,80 @@ void Agent::newTargetLocation(irr::core::vector3df fin){
 	//get the unobstructed node closest to the agent
  int sNode1 = mg->getClosestNodeUnobstructed(mynodep->getPosition(), smgr,selector);
 
+
+
+	std::cout<<"from "<<sNode1<<" to "<<sNode2<<" \n";
+
+
  std::vector<int>* result = mg->astarSearch(sNode1, sNode2);
 
 	if(result->size()){
 	for(unsigned int i = 0; i < result->size(); i++){
 		pathList.push_front( mg->nodePosition( (*result)[i]));
 	}
+	pathList.push_back(fin);
+
+	}else{
+		velocity = vector3df(0,0,0);
+		pathList.push_back(mynodep->getPosition());
+	}
+
+
+	
+	currentSeekTarget = pathList.front();
+	previousSeekTarget = mynodep->getPosition();
+	printf("%d %d\n", sNode1, sNode2);
+
+////
+	//agent2.createPatrolRoute(&graph);
+//mg->selector = selector;
+
+
+//line.start = NODE_VECTOR[
+
+//if(smgr->getSceneCollisionManager()->getCollisionPoint(line, selector,intersection, triangle)){
+//	 std::cout<<"WTF SOMEHOW THE PATH IS WRONG\n";///exit(0);
+//	}
+
+
+	delete result;
+}
+
+
+
+
+
+
+//this function generates a list of waypoints to seek to a target location
+void Agent::newTargetLocationSpannablePath(irr::core::vector3df fin){
+
+	mapGraph* mg = this->graph;
+	//extern std::vector<irr::core::vector3df> NODE_VECTOR;
+
+	pathList.clear();
+
+
+	//get the unobstructed node closest to the target location
+ int sNode2 = mg->getClosestNodeUnobstructedSpannable(fin,smgr, selector);
+	//get the unobstructed node closest to the agent
+ int sNode1 = mg->getClosestNodeUnobstructedSpannable(mynodep->getPosition(), smgr,selector);
+
+
+
+	std::cout<<"from "<<sNode1<<" to "<<sNode2<<" \n";
+
+
+ std::vector<int>* result = mg->astarSearch(sNode1, sNode2);
+
+ std::cout<<"astar path is\n";
+	if(result->size()){
+	for(unsigned int i = 0; i < result->size(); i++){
+		pathList.push_front( mg->nodePosition( (*result)[i]));
+
+		std::cout<<mg->getClosestNode(mg->nodePosition( (*result)[i]))<<" ";
+	}
+
+	std::cout<<"\n";
 	pathList.push_back(fin);
 
 	}else{
@@ -591,7 +659,7 @@ void Agent::newTargetLocation(irr::core::vector3df fin){
 void Agent::correctPath(){
 
 
-	std::cout<<"correcting path\n";
+	//std::cout<<"correcting path\n";
 int src = this->graph->getClosestNodeUnobstructed(this->getPosition(),smgr,selector);
 int tgt = this->graph->getClosestNodeUnobstructed(currentSeekTarget,smgr,selector);
 

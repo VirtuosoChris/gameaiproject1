@@ -70,7 +70,7 @@ int main(int, char**){
 
  //create the irrlicht device
  //IrrlichtDevice *device = createDevice(video::EDT_OPENGL, core::dimension2d<s32>(1440,900), 32, false, true, true, InputHandler::getInstance());
-  device = createDevice(video::EDT_OPENGL, core::dimension2d<s32>(800,600), 32, false//shadows	 
+  device = createDevice(video::EDT_OPENGL, core::dimension2d<s32>(640,480), 32, false//shadows	 
 	  , true, true, InputHandler::getInstance());
 
 	  if(device==NULL)return 1;
