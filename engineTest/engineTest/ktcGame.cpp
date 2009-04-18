@@ -50,13 +50,14 @@ return result;
 //#define NODE_MESH_GENERATOR //is the program in node mesh generation mode
 //-442,351,-863
 //-528.744751 0.024357 102.937782
+
 ktcGame::ktcGame(IrrlichtDevice *device, irr::scene::ITriangleSelector* selector):can (device), graph (device, "NODE_LIST.txt","ADJACENCY_LIST.txt","EXCLUDE.txt"), 
 agent2 (Model("../media/chuckie.MD2","../media/Chuckie.pcx", device), irr::core::vector3df(0,0,0), 300000, 10000, PREY, core::vector3df(-528.744751, 0.024357, 102.937782), device->getSceneManager(), &graph),
 plyr(device, irr::core::vector3df(0,0,0), 300000, 0, PREY)
 {
 	
-graph.selector = selector; 
-graph.toggleDebugOutput(false);
+	graph.selector = selector; 
+	graph.toggleDebugOutput(false);
 	dMode = NONE;
 	
 	//Instantiate the Irrlicht Engine Device
@@ -64,6 +65,9 @@ graph.toggleDebugOutput(false);
 
 	//Game now has their own timer
 	round_time.setTime(500000);
+
+	//set up state machine
+	GameStateMachine = new StateMachine<ktcGame>(*this);
 
 	plyr.setCameraSpeed(PREY_SPEED);
 	playerList.push_back(&plyr);
@@ -93,21 +97,20 @@ graph.toggleDebugOutput(false);
 		}
 	
 		fclose(fp);
-}
+	}
 
-fp = fopen("COVER_OBJECTS.txt", "r");
-if(fp){
-float a[3];
-while(!feof(fp)){
-	fscanf(fp, "%f %f %f\n", a, &a[1], &a[2]);
-	this->coverObjectList.push_back(new coverObject(vector3df(a[0], a[1], a[2]), device));
+	fp = fopen("COVER_OBJECTS.txt", "r");
+	if(fp){
+		float a[3];
+		while(!feof(fp)){
+			fscanf(fp, "%f %f %f\n", a, &a[1], &a[2]);
+			this->coverObjectList.push_back(new coverObject(vector3df(a[0], a[1], a[2]), device));
 	
 	
-}
-fclose(fp);
-}
-
-else cout << "Bad pointer.\n";
+		}
+		fclose(fp);
+	}
+	else cout << "Bad pointer.\n";
 
 	//can=(device);
 	//gun = gunEntity(device, camera);
@@ -145,6 +148,10 @@ agent2.GetFSM()->ChangeState(Hide::GetInstance());
 
  entities.push_back(&agent2);
  playerList.push_back(&agent2);
+
+ //Initialize game into Pre-Play State
+   this->GetFSM()->SetCurrentState(PrePlay::getInstance());
+   this->GetFSM()->StartCurrentState();
 
 
 
@@ -241,236 +248,14 @@ specialWalls[i]->addAnimator(nodeAnimator);
 
 
 
+//Start game
+this->GetFSM()->ChangeState(Play::getInstance());
 
 }
-
-
-
-
-
 
 void ktcGame::update(const irr::ITimer* timer){
-
-	//update round timer
-	round_time.update(timer);
-
-	//update HUD
-	gameHUD::getInstance()->updateRoundTimer(plyr.pl_time.getMins(),
-											 plyr.pl_time.getSecsSecond(),
-											 plyr.pl_time.getSecsFirst());
-
-	//if time is up, then round robin shit so that we get new predator and prey
-	if(plyr.pl_time.getTime() <= 0){
-		RoundRobin(playerList);
-		for(int i = 0; i < playerList.size(); i++){
-			(*playerList[i]).setInvTimer(5000);
-			(*playerList[i]).setTimer(60000);
-		}
-	}
-
-	/*
-	if(agent2.getPlayerType() == PREY) 
-		std::cout << "I'm an agent and i'm PREY\n";
-	else std::cout << "I'm an agent and i'm a PREDATOR\n";
-	
-	if(plyr.getPlayerType() == PREY) 
-		std::cout << "I'm a player and i'm PREY\n";
-	else std::cout << "I'm a player and i'm a PREDATOR\n";
-	*/
-
-
-//	core::line3d<irr::f32> line;
-//	line.start = plyr.getSceneNode()->getPosition();
-	//line.end = //line.start +  vector3df(0,1000,0);
-	
-//	for(int i = 0; i < this->coverObjectList.size();i++){
-//		line.end = this->coverObjectList[i]->getSceneNode()->getBoundingBox().getCenter();
-//		
-//		if(this->coverObjectList[i]->getSceneNode()->getBoundingBox().intersectsWithLine(line)){
-//			std::cout<<"ZOMG INTERSECTED\n";
-//
-//			if(this->coverObjectList[i]->getSceneNode()->getBoundingBox().isEmpty()){
-//				std::cout<<"WTFLOL\n";
-//			}
-//
-//		//	this->coverObjectList[i]->getSceneNode()->getBoundingBox().
-//		}
-//	}
-
-
-
-device->getVideoDriver()->beginScene(true, true, video::SColor(255,100,101,140));
-
-smgr->drawAll();  //draw 3d objects
-display->render();
-
-
-
-		
-//for(int i = 0; i < this->coverObjectList.size(); i++){
-//	coverObjectList[i]->getCoverPosition(agent2.getIt());
-//	}
-
-plyr.getGun().render();
-
-device->getVideoDriver()->endScene();//end drawing 
-
-if(InputHandler::getInstance()->unprocessedMouseMessageLMB){
-
-
-#ifdef NODE_MESH_GENERATOR
-			graph.addNode(camera->getPosition());
-#endif
-
-#ifdef SPAWN_POINT_CREATOR
-			this->spawnPointList.push_back(camera->getPosition());
-
-			
-			FILE *fp = fopen("SPAWN_POINTS.txt", "a");
-	 
-			fprintf(fp, "%f %f %f\n", this->camera->getPosition().X, this->camera->getPosition().Y, this->camera->getPosition().Z);
-			
-			fclose(fp);
-#endif
-
-
-#ifdef COVER_OBJECT_GENERATOR
-
-			irr::scene::ISceneNode* t= smgr->addCubeSceneNode(1);
-			t->setPosition(camera->getPosition());
-			//irr::scene::ILightSceneNode *lightscenenode = smgr->addLightSceneNode(0, irr::core::vector3df(1.25,0,0), irr::video::SColor(255,255, 255, 255),100);
-			//t->addChild(lightscenenode);
-			//irr::scene::ILightSceneNode *lightscenenode2 = smgr->addLightSceneNode(0, irr::core::vector3df(0,0,-1.25), irr::video::SColor(255, 255, 255, 255),100);
-			//t->addChild(lightscenenode2);
-			//irr::scene::ISceneNode* a = smgr->addSphereSceneNode(1);
-			//a->setPosition(irr::core::vector3df(1.1,1.1,1.1));
-	//		t->addChild(a);
-			t->setScale(vector3df(50,75,50));
-			coverObjectList.push_back(camera->getPosition());
-			t->setMaterialTexture(0, device->getVideoDriver()->getTexture("../media/crate.jpg"));
-			t->setMaterialTexture(1, device->getVideoDriver()->getTexture("../media/cratebump.jpg"));
-			t->setMaterialFlag(video::EMF_LIGHTING, true);
-			t->setMaterialFlag(video::EMF_FOG_ENABLE, true);
-			t->setMaterialType(video::EMT_LIGHTMAP_LIGHTING_M4);
-		//	t->getMaterial(0).AmbientColor = video::SColor(255,25,25,25);
-			//t->getMaterial(1).AmbientColor = video::SColor(255,25,25,25);
-			
-			
-#endif
-
-//Gun Mechanics - Make sure animation is complete
-if(plyr.getGun().isReady())
-{
-	MessageHandler::getInstance()->postMessage(KTC_PLAYER_LEFT_MOUSE_CLICK, 0, this, &plyr.getGun(), timer);
-	
-	//Make sure gun has passed the firing time limitation
-	if(display->getGunReady())
-	{
-		for(int i = 0; i < entities.size(); i++)
-		{
-			if(this->pointing() == entities[i]->getSceneNode())
-			{
-				MessageHandler::getInstance()->postMessage(KTC_KILL, 0, this, entities[i], device->getTimer());
-				break;
-			}
-		}
-	}
-}
-
-
-if(this->pointing() == can.getSceneNode() && (plyr.getSceneNode()->getPosition() - can.getSceneNode()->getPosition()).getLength() <= 100.0f){
-	for(int i = 0; i < entities.size(); i++){
-	
-		MessageHandler::getInstance()->postMessage(KTC_REVIVE, 0, this, entities[i], device->getTimer());
-	}
-}
-
-
-			InputHandler::getInstance()->unprocessedMouseMessageLMB = false;
-		}
-
-
-
-	if(InputHandler::getInstance()->unprocessedMouseMessageRMB){
-		//graph.output();
-
-
-#ifdef COVER_OBJECT_GENERATOR
- FILE *fp = fopen("COVER_OBJECTS.txt", "w");
- for(int i = 0; i < this->coverObjectList.size(); i++){
-		 fprintf(fp, "%f %f %f\n", coverObjectList[i].X, coverObjectList[i].Y, coverObjectList[i].Z);
-	 }
-	fclose(fp);
-#endif
-
-
-		InputHandler::getInstance()->unprocessedMouseMessageRMB = false;
-	}
-
-
-
-	//Toggle the render output of the Debug visible objects
-	if(InputHandler::getInstance()->isTKeyPressed()){
-		graph.toggleDebugOutput(!graph.isDebugOutput());
-	}
-
-	//Toggle the render output of the GUI scoring mechanism
-	//if(InputHandler::getInstance()->isTabKeyPressed()){
-	//	graph.toggleScoreOutput(!graph.isScoreOutput());
-	//}
-
-	can.update(timer);
-	plyr.update(timer);
-
-	
-
-
-#ifndef NODE_MESH_GENERATOR
-static mapGraph* mintree = graph.minimumSpanningTree(0);
-//graph.minimumSpanningTree(0)->render(device->getVideoDriver());
-
-switch(this->dMode){
-case NONE:break;
-case FULLGRAPH: graph.render(device->getVideoDriver());break;
-case MINSPANNINGTREE: mintree->render(device->getVideoDriver());break;
-}
-
-
-for(int i = 0; i < (int)entities.size();i++){
-			if(entities[i]){
-				entities[i]->update(timer);
-				
-				if(graph.isDebugOutput()){
-			//	entities[i]->drawPieSlices(device->getVideoDriver());
-				}
-			}
-		}
-
-
-#endif
-
-	//update all entities
-
-	//agent2.walk(agent2.followPath(timer));
-	//agent2.walk(agent2.seek(agent2.getCurrentSeekTarget()) + agent2.wallAvoidance());
-		
-	//agent2.walk(2*agent2.avoid(&plyr)+ 10*agent2.wallAvoidance());
-
-	//agent2.walk(agent2.pursue(&plyr));//);+ agent2.wallAvoidance());
-	//agent2.walk(2*agent2.seek(plyr.getPosition())+ agent2.wallAvoidance());
-	
-	///gun.gun->setPosition(camera->getPosition());	
-	//gun.gun->setRotation(camera->getRotation() + vector3df(0,270,0));
-
-	//scene::ISceneNode* SceneNodeSeen;
-	//SceneNodeSeen = ktcGame::pointing();
-	//if(SceneNodeSeen == agent2.getSceneNode()){
-	//	std::cout << "I'm looking at Chuckie;\n";
-	//}
-
-	
-
-
+	//running update() on the state machine
+	GameStateMachine->update(timer);
 }
 
 void ktcGame::RoundRobin(std::vector<GamePlayer *> plst){
