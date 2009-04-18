@@ -73,13 +73,18 @@ double LAST_OBSTACLE_CORRECTANCE;
 	Model model;
 
 	//engine related stuff
-	scene::ISceneManager* smgr;
 	irr::scene::ITriangleSelector* selector;
 
 	void correctPath();
 
 
 public:
+
+
+
+	scene::ISceneManager* smgr;
+
+
 	irr::core::vector3df getCurrentSeekTarget(){return currentSeekTarget;}
 	void setIt(physicsObject* p){IT = p;}
 	void setSpotted(physicsObject* p){SPOTTED = p;}

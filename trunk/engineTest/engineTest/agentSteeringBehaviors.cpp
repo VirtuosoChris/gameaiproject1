@@ -58,7 +58,9 @@ if(!(velocity+(accel*TIMEELAPSED)).getLength() == 0.0f){
 
 
 if(velocity.getLength() > .01f){
-	mynodep->setPosition(mynodep->getPosition() + (TIMEELAPSED * velocity));
+
+	//CHANGED FROM MYNODEP TO GETPOSITION()
+	mynodep->setPosition( getPosition() + (TIMEELAPSED * velocity));
 	
 	if(!MOVING){
 	MOVING= true;
