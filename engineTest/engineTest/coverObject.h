@@ -51,7 +51,7 @@ public:
 		mynodep->setMaterialFlag(video::EMF_FOG_ENABLE, true);
 		mynodep->setMaterialType(video::EMT_LIGHTMAP_LIGHTING_M4);
 
-		
+	//	mynodep->setVisible(false);
 		spot = device->getSceneManager()->addSphereSceneNode(10);
 		//spot->setMaterialFlag(video::EMF_ZBUFFER, false);
 		spot->setPosition(mynodep->getPosition());

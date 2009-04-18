@@ -55,6 +55,8 @@ agent2 (Model("../media/chuckie.MD2","../media/Chuckie.pcx", device), irr::core:
 plyr(device, irr::core::vector3df(0,0,0), 300000, 0, PREY)
 {
 	
+graph.selector = selector; 
+graph.toggleDebugOutput(false);
 	dMode = NONE;
 	
 	//Instantiate the Irrlicht Engine Device
@@ -118,7 +120,6 @@ else cout << "Bad pointer.\n";
 
 //agent2.setPosition(this->spawnPointList[2]);
 //agent2.getSceneNode()->setPosition(this->spawnPointList[2]);
-agent2.createCollisionAnimator(selector, smgr);
 
 
 
@@ -130,8 +131,17 @@ agent2.createCollisionAnimator(selector, smgr);
 //entities.push_back(agent3);
 
 
- Agent::setAgentList(&entities);
- Agent::setCoverObjectList(&coverObjectList);
+Agent::setAgentList(&entities);
+Agent::setCoverObjectList(&coverObjectList);
+
+agent2.setIt(&plyr);
+agent2.setSpotted(&plyr);
+
+agent2.getSceneNode()->setPosition(spawnPointList[2]);
+agent2.setPosition(spawnPointList[2]);
+
+agent2.createCollisionAnimator(selector, smgr);
+agent2.GetFSM()->ChangeState(Hide::GetInstance());
 
  entities.push_back(&agent2);
  playerList.push_back(&agent2);
@@ -147,9 +157,7 @@ agent2.createCollisionAnimator(selector, smgr);
 plyr.setSpawnPoint(spawnPointList[0]);
 plyr.getSceneNode()->setPosition( spawnPointList[0] );
 
-agent2.setPosition(spawnPointList[1]);
-agent2.setSpawnPoint(spawnPointList[1]);
-agent2.createPatrolRoute(&graph);
+//agent2.createPatrolRoute(&graph);
 
 scene::ISceneNodeAnimator *nodeAnimator = 
 	smgr->createCollisionResponseAnimator(selector,//geometry for collision 
@@ -228,19 +236,10 @@ specialWalls[i]->addAnimator(nodeAnimator);
 
 
 
-agent2.setIt(&plyr);
-agent2.setSpotted(&plyr);
 
 //Initialize Player Scoresfor(int x=0 ; x<5 ; x++)	playerScores[x] = 0;}
 
 
-graph.selector = selector; 
-//graph.toggleDebugOutput(false);
-
-
-agent2.setMyCoverObject(this->coverObjectList[0]);
-agent2.GetFSM()->ChangeState(Hide::GetInstance());
-	
 
 
 }

@@ -74,7 +74,7 @@ if(velocity.getLength() > .01f){
 	
 	mynodep->setPosition( ppos + (TIMEELAPSED * velocity));
 	
-
+	
 
 
 	if(!MOVING){

@@ -23,7 +23,7 @@
 
 const double MAXSPEED = .15; //was .3 
 const double mass = 25; //was 100 // was 25 
-const double RADIUS = 100;//50;//25;//was 100 
+const double RADIUS = 50;//100;//50;//25;//was 100 
 //double ANGLE = 45; 
 const double ACCELRATE = MAXSPEED/4; 
 const double TIMEMULTIPLIER = 2.0; 
@@ -46,7 +46,6 @@ double LAST_OBSTACLE_CORRECTANCE;
 
 	irr::u32 LASTUPDATE;
 	
-    bool MOVING;
 	
 	//an object of the state machine that the agent uses to implement an FSM
 	StateMachine<Agent> * AgentStateMachine;
@@ -80,7 +79,8 @@ double LAST_OBSTACLE_CORRECTANCE;
 
 public:
 
-
+	bool there;
+    bool MOVING;
 
 	scene::ISceneManager* smgr;
 
@@ -99,6 +99,7 @@ public:
 	irr::core::vector3df followPath(const irr::ITimer* timer);
 	irr::core::vector3df flee(irr::core::vector3df);
 	void newTargetLocation(irr::core::vector3df);
+	void newTargetLocationSpannablePath(irr::core::vector3df);
 	void createPatrolRoute(mapGraph* mg);
 
 	irr::core::vector3df pursue(physicsObject* tgt);

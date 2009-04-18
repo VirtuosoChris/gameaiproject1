@@ -151,28 +151,38 @@ Hide* Hide::GetInstance(){
 }
 
 void Hide::Enter(Agent & agt){
-	agt.getPathList().clear();
 
-	agt.newTargetLocation(agt.getMyCoverObject()->getCoverPosition(agt.getIt()));
+	agt.there = false;
+	agt.getPathList().clear();
+	
+	int i = agt.getCoverObjectList()->size();
+	srand(((int)&agt));
+	i = abs(rand()%i);
+
+	//minus three causes problems while pathfinding
+	agt.setMyCoverObject((*agt.getCoverObjectList())[i]);
+	agt.newTargetLocationSpannablePath(agt.getMyCoverObject()->getPosition());//getCoverPosition(agt.getIt()));//case when path list is empty but not close enough**********
 	cout << "Entering Hide state.\n";
 	//use MsgHandler->postMessage() here to post a message to all other players (use for loop or some shit)
 }
 
 void Hide::Execute(Agent & agt, const irr::ITimer* timer){
 	
-
+//return;
 	//agt.getPathList().clear();
 	//agt.createPatrolRoute(agt.getGraph());
 	//agt.GetFSM()->ChangeState(Patrol::GetInstance());
-
-	static bool there = false;//false;//temp
+//static double yr = 0;
+	//static bool there = false;//false;//temp
+	//static bool MOVING = true;
 ///	cout << "Executing Hide state.\n";
 
+	bool& MOVING = agt.MOVING;
+	bool& there = agt.there;
 
-	
+
 	double agtAngle = vectorAngle((agt.getPosition() - agt.getMyCoverObject()->getPosition()).normalize()); 
-	double r =agt.getMyCoverObject()->getBoundaryRadius()+10;
-
+	double r =agt.getMyCoverObject()->getBoundaryRadius();
 
 
 	//agt.getPathList().push_back(agt.getMyCoverObject()->getCoverPosition(agt.getIt()));
@@ -180,25 +190,40 @@ void Hide::Execute(Agent & agt, const irr::ITimer* timer){
 	if(!there &&(agt.getMyCoverObject()->getPosition() - agt.getSceneNode()->getPosition()).getLength() < r){
 	agt.getPathList().clear();
 
-	irr::scene::ISceneNode* a = agt.smgr->addSphereSceneNode(5);
-	a->setPosition(agt.getPosition());
+	//yr = agt.getSceneNode()->getPosition().Y;
+
+	//irr::scene::ISceneNode* a = agt.smgr->addSphereSceneNode(5);
+	//a->setPosition(agt.getPosition());
 
 	//agt.setPosition(vector3df(r*cos(agtAngle),agt.getPosition().Y, r*sin(agtAngle)));
 	there = true;
+	return;
 	//std::cout<<"THERE\n";
 	}
 
+
+	if(agt.getPathList().empty()&&!there){
+	//std::cout<<"WKEKHRER\n";
+	//agt.setVelocity((agt.getMyCoverObject()->getPosition() - agt.getSceneNode()->getPosition()).normalize() * MAXSPEED);
+		agt.walk(agt.wallAvoidance() + agt.seek(agt.getMyCoverObject()->getPosition()));
+		return;
+	
+		//agt.getPathList().push_front((((agt.getMyCoverObject()->getCoverPosition(&agt)) - agt.getSceneNode()->getPosition()).normalize() * 1000) + agt.getSceneNode()->getPosition());
+	}
+
+
 	if(!there)agt.walk(agt.followPath(timer));
 	else if(there){
-	double ANGULARVELOCITY = .1 / r;
+	double ANGULARVELOCITY = .15 / r;
 
 	double timeElapsed = agt.getUpdateTimeIncrement();
 
 	double angle1 = agtAngle;
-	double angle2 =  vectorAngle((agt.getMyCoverObject()->getCoverPosition(agt.getIt()) - agt.getMyCoverObject()->getSceneNode()->getPosition()).normalize()); 
+	double angle2 =  vectorAngle((agt.getMyCoverObject()->getCoverPosition(agt.getIt()) - agt.getMyCoverObject()->getPosition()).normalize()); 
 
 double transl = 0;
 
+/*
 	if( fabs(angle1 - angle2) < fabs(angle2 - angle1)){
 	
 		transl = (angle1 - angle2) /  fabs(angle1 - angle2);
@@ -207,9 +232,28 @@ double transl = 0;
 	
 		transl = (angle2 - angle1) / fabs(angle2- angle1);
 	}
-
+*/
 
 	transl = (angle2 - angle1);
+
+	if(fabs(transl) < degreesToRadians(15)){
+
+		if(MOVING){
+		MOVING = false;
+		((irr::scene::IAnimatedMeshSceneNode*)(agt.getSceneNode()))->setMD2Animation(scene::EMAT_STAND);
+		}
+
+	return;
+	}
+
+
+	if(!MOVING){
+
+		MOVING = true;
+	((irr::scene::IAnimatedMeshSceneNode*)(agt.getSceneNode()))->setMD2Animation(scene::EMAT_RUN);
+
+	}
+
 	transl = transl / fabs(transl);
 	if(fabs(angle2 - angle1) > PI){transl*=-1;}
 
@@ -230,14 +274,40 @@ double transl = 0;
 //
 //	}
 
-	irr::core::vector3df newPos = agt.getMyCoverObject()->getSceneNode()->getPosition() + vector3df(r * cos(newAngle), agt.getPosition().Y - agt.getMyCoverObject()->getSceneNode()->getPosition().Y, r*sin(newAngle)); ;
+	irr::core::vector3df newPos = agt.getMyCoverObject()->getPosition() + vector3df(r * cos(newAngle),0, r*sin(newAngle)); ;
 
 
 	//std::cout<<"oldAngle:"<<agtAngle<<" newAngle:"<<newAngle<<" transl:"<<transl<<" angular vel:"<<ANGULARVELOCITY<<" TARGETANGLE "<<angle2<<"\n";
-	std::cout<<radiansToDegrees(newAngle)<<std::endl;
+	//std::cout<<radiansToDegrees(newAngle)<<std::endl;
+
+
+
+double orientation = 0;
+vector3df velocity = newPos - agt.getPosition();
+vector3df abc = velocity;//SEEK_POS - mynodep->getPosition();
+abc.Y = 0;
+abc = abc.normalize();
+double tAngle = radiansToDegrees(acos(fabs(abc.X)));
+switch(
+	   quadrant(velocity.normalize()
+	   )){
+case 1:break;
+case 2:tAngle = 180-tAngle;break;
+case 3:tAngle = 180+tAngle;break;
+case 4:tAngle = 360-tAngle;break;
+default:;
+}
+
+if(velocity.getLength()!=0){
+orientation = tAngle;
+agt.getSceneNode()->setRotation(irr::core::vector3df(0.0f,(irr::f32)fabs(360-orientation),0.0f));
+}
 
 
 	agt.setPosition(newPos);
+
+
+	//agt.setPosition( irr::core::vector3df(newPos.X, yr, newPos.Z));
 	}
 
 
