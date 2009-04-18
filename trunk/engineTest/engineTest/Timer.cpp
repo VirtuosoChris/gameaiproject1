@@ -34,9 +34,16 @@ void Timer::convert(){
 	//60,000 ms equals one minute
 	min = timer/60000;
 
+	//Set this as timer private
+	minsRemain = min;
+
 	inter = timer%60000;
 
 	sec = inter/1000;
+
+	//Set second and first order seconds remaining
+	secsOrder2Remain = sec/10;
+	secsOrder1Remain = sec%10;
 
 	rest = inter % 1000;
 
