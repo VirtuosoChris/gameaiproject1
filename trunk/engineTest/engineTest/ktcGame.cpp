@@ -50,7 +50,7 @@ return result;
 //#define NODE_MESH_GENERATOR //is the program in node mesh generation mode
 //-442,351,-863
 //-528.744751 0.024357 102.937782
-ktcGame::ktcGame(IrrlichtDevice *device, irr::scene::ITriangleSelector* selector, gameHUD* display):can (device), graph (device, "NODE_LIST.txt","ADJACENCY_LIST.txt","EXCLUDE.txt"), 
+ktcGame::ktcGame(IrrlichtDevice *device, irr::scene::ITriangleSelector* selector):can (device), graph (device, "NODE_LIST.txt","ADJACENCY_LIST.txt","EXCLUDE.txt"), 
 agent2 (Model("../media/chuckie.MD2","../media/Chuckie.pcx", device), irr::core::vector3df(0,0,0), 15000, 10000, PREY, core::vector3df(-528.744751, 0.024357, 102.937782), device->getSceneManager(), &graph),
 plyr(device, irr::core::vector3df(0,0,0), 15000, 0, PREY)
 {
@@ -67,7 +67,7 @@ plyr(device, irr::core::vector3df(0,0,0), 15000, 0, PREY)
 	smgr = device->getSceneManager();
 
 	//Instantiate the GameHUD Device
-	this->display = display;
+	this->display = gameHUD::getInstance();
 
 	CHUCKIE = agent2.getModel();
 
@@ -343,17 +343,24 @@ if(InputHandler::getInstance()->unprocessedMouseMessageLMB){
 			
 #endif
 
-
-if(plyr.getGun().isReady()){
-	
+//Gun Mechanics - Make sure animation is complete
+if(plyr.getGun().isReady())
+{
 	MessageHandler::getInstance()->postMessage(KTC_PLAYER_LEFT_MOUSE_CLICK, 0, this, &plyr.getGun(), timer);
-	for(int i = 0; i < entities.size(); i++){
-			if(this->pointing() == entities[i]->getSceneNode()){
+	
+	//Make sure gun has passed the firing time limitation
+	if(display->getGunReady())
+	{
+		for(int i = 0; i < entities.size(); i++)
+		{
+			if(this->pointing() == entities[i]->getSceneNode())
+			{
 				MessageHandler::getInstance()->postMessage(KTC_KILL, 0, this, entities[i], device->getTimer());
 				break;
 			}
 		}
-		}
+	}
+}
 
 
 if(this->pointing() == can.getSceneNode() && (plyr.getSceneNode()->getPosition() - can.getSceneNode()->getPosition()).getLength() <= 100.0f){

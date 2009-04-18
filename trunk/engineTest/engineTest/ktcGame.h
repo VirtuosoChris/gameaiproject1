@@ -67,8 +67,7 @@ public:
 	void disableDebugOutput(){dMode = NONE; }
 	void displayFullGraph(){dMode = FULLGRAPH;}
 
-	ktcGame(irr::IrrlichtDevice *device,irr::scene::ITriangleSelector*, gameHUD* display);
-	virtual void update(const irr::ITimer*);
+	ktcGame(IrrlichtDevice *device,irr::scene::ITriangleSelector*);	virtual void update(const irr::ITimer*);
 	virtual bool processMessage(const Message*);
 	virtual irr::scene::ISceneNode* pointing();  
 	virtual irr::scene::ISceneNode* GetCan(irr::scene::ISceneNode* );

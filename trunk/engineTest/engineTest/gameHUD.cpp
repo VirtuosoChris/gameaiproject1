@@ -4,10 +4,10 @@
 using namespace irr;
 using namespace video;
 
-gameHUD::gameHUD(IVideoDriver* videoDriver, int maxShotTimerValue){
-   
-   //class constructor
-   driver = videoDriver;
+gameHUD::gameHUD()
+{
+	//set gun to ready
+	gunTimerReady = true;
        
    //shot timer bar size
    x1Bar = 52;
@@ -15,33 +15,24 @@ gameHUD::gameHUD(IVideoDriver* videoDriver, int maxShotTimerValue){
    x2Bar = 55;
    y2Bar = 53;
        
-        //max bar values
-   maxShotTimerBarValue = maxShotTimerValue;
+   //max bar values
+   maxShotTimerBarValue = 100;
 
-        //current bar values
-   shotTimerBarValue = maxShotTimerValue;
+   //current bar values
+   shotTimerBarValue = 100;
 
-		//scalar delta for bar value
+   //scalar delta for bar value
    deltaShotTimerBar = shotTimerBarValue;
 
-   //load textures
-
-   //load some texture for spellbar and make it transparent with ColorKey 0 (black) and put it into a texture array
-   GUITextures[0] = driver->getTexture("../Media/Textures/spellbar_smaller.bmp");
-   driver->makeColorKeyTexture(GUITextures[0], video::SColor(0,0,0,0));
-
-   //load some texture for crosshair and make it transparent with ColorKey 0 (black)
-   GUITextures[1] = driver->getTexture("../Media/crosshair.bmp");
-   driver->makeColorKeyTexture(GUITextures[1], video::SColor(0,0,0,0));
 } 
+
+gameHUD::~gameHUD()
+{
+}
 
 void gameHUD::render(){
 
    float delta; //status bar variation
-   core::dimension2d<s32> screenSize = driver->getScreenSize(); 
-
-   double screenX=screenSize.Width;
-   double screenY=screenSize.Height; 
 
    //changes the bar value from X to Y smoothly
    if ((int)deltaShotTimerBar != (int)shotTimerBarValue){
@@ -51,6 +42,17 @@ void gameHUD::render(){
       if (delta < 0)
          shotTimerBarValue += 0.2;
    }
+
+   //draw the clock
+   //driver->draw2DImage(ClockTextures[0], core::position2d<s32>((screenX/2)-192, (screenY)), core::rect<s32>(0,0,32,32), 0, video::SColor(255,255,255,255), true);
+   //driver->draw2DImage(CharTextures[10], core::position2d<s32>((screenX/2)-96, (screenY)), core::rect<s32>(0,0,32,32), 0, video::SColor(255,255,255,255), true);
+   //driver->draw2DImage(ClockTextures[1], core::position2d<s32>((screenX/2)+96, (screenY)), core::rect<s32>(0,0,32,32), 0, video::SColor(255,255,255,255), true);
+   //driver->draw2DImage(ClockTextures[2], core::position2d<s32>((screenX/2)+192, (screenY)), core::rect<s32>(0,0,32,32), 0, video::SColor(255,255,255,255), true);
+	
+   driver->draw2DImage(ClockTextures[0], core::position2d<s32>((screenX/2)-96, (screenY/24)), core::rect<s32>(0,0,96,96), 0, video::SColor(255,255,255,255), true);
+   driver->draw2DImage(CharTextures[10], core::position2d<s32>((screenX/2)-48, (screenY/24)), core::rect<s32>(0,0,96,96), 0, video::SColor(255,255,255,255), true);
+   driver->draw2DImage(ClockTextures[1], core::position2d<s32>((screenX/2), (screenY/24)), core::rect<s32>(0,0,96,96), 0, video::SColor(255,255,255,255), true);
+   driver->draw2DImage(ClockTextures[2], core::position2d<s32>((screenX/2)+60, (screenY/24)), core::rect<s32>(0,0,96,96), 0, video::SColor(255,255,255,255), true);
 
    //draw the cross hair
    driver->draw2DImage(GUITextures[1], core::position2d<s32>((screenX/2)-16, (screenY/2)-16), core::rect<s32>(0,0,32,32), 0, video::SColor(255,255,255,255), true);
@@ -78,4 +80,142 @@ void gameHUD::render(){
 
 void gameHUD::setShotTimerBarValue(int shotTimerValue){
    deltaShotTimerBar = shotTimerValue;
+}
+
+void gameHUD::updateRoundTimer(int timeInSeconds)
+{
+	//limits timer to 10 minutes
+	if(timeInSeconds > 600)
+		//Sets Round Timer to the maximum value
+		roundTimer = 600;
+	else
+		//Sets Round Timer to the input value
+		roundTimer = timeInSeconds;
+
+	//call an update on the clock textures
+	updateClockTextures();
+}
+
+void gameHUD::updateClockTextures()
+{
+	//break down time into orderly numbers
+	int numMinutes;
+	int numSecsOrder10;
+	int numSecsOrder1;
+	int tempCount;
+
+	//Use temporary variable to avoid directly writing to timer register
+	tempCount = roundTimer;
+
+	//Get the number of minutes
+	numMinutes = tempCount/60 ;
+
+	//Set tempCount to remainder after minutes division
+	tempCount = tempCount%60 ;
+
+	//Get the second order number of seconds remaining
+	numSecsOrder10 = tempCount/10;
+
+	//Set tempCount to remainder, number of first order seconds remaining
+	numSecsOrder1 = tempCount%10;
+
+	//Changes clock texture to appropriate minutes-number texture
+	ClockTextures[0] = CharTextures[numMinutes];
+
+	//Changes clock texture to appropriate seconds-number texture (second order)
+	ClockTextures[1] = CharTextures[numSecsOrder10];
+
+	//Changes clock texture to appropriate seconds-number texture (first order)
+	ClockTextures[2] = CharTextures[numSecsOrder1];
+
+}
+
+void gameHUD::setVideoDriver (video::IVideoDriver* videoDriver)
+{
+	//set the internal driver variable to the input
+	driver = videoDriver;
+
+	//Get screen dimensions
+	core::dimension2d<s32> screenSize = driver->getScreenSize(); 
+	screenX = screenSize.Width;
+	screenY = screenSize.Height; 
+
+	//load relevant textures into private member functions
+	loadTextures();
+}
+
+//returns the instance of the gameHUD class
+gameHUD* gameHUD::getInstance(){
+static gameHUD instance;
+
+return &instance;
+}
+
+void gameHUD::loadTextures()
+{
+	//Texture Loading
+
+   //load some texture for spellbar and make it transparent with ColorKey 0 (black)
+   GUITextures[0] = driver->getTexture("../Media/Textures/spellbar_smaller.bmp");
+   driver->makeColorKeyTexture(GUITextures[0], video::SColor(0,0,0,0));
+
+   //load texture for crosshair
+   GUITextures[1] = driver->getTexture("../Media/crosshair.bmp");
+   driver->makeColorKeyTexture(GUITextures[1], video::SColor(0,0,0,0));
+
+   //Load texture for Round Start Message
+   GUITextures[2] = driver->getTexture("../Media/Textures/GO_Message.bmp");
+   driver->makeColorKeyTexture(GUITextures[2], video::SColor(0,0,0,0));
+
+   //Load texture for Round End Message
+   GUITextures[3] = driver->getTexture("../Media/Textures/ROUND_OVER_Message.bmp");
+   driver->makeColorKeyTexture(GUITextures[3], video::SColor(0,0,0,0));
+
+   //load textures for characters
+   //Number zero
+   CharTextures[0] = driver->getTexture("../Media/Textures/zero.bmp");
+   driver->makeColorKeyTexture(CharTextures[0], video::SColor(0,0,0,0));
+   //Number one
+   CharTextures[1] = driver->getTexture("../Media/Textures/one.bmp");
+   driver->makeColorKeyTexture(CharTextures[1], video::SColor(0,0,0,0));
+   //Number two
+   CharTextures[2] = driver->getTexture("../Media/Textures/two.bmp");
+   driver->makeColorKeyTexture(CharTextures[2], video::SColor(0,0,0,0));
+   //Number three
+   CharTextures[3] = driver->getTexture("../Media/Textures/three.bmp");
+   driver->makeColorKeyTexture(CharTextures[3], video::SColor(0,0,0,0));
+   //Number four
+   CharTextures[4] = driver->getTexture("../Media/Textures/four.bmp");
+   driver->makeColorKeyTexture(CharTextures[4], video::SColor(0,0,0,0));
+   //Number five
+   CharTextures[5] = driver->getTexture("../Media/Textures/five.bmp");
+   driver->makeColorKeyTexture(CharTextures[5], video::SColor(0,0,0,0));
+   //Number six
+   CharTextures[6] = driver->getTexture("../Media/Textures/six.bmp");
+   driver->makeColorKeyTexture(CharTextures[6], video::SColor(0,0,0,0));
+   //Number seven
+   CharTextures[7] = driver->getTexture("../Media/Textures/seven.bmp");
+   driver->makeColorKeyTexture(CharTextures[7], video::SColor(0,0,0,0));
+   //Number eight
+   CharTextures[8] = driver->getTexture("../Media/Textures/eight.bmp");
+   driver->makeColorKeyTexture(CharTextures[8], video::SColor(0,0,0,0));
+   //Number nine
+   CharTextures[9] = driver->getTexture("../Media/Textures/nine.bmp");
+   driver->makeColorKeyTexture(CharTextures[9], video::SColor(0,0,0,0));
+   //Colon Character
+   CharTextures[10] = driver->getTexture("../Media/Textures/colon.bmp");
+   driver->makeColorKeyTexture(CharTextures[10], video::SColor(0,0,0,0));
+
+   //Initialize clock
+   updateRoundTimer(0);
+}
+
+void gameHUD::setGunReady(bool ready)
+{
+	gunTimerReady = ready;
+}
+
+bool gameHUD::getGunReady()
+{
+	return gunTimerReady;
 }
