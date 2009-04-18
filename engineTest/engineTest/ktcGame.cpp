@@ -51,14 +51,17 @@ return result;
 //-442,351,-863
 //-528.744751 0.024357 102.937782
 ktcGame::ktcGame(IrrlichtDevice *device, irr::scene::ITriangleSelector* selector):can (device), graph (device, "NODE_LIST.txt","ADJACENCY_LIST.txt","EXCLUDE.txt"), 
-agent2 (Model("../media/chuckie.MD2","../media/Chuckie.pcx", device), irr::core::vector3df(0,0,0), 15000, 10000, PREY, core::vector3df(-528.744751, 0.024357, 102.937782), device->getSceneManager(), &graph),
-plyr(device, irr::core::vector3df(0,0,0), 15000, 0, PREY)
+agent2 (Model("../media/chuckie.MD2","../media/Chuckie.pcx", device), irr::core::vector3df(0,0,0), 300000, 10000, PREY, core::vector3df(-528.744751, 0.024357, 102.937782), device->getSceneManager(), &graph),
+plyr(device, irr::core::vector3df(0,0,0), 300000, 0, PREDATOR)
 {
 	
 	dMode = NONE;
 	
 	//Instantiate the Irrlicht Engine Device
 	this->device = device;
+
+	//Game now has their own timer
+	round_time.setTime(500000);
 
 	plyr.setCameraSpeed(PREY_SPEED);
 	playerList.push_back(&plyr);
@@ -244,12 +247,20 @@ graph.selector = selector;
 
 void ktcGame::update(const irr::ITimer* timer){
 
+	//update round timer
+	round_time.update(timer);
+
+	//update HUD
+	gameHUD::getInstance()->updateRoundTimer(plyr.pl_time.getMins(),
+											 plyr.pl_time.getSecsSecond(),
+											 plyr.pl_time.getSecsFirst());
+
 	//if time is up, then round robin shit so that we get new predator and prey
 	if(plyr.pl_time.getTime() <= 0){
 		RoundRobin(playerList);
 		for(int i = 0; i < playerList.size(); i++){
 			(*playerList[i]).setInvTimer(5000);
-			(*playerList[i]).setTimer(6000);
+			(*playerList[i]).setTimer(60000);
 		}
 	}
 

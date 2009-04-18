@@ -54,8 +54,7 @@ public:
    static gameHUD* getInstance(); //returns an instance of the gameHUD
    void render(); //render the HUD, must be called AFTER the 3D draw, or it  wont show
    void setShotTimerBarValue(int shotTimerValue); //change bar values
-   void updateRoundTimer(int timeInSeconds); //changes game timer value
-   void updateClockTextures(); //changes the pointers for the clock textures
+   void updateRoundTimer(irr::u32 numMins, irr::u32 numSecsOrder2, irr::u32 numSecsOrder1); //changes game timer value
    void setVideoDriver (video::IVideoDriver* videoDriver);
    void loadTextures(); //loads all relevant textures into private member variables
    void setGunReady(bool ready); //sets gun Readiness

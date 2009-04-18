@@ -28,6 +28,8 @@ private:
 	
 	void RoundRobin(std::vector<GamePlayer *> plst);
 
+	Timer round_time;
+
 	int dMode;
 	Model CHUCKIE;
 	Model CARTMAN;

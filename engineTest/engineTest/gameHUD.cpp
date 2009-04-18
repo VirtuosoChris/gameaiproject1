@@ -46,12 +46,7 @@ void gameHUD::render(){
          shotTimerBarValue += 0.2;
    }
 
-   //draw the clock
-   //driver->draw2DImage(ClockTextures[0], core::position2d<s32>((screenX/2)-192, (screenY)), core::rect<s32>(0,0,32,32), 0, video::SColor(255,255,255,255), true);
-   //driver->draw2DImage(CharTextures[10], core::position2d<s32>((screenX/2)-96, (screenY)), core::rect<s32>(0,0,32,32), 0, video::SColor(255,255,255,255), true);
-   //driver->draw2DImage(ClockTextures[1], core::position2d<s32>((screenX/2)+96, (screenY)), core::rect<s32>(0,0,32,32), 0, video::SColor(255,255,255,255), true);
-   //driver->draw2DImage(ClockTextures[2], core::position2d<s32>((screenX/2)+192, (screenY)), core::rect<s32>(0,0,32,32), 0, video::SColor(255,255,255,255), true);
-	
+   //draw the clock	
    driver->draw2DImage(ClockTextures[0], core::position2d<s32>((screenX/2)-96, (screenY/24)), core::rect<s32>(0,0,96,96), 0, video::SColor(255,255,255,255), true);
    driver->draw2DImage(CharTextures[10], core::position2d<s32>((screenX/2)-48, (screenY/24)), core::rect<s32>(0,0,96,96), 0, video::SColor(255,255,255,255), true);
    driver->draw2DImage(ClockTextures[1], core::position2d<s32>((screenX/2), (screenY/24)), core::rect<s32>(0,0,96,96), 0, video::SColor(255,255,255,255), true);
@@ -85,52 +80,25 @@ void gameHUD::setShotTimerBarValue(int shotTimerValue){
    deltaShotTimerBar = shotTimerValue;
 }
 
-void gameHUD::updateRoundTimer(int timeInSeconds)
+void gameHUD::updateRoundTimer(irr::u32 numMins, irr::u32 numSecsOrder2, irr::u32 numSecsOrder1)
 {
-	//limits timer to 10 minutes
-	if(timeInSeconds > 600)
-		//Sets Round Timer to the maximum value
-		roundTimer = 600;
-	else
-		//Sets Round Timer to the input value
-		roundTimer = timeInSeconds;
-
-	//call an update on the clock textures
-	updateClockTextures();
-}
-
-void gameHUD::updateClockTextures()
-{
-	//break down time into orderly numbers
-	int numMinutes;
-	int numSecsOrder10;
-	int numSecsOrder1;
-	int tempCount;
-
-	//Use temporary variable to avoid directly writing to timer register
-	tempCount = roundTimer;
-
-	//Get the number of minutes
-	numMinutes = tempCount/60 ;
-
-	//Set tempCount to remainder after minutes division
-	tempCount = tempCount%60 ;
-
-	//Get the second order number of seconds remaining
-	numSecsOrder10 = tempCount/10;
-
-	//Set tempCount to remainder, number of first order seconds remaining
-	numSecsOrder1 = tempCount%10;
-
 	//Changes clock texture to appropriate minutes-number texture
-	ClockTextures[0] = CharTextures[numMinutes];
+	if(numMins > 9)
+		ClockTextures[0] = CharTextures[9];
+	else
+		ClockTextures[0] = CharTextures[numMins];
 
 	//Changes clock texture to appropriate seconds-number texture (second order)
-	ClockTextures[1] = CharTextures[numSecsOrder10];
+	if(numSecsOrder2 > 9)
+		ClockTextures[1] = CharTextures[9];
+	else
+		ClockTextures[1] = CharTextures[numSecsOrder2];
 
 	//Changes clock texture to appropriate seconds-number texture (first order)
-	ClockTextures[2] = CharTextures[numSecsOrder1];
-
+	if(numSecsOrder1 > 9)
+		ClockTextures[2] = CharTextures[9];
+	else
+		ClockTextures[2] = CharTextures[numSecsOrder1];
 }
 
 void gameHUD::setVideoDriver (video::IVideoDriver* videoDriver)
@@ -234,7 +202,7 @@ void gameHUD::loadTextures()
 
 
    //Initialize clock
-   updateRoundTimer(0);
+   updateRoundTimer(0,0,0);
 }
 
 void gameHUD::setGunReady(bool ready)
