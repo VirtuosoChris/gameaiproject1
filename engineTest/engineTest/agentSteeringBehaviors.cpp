@@ -60,8 +60,23 @@ if(!(velocity+(accel*TIMEELAPSED)).getLength() == 0.0f){
 if(velocity.getLength() > .01f){
 
 	//CHANGED FROM MYNODEP TO GETPOSITION()
-	mynodep->setPosition( getPosition() + (TIMEELAPSED * velocity));
+
+
 	
+
+	irr::core::vector3df ppos = mynodep->getPosition();
+	
+
+	mynodep->setPosition(getPosition() + (TIMEELAPSED*velocity));
+	position = mynodep->getPosition();
+
+//	position = mynodep->getPosition() + (TIMEELAPSED * velocity);
+	
+	mynodep->setPosition( ppos + (TIMEELAPSED * velocity));
+	
+
+
+
 	if(!MOVING){
 	MOVING= true;
 	((irr::scene::IAnimatedMeshSceneNode*)mynodep)->setMD2Animation(scene::EMAT_RUN);
@@ -91,7 +106,7 @@ orientation = tAngle;
 mynodep->setRotation(irr::core::vector3df(0.0f,(irr::f32)fabs(360-orientation),0.0f));
 }
 
-position = mynodep->getPosition();
+//position = mynodep->getPosition();
 }
 
 

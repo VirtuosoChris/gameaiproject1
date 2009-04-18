@@ -161,9 +161,9 @@ void Hide::Enter(Agent & agt){
 void Hide::Execute(Agent & agt, const irr::ITimer* timer){
 	
 
-	agt.getPathList().clear();
-	agt.createPatrolRoute(agt.getGraph());
-	agt.GetFSM()->ChangeState(Patrol::GetInstance());
+	//agt.getPathList().clear();
+	//agt.createPatrolRoute(agt.getGraph());
+	//agt.GetFSM()->ChangeState(Patrol::GetInstance());
 
 	static bool there = false;//false;//temp
 ///	cout << "Executing Hide state.\n";
@@ -177,7 +177,7 @@ void Hide::Execute(Agent & agt, const irr::ITimer* timer){
 
 	//agt.getPathList().push_back(agt.getMyCoverObject()->getCoverPosition(agt.getIt()));
 	
-	if(!there &&(agt.getMyCoverObject()->getPosition() - agt.getPosition()).getLength() < r){
+	if(!there &&(agt.getMyCoverObject()->getPosition() - agt.getSceneNode()->getPosition()).getLength() < r){
 	agt.getPathList().clear();
 
 	irr::scene::ISceneNode* a = agt.smgr->addSphereSceneNode(5);
