@@ -57,7 +57,155 @@ void Play::Enter(ktcGame & game){
 void Play::Execute(ktcGame & game, const irr::ITimer* timer){
 	cout << "Executing Play state.\n";
 
-	//put ChangeState shit here in if conditions
+	//update round timer
+	game.getRoundTime()->update(timer);
+
+	//update HUD
+	game.getGameHUD()->getInstance()->updateRoundTimer(
+		game.getPlayer()->pl_time.getMins(),
+		game.getPlayer()->pl_time.getSecsSecond(),
+		game.getPlayer()->pl_time.getSecsFirst());
+
+	//if time is up, then round robin shit so that we get new predator and prey
+	if(game.getPlayer()->pl_time.getTime() <= 0){
+		game.RoundRobin(*(game.getPlayerList()));
+		for(int i = 0; i < game.getPlayerList()->size(); i++){
+			(*game.getPlayerList())[i]->setInvTimer(5000);
+			(*game.getPlayerList())[i]->setTimer(60000);
+		}
+	}
+
+	
+	/*if(agent2.getPlayerType() == PREY) 
+		std::cout << "I'm an agent and i'm PREY\n";
+	else std::cout << "I'm an agent and i'm a PREDATOR\n";
+	
+	if(plyr.getPlayerType() == PREY) 
+		std::cout << "I'm a player and i'm PREY\n";
+	else std::cout << "I'm a player and i'm a PREDATOR\n";*/
+
+
+
+	game.getDevice()->getVideoDriver()->beginScene(true, true, video::SColor(255,100,101,140));
+
+	game.getSceneManager()->drawAll();  //draw 3d objects
+	game.getGameHUD()->render();
+
+	game.getPlayer()->getGun().render();
+
+	game.getDevice()->getVideoDriver()->endScene();//end drawing 
+
+	if(InputHandler::getInstance()->unprocessedMouseMessageLMB)
+	{
+		/*#ifdef NODE_MESH_GENERATOR
+		graph.addNode(camera->getPosition());
+		#endif
+		
+		#ifdef SPAWN_POINT_CREATOR
+		this->spawnPointList.push_back(camera->getPosition());
+		FILE *fp = fopen("SPAWN_POINTS.txt", "a");
+		fprintf(fp, "%f %f %f\n", this->camera->getPosition().X, this->camera->getPosition().Y, this->camera->getPosition().Z);
+		fclose(fp);
+		#endif
+
+
+		#ifdef COVER_OBJECT_GENERATOR
+		irr::scene::ISceneNode* t= smgr->addCubeSceneNode(1);
+		t->setPosition(camera->getPosition());
+		t->setScale(vector3df(50,75,50));
+		coverObjectList.push_back(camera->getPosition());
+		t->setMaterialTexture(0, device->getVideoDriver()->getTexture("../media/crate.jpg"));
+		t->setMaterialTexture(1, device->getVideoDriver()->getTexture("../media/cratebump.jpg"));
+		t->setMaterialFlag(video::EMF_LIGHTING, true);
+		t->setMaterialFlag(video::EMF_FOG_ENABLE, true);
+		t->setMaterialType(video::EMT_LIGHTMAP_LIGHTING_M4);
+		#endif */
+
+		//Gun Mechanics - Make sure animation is complete
+		if(game.getPlayer()->getGun().isReady())
+		{
+			MessageHandler::getInstance()->postMessage(KTC_PLAYER_LEFT_MOUSE_CLICK, 0, &game, &game.getPlayer()->getGun(), timer);
+	
+			//Make sure gun has passed the firing time limitation
+			if(game.getGameHUD()->getGunReady())
+			{
+				for(int i = 0; i < game.getEntities().size(); i++)
+				{
+					if(game.pointing() == (game.getEntities())[i]->getSceneNode())
+					{
+						MessageHandler::getInstance()->postMessage(KTC_KILL, 0, &game, (game.getEntities())[i], game.getDevice()->getTimer());
+						break;
+					}
+				}
+			}
+		}
+		if(game.pointing() == game.getCan()->getSceneNode() && (game.getPlayer()->getSceneNode()->getPosition() - game.getCan()->getSceneNode()->getPosition()).getLength() <= 100.0f)
+		{
+			for(int i = 0; i < game.getEntities().size(); i++)
+			{
+				MessageHandler::getInstance()->postMessage(KTC_REVIVE, 0, &game, (game.getEntities())[i], game.getDevice()->getTimer());
+			}
+		}
+
+		InputHandler::getInstance()->unprocessedMouseMessageLMB = false;
+	}
+
+	if(InputHandler::getInstance()->unprocessedMouseMessageRMB)
+	{
+		//graph.output();
+		#ifdef COVER_OBJECT_GENERATOR
+		FILE *fp = fopen("COVER_OBJECTS.txt", "w");
+		for(int i = 0; i < this->coverObjectList.size(); i++)
+		{
+			fprintf(fp, "%f %f %f\n", coverObjectList[i].X, coverObjectList[i].Y, coverObjectList[i].Z);
+		}
+		fclose(fp);
+		#endif
+
+		InputHandler::getInstance()->unprocessedMouseMessageRMB = false;
+	}
+
+	//Toggle the render output of the Debug visible objects
+	if(InputHandler::getInstance()->isTKeyPressed())
+	{
+		game.getMapGraph()->toggleDebugOutput(!game.getMapGraph()->isDebugOutput());
+	}
+
+	//Toggle the render output of the GUI scoring mechanism
+	//if(InputHandler::getInstance()->isTabKeyPressed()){
+	//	graph.toggleScoreOutput(!graph.isScoreOutput());
+	//}
+
+	game.getCan()->update(timer);
+	game.getPlayer()->update(timer);
+
+	#ifndef NODE_MESH_GENERATOR
+	static mapGraph* mintree = game.getMapGraph()->minimumSpanningTree(0);
+
+	switch(game.getDMode())
+	{
+		case NONE:
+			break;
+		case FULLGRAPH: 
+			game.getMapGraph()->render(game.getDevice()->getVideoDriver());
+			break;
+		case MINSPANNINGTREE: 
+			mintree->render(game.getDevice()->getVideoDriver());
+			break;
+	}
+
+	for(int i = 0; i < (int)game.getEntities().size();i++)
+	{
+		if((game.getEntities())[i])
+		{
+			(game.getEntities())[i]->update(timer);
+			if(game.getMapGraph()->isDebugOutput())
+			{
+				//	entities[i]->drawPieSlices(device->getVideoDriver());
+			}
+		}
+	}
+	#endif*/
 }
 
 void Play::Exit(ktcGame & game){
