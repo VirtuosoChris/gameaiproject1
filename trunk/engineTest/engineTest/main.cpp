@@ -68,10 +68,7 @@ int main(int, char**){
 	IrrlichtDevice *device;
 
 	//create the irrlicht device	//IrrlichtDevice *device = createDevice(video::EDT_OPENGL, core::dimension2d<s32>(1440,900), 32, false, true, true, InputHandler::getInstance());	device = createDevice(video::EDT_OPENGL, core::dimension2d<s32>(800,600), 32, false//shadows	 					      ,true, true, InputHandler::getInstance());
-	if(device==NULL)return 1;
-
-	//create the irrKlang device
-	// start the sound engine with default parameters
+	if(device==NULL)return 1;	//create the irrKlang device	// start the sound engine with default parameters
 	ISoundEngine* soundEngine = createIrrKlangDevice();
 	//ISound* CurrentPlayingSound = 0;
 	//ISoundSource* backgroundMusic = soundEngine->addSoundSourceFromFile("../media/sounds/getout.ogg"); 
@@ -102,10 +99,7 @@ int main(int, char**){
 	driver->setFog(irr::video::SColor(255,25,25,25), true, 0,750, 0, true, true);//set the fog properties
 
 
-	/***Load the map***/
-	//load the pk3 file containing the .bsp map file into the engine file system
-	device->getFileSystem()->addZipFileArchive("../media/map-20kdm2.pk3");
- 
+	/***Load the map***/	//load the pk3 file containing the .bsp map file into the engine file system	device->getFileSystem()->addZipFileArchive("../media/map-20kdm2.pk3"); 
 	//get the mesh from the map bsp file
 	scene::IQ3LevelMesh* mesh = (scene::IQ3LevelMesh*) (smgr->getMesh("maps/20kdm2.bsp"));
  
@@ -198,12 +192,7 @@ int main(int, char**){
 	x = smgr->addCubeSceneNode();	x->setPosition(vector3df(-400+1000,-41,-42));	x->setScale(vector3df(45,1.05,5));	x->setMaterialTexture(0,driver->getTexture("../media/wall.jpg"));	x->setMaterialTexture(1,driver->getTexture("../media/wall.jpg"));	x->setMaterialFlag(video::EMF_FOG_ENABLE, true);	specialWalls.push_back(x);
 
 	x2 = smgr->addCubeSceneNode();	x2->setPosition(vector3df(-400+1000,-41,232));	x2->setScale(vector3df(45,.95,5));	x2->setMaterialTexture(0,driver->getTexture("../media/wall.jpg"));	x2->setMaterialFlag(video::EMF_FOG_ENABLE, true);	specialWalls.push_back(x2);
-
-	ktcGame game(device, selector, display);
-
-	/*******************************************************/	/***************GAME UPDATE LOOP************************/	/*******************************************************/
-	while(device->run()){				//run update on the message handler to send any delayed messges that have passed their time stamp
-		MsgHandler->update(device->getTimer());
+	ktcGame game(device, selector, display);	/*******************************************************/	/***************GAME UPDATE LOOP************************/	/*******************************************************/	while(device->run()){				//run update on the message handler to send any delayed messges that have passed their time stamp		MsgHandler->update(device->getTimer());
 		game.update(device->getTimer());
 
 		//this has been taken out for planning based on menu system 

@@ -22,8 +22,7 @@ private:
 
 public:
 	float maxRange;
-		WallSensorData();	WallSensorData(int nf,double a, float mr = 50			//float mr = 5000.0f
-			);
+		WallSensorData();	WallSensorData(int nf,double a, float mr = 50			//float mr = 5000.0f			);
 	~WallSensorData();
 
 	int getNumFeelers();

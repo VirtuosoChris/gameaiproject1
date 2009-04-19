@@ -14,8 +14,7 @@ public:
 	irr::scene::IAnimatedMeshSceneNode* gun;
 	irr::scene::ICameraSceneNode *camera;
 	irr::core::vector3df basePosition;
-	irr::IrrlichtDevice *device;	bool animationReady;
-	inline irr::scene::IAnimatedMeshSceneNode* getSceneNode(){ return gun; }
+	irr::IrrlichtDevice *device;	bool animationReady;	inline irr::scene::IAnimatedMeshSceneNode* getSceneNode(){ return gun; }
 	//gunEntity(){};
 	gunEntity(irr::IrrlichtDevice *device, irr::scene::ICameraSceneNode *camera);
 	virtual void update(const irr::ITimer*);

@@ -47,36 +47,9 @@ irr::core::vector3df Agent::flee(irr::core::vector3df tp){
 //updates animation/rotation, moves the agent along its velocity
 void Agent::walk(irr::core::vector3df accel){
 		if(!(velocity+(accel*TIMEELAPSED)).getLength() == 0.0f){		velocity += accel*TIMEELAPSED;				if(velocity.getLength() > MAXSPEED){			velocity = velocity.normalize()*MAXSPEED;		}	}
-	else{
-		velocity = vector3df(0,0,0);
-	}
-	
-	if(velocity.getLength() > .01f){
-		irr::core::vector3df ppos = mynodep->getPosition();
-		mynodep->setPosition(mynodep->getPosition() + (TIMEELAPSED * velocity));
-		position = mynodep->getPosition();
-		mynodep->setPosition( ppos + (TIMEELAPSED * velocity));
-
-		if(!MOVING){
-			MOVING= true;
-			((irr::scene::IAnimatedMeshSceneNode*)mynodep)->setMD2Animation(scene::EMAT_RUN);
-		}
-	}
-	else if(MOVING){
-		MOVING = false;
-		((irr::scene::IAnimatedMeshSceneNode*)mynodep)->setMD2Animation(scene::EMAT_STAND);
-	}
-
-	vector3df abc = velocity;//SEEK_POS - mynodep->getPosition();	abc.Y = 0;	abc = abc.normalize();	double tAngle = radiansToDegrees(acos(fabs(abc.X)));	
+	else{		velocity = vector3df(0,0,0);	}		if(velocity.getLength() > .01f){		irr::core::vector3df ppos = mynodep->getPosition();		mynodep->setPosition(mynodep->getPosition() + (TIMEELAPSED * velocity));		position = mynodep->getPosition();		mynodep->setPosition( ppos + (TIMEELAPSED * velocity));		if(!MOVING){			MOVING= true;			((irr::scene::IAnimatedMeshSceneNode*)mynodep)->setMD2Animation(scene::EMAT_RUN);		}	}	else if(MOVING){		MOVING = false;		((irr::scene::IAnimatedMeshSceneNode*)mynodep)->setMD2Animation(scene::EMAT_STAND);	}	vector3df abc = velocity;//SEEK_POS - mynodep->getPosition();	abc.Y = 0;	abc = abc.normalize();	double tAngle = radiansToDegrees(acos(fabs(abc.X)));	
 	switch( quadrant(velocity.normalize() ) ){		case 1:	break;		case 2:	tAngle = 180-tAngle;				break;		case 3:	tAngle = 180+tAngle;				break;		case 4:	tAngle = 360-tAngle;				break;		default:;	}
-	
-	if(velocity.getLength()!=0){
-		orientation = tAngle;
-		mynodep->setRotation(irr::core::vector3df(0.0f,(irr::f32)fabs(360-orientation),0.0f));
-	}
-	
-	position = mynodep->getPosition();
-}
+		if(velocity.getLength()!=0){		orientation = tAngle;		mynodep->setRotation(irr::core::vector3df(0.0f,(irr::f32)fabs(360-orientation),0.0f));	}		position = mynodep->getPosition();}
 
 
 irr::core::vector3df Agent::wallAvoidance(){
@@ -96,90 +69,15 @@ irr::core::vector3df Agent::wallAvoidance(){
 	//}
 	//}
 	//}
-	}
-	
-	wallavoidaccel.Y = 0;
-	//wallavoidaccel = wallavoidaccel.normalize(); 
-
-	if(wallavoidaccel.getLength() > .025f){
-		wallavoidaccel = wallavoidaccel.normalize();
-		wallavoidaccel*=.025f;
-	}
-
-	if(wallavoidaccel.getLength() != 0){
-		//std::cout<<wallavoidaccel.getLength()<<"\n";
-	}
-	
-	return wallavoidaccel;
-}
-
+	}		wallavoidaccel.Y = 0;	//wallavoidaccel = wallavoidaccel.normalize(); 	if(wallavoidaccel.getLength() > .025f){		wallavoidaccel = wallavoidaccel.normalize();		wallavoidaccel*=.025f;	}	if(wallavoidaccel.getLength() != 0){		//std::cout<<wallavoidaccel.getLength()<<"\n";	}		return wallavoidaccel;}
 static const double EXTRA_RADIUS = 30;
-
-irr::core::vector3df Agent::followPath(const irr::ITimer* timer){
-	
-	//seek to the current seek target
-	vector3df tp = currentSeekTarget;
-	tp.Y = 0;
-	vector3df ap = mynodep->getPosition();
-	ap.Y = 0;
-	tp = tp-ap;
-	
-	core::vector3df tv = (-mynodep->getPosition() + currentSeekTarget);
-	
-	tv.Y = 0;
-	
-	if(tv.getLength()<RADIUS){
-		if(!pathList.empty()){
-			//std::cout<<"popping node off list\n";
-			previousSeekTarget = currentSeekTarget;//mynodep->getPosition();
-			currentSeekTarget = pathList.front();
-			pathList.erase(pathList.begin()); //ZOMG WTF obscure bug avoidance tip #666 : don't use list.remove(pathList.begin()) when you mean list.erase(pathList.begin())
-	
-			//std::cout<<"Arrival\n";
-			int p = this->graph->getClosestNode(previousSeekTarget);
-			int q = this->graph->getClosestNode(currentSeekTarget);
-			//std::cout<<"Going from"<<p<<"to"<<q<<std::endl;
-			//if(graph->adjacencyList[p][q]){
-			//std::cout<<"ok\n";
-			//}else{
-			//std::cout<<"WTF BAD EDGE POPPED\n";
-			//}
-
-			this->pathStartTime = timer->getTime();
-			this->expectedArrivalTime = pathStartTime+(currentSeekTarget - this->getPosition()).getLength() /  MAXSPEED;
-		}
-		else{
-			velocity = core::vector3df(0,0,0);
-			currentSeekTarget = mynodep->getPosition();
-			previousSeekTarget = mynodep->getPosition();
-			this->pathStartTime = timer->getTime();
-			this->expectedArrivalTime = pathStartTime+(currentSeekTarget - this->getPosition()).getLength() /  MAXSPEED;
-		}
-	}
-
+irr::core::vector3df Agent::followPath(const irr::ITimer* timer){		//seek to the current seek target	vector3df tp = currentSeekTarget;	tp.Y = 0;	vector3df ap = mynodep->getPosition();	ap.Y = 0;	tp = tp-ap;		core::vector3df tv = (-mynodep->getPosition() + currentSeekTarget);		tv.Y = 0;		if(tv.getLength()<RADIUS){		if(!pathList.empty()){			//std::cout<<"popping node off list\n";			previousSeekTarget = currentSeekTarget;//mynodep->getPosition();			currentSeekTarget = pathList.front();			pathList.erase(pathList.begin()); //ZOMG WTF obscure bug avoidance tip #666 : don't use list.remove(pathList.begin()) when you mean list.erase(pathList.begin())				//std::cout<<"Arrival\n";			int p = this->graph->getClosestNode(previousSeekTarget);			int q = this->graph->getClosestNode(currentSeekTarget);			//std::cout<<"Going from"<<p<<"to"<<q<<std::endl;			//if(graph->adjacencyList[p][q]){			//std::cout<<"ok\n";			//}else{			//std::cout<<"WTF BAD EDGE POPPED\n";			//}			this->pathStartTime = timer->getTime();			this->expectedArrivalTime = pathStartTime+(currentSeekTarget - this->getPosition()).getLength() /  MAXSPEED;		}		else{			velocity = core::vector3df(0,0,0);			currentSeekTarget = mynodep->getPosition();			previousSeekTarget = mynodep->getPosition();			this->pathStartTime = timer->getTime();			this->expectedArrivalTime = pathStartTime+(currentSeekTarget - this->getPosition()).getLength() /  MAXSPEED;		}	}
 	//check to see if the path needs to be corrected	if( (timer->getTime() - this->pathStartTime) > TIMEMULTIPLIER*(this->expectedArrivalTime - this->pathStartTime) ){		this->pathStartTime = timer->getTime();		correctPath();				this->expectedArrivalTime = pathStartTime+(pathList.front() - this->getPosition()).getLength() /  MAXSPEED;	}
 
-	irr::core::vector3df accel;
-	accel = seek(currentSeekTarget) + wallAvoidance();
-
+	irr::core::vector3df accel;	accel = seek(currentSeekTarget) + wallAvoidance();
 	/////////////////////////////////////////////////begin new obstacle avoidance code:keeping this isolated!	if( timer->getTime() - this->LAST_OBSTACLE_CORRECTANCE > 2000){		//create the line from the agent extending outward through its velocity		irr::core::line3d<irr::f32> line;		line.start = mynodep->getPosition();		line.end = line.start + (this->getVelocity().normalize() *(coverObject::getRadius() + 50));
 		//get the scene node it intersects		irr::scene::ISceneNode* tnode; 		tnode= smgr->getSceneCollisionManager()->getSceneNodeFromRayBB(line);		coverObject* coverObj= NULL;
-		if(tnode){
-			//get the cover object it represents;
-			for(int i = 0; i < (*this->coverObjectList).size(); i++){
-				if(tnode == (*this->coverObjectList)[i]->getSceneNode()){
-					coverObj = (*this->coverObjectList)[i];
-					break;
-				}
-			}
-			//if its a cover object
-			if(coverObj){
-				//and i'm close to it
-				if( (this->getSceneNode()->getPosition() - coverObj->getSceneNode()->getPosition()).getLength() < coverObj->getBoundaryRadius()){
-					std::cout<<"I'm too near the cover objects!\n";
-					irr::core::vector3df startVector;
-					irr::core::vector3df endVector;
-
+		if(tnode){			//get the cover object it represents;			for(int i = 0; i < (*this->coverObjectList).size(); i++){				if(tnode == (*this->coverObjectList)[i]->getSceneNode()){					coverObj = (*this->coverObjectList)[i];					break;				}			}			//if its a cover object			if(coverObj){				//and i'm close to it				if( (this->getSceneNode()->getPosition() - coverObj->getSceneNode()->getPosition()).getLength() < coverObj->getBoundaryRadius()){					std::cout<<"I'm too near the cover objects!\n";					irr::core::vector3df startVector;					irr::core::vector3df endVector;
 					startVector =  mynodep->getPosition() - coverObj->getSceneNode()->getPosition();
 					startVector = startVector.normalize();
 
@@ -200,7 +98,6 @@ irr::core::vector3df Agent::followPath(const irr::ITimer* timer){
 
 
 
-
 irr::core::vector3df Agent::pursue(physicsObject* tgt){
 	const double constant = 1.0f;
 	double lookAheadTime = (this->getPosition() - tgt->getPosition()).getLength();
@@ -212,8 +109,7 @@ irr::core::vector3df Agent::pursue(physicsObject* tgt){
 
 
 irr::core::vector3df Agent::avoid(physicsObject* tgt){
-		const double constant = 1.0f;
-	double lookAheadTime = (this->getPosition() - tgt->getPosition()).getLength();
+		const double constant = 1.0f;	double lookAheadTime = (this->getPosition() - tgt->getPosition()).getLength();
 	lookAheadTime /= (this->getVelocity().getLength() + tgt->getVelocity().getLength());
 	lookAheadTime *= constant;
 
@@ -226,5 +122,7 @@ irr::core::vector3df Agent::hide(){
 	
 	return this->seek(myCoverObject->getCoverPosition(this->getIt()));
 }
+
+
 
 
