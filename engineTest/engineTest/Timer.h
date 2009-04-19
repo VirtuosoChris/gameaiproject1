@@ -18,6 +18,7 @@ public:
 	inline irr::u32 getMins(){return minsRemain;}; //returns number of minutes
 	inline irr::u32 getSecsFirst(){return secsOrder1Remain;}; //returns number of seconds (s*1x10^1)
 	inline irr::u32 getSecsSecond(){return secsOrder2Remain;}; //returns number of seconds (s*1x10^0)
+	inline void setLastTime(irr::u32 lastTime) {last_update = lastTime;}
 	Timer(int t=0) : timer(t), last_update(0) {}
 	void convert();
 	int getTime(){ return timer; }

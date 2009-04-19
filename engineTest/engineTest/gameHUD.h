@@ -2,14 +2,20 @@
 #define GAME_HUD
 
 #include "irrlicht.h"
-
+#include <string.h>
 using namespace irr;
 using namespace video;
+
+
 //Object that represents all Scene Nodes Assembled for in-game HUD and UI
 class gameHUD {
 
 private:
    video::IVideoDriver* driver;
+
+   enum {PRE_PLAY,PLAY,PAUSE,BREAK,END_GAME};
+   int gameState;
+
    int x1Bar, y1Bar, x2Bar, y2Bar;
 
    int	maxShotTimerBarValue; //size of the timer bar
@@ -56,9 +62,11 @@ public:
    void setShotTimerBarValue(int shotTimerValue); //change bar values
    void updateRoundTimer(irr::u32 numMins, irr::u32 numSecsOrder2, irr::u32 numSecsOrder1); //changes game timer value
    void setVideoDriver (video::IVideoDriver* videoDriver);
+   //void setGameContext (ktcGame *game);
    void loadTextures(); //loads all relevant textures into private member variables
    void setGunReady(bool ready); //sets gun Readiness
    bool getGunReady(); //returns true if gun is ready to be fired, false otherwise
+   inline void setGameState(int stateToSet) {gameState = stateToSet;}
 }; 
 
 #endif

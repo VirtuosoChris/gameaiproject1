@@ -63,9 +63,6 @@ plyr(device, irr::core::vector3df(0,0,0), 300000, 0, PREY)
 	//Instantiate the Irrlicht Engine Device
 	this->device = device;
 
-	//Game now has their own timer
-	round_time.setTime(500000);
-
 	//set up state machine
 	GameStateMachine = new StateMachine<ktcGame>(*this);
 
@@ -77,6 +74,7 @@ plyr(device, irr::core::vector3df(0,0,0), 300000, 0, PREY)
 
 	//Instantiate the GameHUD Device
 	this->display = gameHUD::getInstance();
+	//display->setGameContext(this);
 
 	CHUCKIE = agent2.getModel();
 
@@ -149,9 +147,10 @@ agent2.GetFSM()->ChangeState(Hide::GetInstance());
  entities.push_back(&agent2);
  playerList.push_back(&agent2);
 
- //Initialize game into Pre-Play State
+ //Initialize game into Pre-Play State and sync the clock
    this->GetFSM()->SetCurrentState(PrePlay::getInstance());
    this->GetFSM()->StartCurrentState();
+   this->setLastTime(device->getTimer()->getTime());
 
 
 
@@ -239,17 +238,6 @@ specialWalls[i]->addAnimator(nodeAnimator);
  nodeAnimator->drop();
 
 }
-
-
-
-
-
-//Initialize Player Scoresfor(int x=0 ; x<5 ; x++)	playerScores[x] = 0;}
-
-
-
-//Start game
-this->GetFSM()->ChangeState(Play::getInstance());
 
 }
 
