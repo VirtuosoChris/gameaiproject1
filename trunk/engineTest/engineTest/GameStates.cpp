@@ -15,12 +15,43 @@ PrePlay* PrePlay::getInstance(){
 
 void PrePlay::Enter(ktcGame & game){
 	cout << "Entering PrePlay state.\n";
+	//Game now has their own timer
+	game.getPreTime()->setTime(5000);
+	game.getPreTime()->setLastTime(game.getDevice()->getTimer()->getTime());
+	game.getGameHUD()->setGameState(0);
+
 	//use MsgHandler->postMessage() here to post a message to all other players (use for loop or some shit)
 }
 
 void PrePlay::Execute(ktcGame & game, const irr::ITimer* timer){
 	cout << "Executing PrePlay state.\n";
 
+	//update round timer
+	game.getPreTime()->update(timer);
+
+	//update HUD
+	game.getGameHUD()->getInstance()->updateRoundTimer(
+		game.getPreTime()->getMins(),
+		game.getPreTime()->getSecsSecond(),
+		game.getPreTime()->getSecsFirst());
+	
+	//Pre-Play Time is up
+	if((timer->getTime() - game.getLastTime()) > 5000)
+	{
+		//Set last time for offset
+		game.setLastTime(timer->getTime());
+		//Change to Play State
+		game.GetFSM()->ChangeState(Play::getInstance());
+	}
+
+	game.getDevice()->getVideoDriver()->beginScene(true, true, video::SColor(255,100,101,140));
+
+	game.getSceneManager()->drawAll();  //draw 3d objects
+	game.getGameHUD()->render();
+
+	game.getPlayer()->getGun().render();
+
+	game.getDevice()->getVideoDriver()->endScene();//end drawing
 	//put ChangeState shit here in if conditions
 }
 
@@ -51,6 +82,10 @@ Play* Play::getInstance(){
 
 void Play::Enter(ktcGame & game){
 	cout << "Entering Play state.\n";
+	//Game now has their own timer
+	game.getRoundTime()->setTime(20000);
+	game.getRoundTime()->setLastTime(game.getDevice()->getTimer()->getTime());
+	game.getGameHUD()->setGameState(1);
 	//use MsgHandler->postMessage() here to post a message to all other players (use for loop or some shit)
 }
 
@@ -62,17 +97,23 @@ void Play::Execute(ktcGame & game, const irr::ITimer* timer){
 
 	//update HUD
 	game.getGameHUD()->getInstance()->updateRoundTimer(
-		game.getPlayer()->pl_time.getMins(),
-		game.getPlayer()->pl_time.getSecsSecond(),
-		game.getPlayer()->pl_time.getSecsFirst());
+		game.getRoundTime()->getMins(),
+		game.getRoundTime()->getSecsSecond(),
+		game.getRoundTime()->getSecsFirst());
 
 	//if time is up, then round robin shit so that we get new predator and prey
-	if(game.getPlayer()->pl_time.getTime() <= 0){
+	if(game.getRoundTime()->getTime() <= 0)
+	{
 		game.RoundRobin(*(game.getPlayerList()));
-		for(int i = 0; i < game.getPlayerList()->size(); i++){
+		for(int i = 0; i < game.getPlayerList()->size(); i++)
+		{
 			(*game.getPlayerList())[i]->setInvTimer(5000);
 			(*game.getPlayerList())[i]->setTimer(60000);
 		}
+		//Set last update before state change
+		game.setLastTime(timer->getTime());
+		//Change to Round Over State
+		game.GetFSM()->ChangeState(RoundBreak::getInstance());
 	}
 
 	
@@ -234,6 +275,7 @@ Pause* Pause::getInstance(){
 
 void Pause::Enter(ktcGame & game){
 	cout << "Entering Pause state.\n";
+	game.getGameHUD()->setGameState(2);
 	//use MsgHandler->postMessage() here to post a message to all other players (use for loop or some shit)
 }
 
@@ -269,12 +311,45 @@ RoundBreak* RoundBreak::getInstance(){
 
 void RoundBreak::Enter(ktcGame & game){
 	cout << "Entering RoundBreak state.\n";
+	//Game now has their own timer
+	game.getBreakTime()->setTime(10000);
+	game.getBreakTime()->setLastTime(game.getDevice()->getTimer()->getTime());
+	game.getGameHUD()->setGameState(3);
+
 	//use MsgHandler->postMessage() here to post a message to all other players (use for loop or some shit)
 }
 
 void RoundBreak::Execute(ktcGame & game, const irr::ITimer* timer){
 	cout << "Executing RoundBreak state.\n";
+	
+	//update break timer
+	game.getBreakTime()->update(timer);
 
+	//update HUD
+	game.getGameHUD()->getInstance()->updateRoundTimer(
+		game.getBreakTime()->getMins(),
+		game.getBreakTime()->getSecsSecond(),
+		game.getBreakTime()->getSecsFirst());
+
+	//Round Break Time is up
+	if((timer->getTime() - game.getLastTime()) > 10000)
+	{
+		//Set last time for offset
+		game.setLastTime(timer->getTime());
+
+		//Change to Pre Play State
+		game.GetFSM()->ChangeState(PrePlay::getInstance());
+	}
+
+	game.getDevice()->getVideoDriver()->beginScene(true, true, video::SColor(255,100,101,140));
+
+	game.getSceneManager()->drawAll();  //draw 3d objects
+	game.getGameHUD()->render();
+
+	game.getPlayer()->getGun().render();
+
+	game.getDevice()->getVideoDriver()->endScene();//end drawing
+	//put ChangeState shit here in if conditions
 	//put ChangeState shit here in if conditions
 }
 
@@ -304,6 +379,7 @@ EndersGame* EndersGame::getInstance(){
 
 void EndersGame::Enter(ktcGame & game){
 	cout << "Entering EndersGame state.\n";
+	game.getGameHUD()->setGameState(4);
 	//use MsgHandler->postMessage() here to post a message to all other players (use for loop or some shit)
 }
 
