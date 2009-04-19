@@ -113,7 +113,6 @@ void Pursue::Execute(Agent & agt, const irr::ITimer* timer){
 
 	if(agt.getSpottedAgent()){
 		//agt.walk(2*agt.seek(agt.getSpottedAgent()->getPosition())+ agt.wallAvoidance());		agt.walk(agt.seek(agt.getSpottedAgent()->getPosition())+ agt.wallAvoidance());	}
-
 	//put ChangeState shit here in if conditions
 }
 
@@ -337,10 +336,8 @@ void Flee::Enter(Agent & agt){
 }
 
 void Flee::Execute(Agent & agt, const irr::ITimer* timer){
-	//cout << "\nExecuting Flee state.\n";
-	if(agt.getIt()){
+	//cout << "\nExecuting Flee state.\n";	if(agt.getIt()){
 		//agt.walk(2*agt.avoid(agt.getIt())+ 10*agt.wallAvoidance());		agt.walk(agt.avoid(agt.getIt())+ agt.wallAvoidance());	}
-
 	//put ChangeState shit here in if conditions
 }
 
@@ -441,8 +438,7 @@ void Die::Execute(Agent & agt, const irr::ITimer* timer){
 	if(
 	((irr::scene::IAnimatedMeshSceneNode*)agt.getSceneNode())->getFrameNr()
 	>= ((irr::scene::IAnimatedMeshSceneNode*)agt.getSceneNode())->getEndFrame()){
-				agt.getSceneNode()->setVisible(false);
-		//((irr::scene::IAnimatedMeshSceneNode*)agt.getSceneNode())->setRotation(vector3df(0, 0, 75));
+				agt.getSceneNode()->setVisible(false);		//((irr::scene::IAnimatedMeshSceneNode*)agt.getSceneNode())->setRotation(vector3df(0, 0, 75));
 
 		//agt.getSceneNode()->setPosition( agt.getSceneNode()->getPosition() - vector3df(0, 40,0));
 	}
@@ -450,8 +446,7 @@ void Die::Execute(Agent & agt, const irr::ITimer* timer){
 }
 
 void Die::Exit(Agent & agt){
-		cout << "I'm about to reset the time.\n";	agt.pl_inv.setTime(10000);		agt.getSceneNode()->setVisible(true);		
-	((irr::scene::IAnimatedMeshSceneNode*)agt.getSceneNode())->setAnimationSpeed(60);
+		cout << "I'm about to reset the time.\n";	agt.pl_inv.setTime(10000);		agt.getSceneNode()->setVisible(true);			((irr::scene::IAnimatedMeshSceneNode*)agt.getSceneNode())->setAnimationSpeed(60);
 	
 	((irr::scene::IAnimatedMeshSceneNode*)agt.getSceneNode())->setLoopMode(true);
 

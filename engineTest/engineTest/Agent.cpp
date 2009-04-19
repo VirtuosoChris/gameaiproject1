@@ -44,11 +44,7 @@ void Agent::update(const irr::ITimer* timer){
 	TIMEELAPSED = (irr::f32)((ctime = timer->getTime()) - LASTUPDATE);
 	LASTUPDATE = ctime;
 	
-	static double runningAverage = 0;	static int runs = 0;
-	runs += 1;	runningAverage += TIMEELAPSED;	if(runs%100 == 0){		//std::cout<< (runningAverage/ (double) runs)<<"\n";		runningAverage = runs = 0;	}
-	//update sensors	updateWallSensor();	updateProximitySensor();	updatePieSensor();		//running update() on the state machine	AgentStateMachine->update(timer);		pl_time.update(timer);	pl_inv.update(timer);
-	if(pl_inv.getTime() >= 0){		//cout << "I'm invincible now, yay!\n";	}
-}
+	static double runningAverage = 0;	static int runs = 0;	runs += 1;	runningAverage += TIMEELAPSED;	if(runs%100 == 0){		//std::cout<< (runningAverage/ (double) runs)<<"\n";		runningAverage = runs = 0;	}	//update sensors	updateWallSensor();	updateProximitySensor();	updatePieSensor();		//running update() on the state machine	AgentStateMachine->update(timer);		pl_time.update(timer);	pl_inv.update(timer);	if(pl_inv.getTime() >= 0){		//cout << "I'm invincible now, yay!\n";	}}
 
 
 bool Agent::processMessage(const Message* m){
@@ -108,11 +104,7 @@ Agent::Agent(Model m, irr::core::vector3df sp, Timer tim, Timer inv, GamePlayer_
 		//mynodep->addShadowVolumeSceneNode();
 
 		//extern IrrlichtDevice* device;		//if(device){			//Model SG =  createModel("../media/Marine_shotgun.md2", "../media/Gshotgun.pcx", device, 3.0f);			//smgr->addAnimatedMeshSceneNode(SG.mesh);		//}
-		//extern IrrlichtDevice* device;
-		//Model CHUCKIERAIL = createModel("../media/w_railgun.md2","../media/w_railgun.pcx",device,1.0f);
-
-		//mynodep->addChild( mgr->addAnimatedMeshSceneNode(CHUCKIERAIL.mesh));
-	}
+		//extern IrrlichtDevice* device;		//Model CHUCKIERAIL = createModel("../media/w_railgun.md2","../media/w_railgun.pcx",device,1.0f);		//mynodep->addChild( mgr->addAnimatedMeshSceneNode(CHUCKIERAIL.mesh));	}
 
 	orientation = //360.0f - 
 	0.0f;
@@ -124,8 +116,7 @@ Agent::Agent(Model m, irr::core::vector3df sp, Timer tim, Timer inv, GamePlayer_
 	
 	irr::scene::IBillboardTextSceneNode* a = 
  
-    mgr->addBillboardTextSceneNode(0,stringw("I'm it!").c_str() );		
-	a->setPosition(vector3df(0.0f, 25.0f,0.0f));
+    mgr->addBillboardTextSceneNode(0,stringw("I'm it!").c_str() );			a->setPosition(vector3df(0.0f, 25.0f,0.0f));
 	//a->setPosition(mynodep->getPosition());
 	mynodep->addChild(a);
 	a->setMaterialFlag(video::EMF_ZBUFFER,true);
@@ -553,8 +544,7 @@ void Agent::newTargetLocationSpannablePath(irr::core::vector3df fin){
 	//get the unobstructed node closest to the agent
 	int sNode1 = mg->getClosestNodeUnobstructedSpannable(mynodep->getPosition(), smgr,selector);
 
-	//std::cout<<"from "<<sNode1<<" to "<<sNode2<<" \n";		std::vector<int>* result = mg->astarSearch(sNode1, sNode2);
-	std::cout<<"astar path is\n";
+	//std::cout<<"from "<<sNode1<<" to "<<sNode2<<" \n";		std::vector<int>* result = mg->astarSearch(sNode1, sNode2);	std::cout<<"astar path is\n";
 	if(result->size()){
 		for(unsigned int i = 0; i < result->size(); i++){
 			pathList.push_front( mg->nodePosition( (*result)[i]));

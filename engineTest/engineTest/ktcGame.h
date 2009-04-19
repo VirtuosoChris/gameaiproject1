@@ -24,8 +24,7 @@ class ktcGame:public GameEntity{
 
 private:
 
-	//vector of the four AI players and the user as an array of GamePlayer references	static std::vector<GamePlayer *> playerList;		//Pre Play Timer	Timer pre_time;	//Round timer	Timer round_time;	//Round Break timer	Timer break_time;	//Time save variable	irr::u32 lastTime;	//an object of the state machine that the game uses to implement an FSM	StateMachine<ktcGame> * GameStateMachine;	int dMode;
-	Model CHUCKIE;
+	//vector of the four AI players and the user as an array of GamePlayer references	static std::vector<GamePlayer *> playerList;		//Pre Play Timer	Timer pre_time;	//Round timer	Timer round_time;	//Round Break timer	Timer break_time;	//Time save variable	irr::u32 lastTime;	//an object of the state machine that the game uses to implement an FSM	StateMachine<ktcGame> * GameStateMachine;	int dMode;	Model CHUCKIE;
 	Model CARTMAN;
 	Model CYBERDEMON;
 
@@ -61,8 +60,7 @@ public:
 	void displayMinSpanningTree(){dMode = MINSPANNINGTREE; }	
 	void disableDebugOutput(){dMode = NONE; }
 	void displayFullGraph(){dMode = FULLGRAPH;}
-	void RoundRobin(std::vector<GamePlayer *> plst);	ktcGame(irr::IrrlichtDevice *device,irr::scene::ITriangleSelector*, gameHUD* display);	virtual void update(const irr::ITimer*);	virtual bool processMessage(const Message*);
-	virtual irr::scene::ISceneNode* pointing();  
+	void RoundRobin(std::vector<GamePlayer *> plst);	ktcGame(irr::IrrlichtDevice *device,irr::scene::ITriangleSelector*, gameHUD* display);	virtual void update(const irr::ITimer*);	virtual bool processMessage(const Message*);	virtual irr::scene::ISceneNode* pointing();  
 	virtual irr::scene::ISceneNode* GetCan(irr::scene::ISceneNode* );
 	virtual irr::scene::ISceneNode* GetAgent(irr::scene::ISceneNode* );
 

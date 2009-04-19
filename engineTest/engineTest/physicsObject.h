@@ -19,7 +19,6 @@ public:
 	inline void setVelocity(irr::core::vector3df vel){velocity = vel;}
 	inline irr::scene::ISceneNode* getSceneNode(){return mynodep;}
 	inline void setPosition(irr::core::vector3df a){		position = a;		mynodep->setPosition(a);		position = mynodep->getPosition();	}	inline irr::core::vector3df getVelocity(){return velocity;}
-
 };
 
 #endif
