@@ -1,6 +1,4 @@
-
 #include "Sensors.h"
-
 
 
 ProximitySensorData::ProximitySensorData(){

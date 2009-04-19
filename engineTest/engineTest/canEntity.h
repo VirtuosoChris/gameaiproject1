@@ -8,10 +8,11 @@
 
 using namespace irr;
 using namespace irr::core;
-class canEntity:public physicsObject{
+
+class canEntity : public physicsObject{
 
 public:
-
+	
 	//irr::scene::ISceneNode* cannode;
 	canEntity(IrrlichtDevice *device);
 	virtual void update(const irr::ITimer* timer);

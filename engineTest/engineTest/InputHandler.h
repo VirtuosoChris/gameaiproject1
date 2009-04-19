@@ -1,4 +1,3 @@
-
 #ifndef INPUTHANDLER
 #define INPUTHANDLER
 

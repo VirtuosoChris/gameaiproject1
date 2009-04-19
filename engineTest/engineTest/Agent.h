@@ -20,31 +20,15 @@
 #include "coverObject.h"
 #include <vector>
 
-
-const double MAXSPEED = .15; //was .3 
-const double mass = 25; //was 100 // was 25 
-const double RADIUS = 50;//100;//50;//25;//was 100 
-//double ANGLE = 45; 
-const double ACCELRATE = MAXSPEED/4; 
-const double TIMEMULTIPLIER = 2.0; 
-const double ANGLE = 45.0f;
-
+const double mass = 25; //was 100 // was 25const double RADIUS = 100;//50;//25;//was 100//const double ANGLE = 45;const double TIMEMULTIPLIER = 2.0f;const double ANGLE = 45.0f;
 
 class Agent : public GamePlayer{
-
 private:
-	irr::f32 TIMEELAPSED;
-double LAST_OBSTACLE_CORRECTANCE;
-	double pathStartTime;
+	irr::f32 TIMEELAPSED;	double LAST_OBSTACLE_CORRECTANCE;	double pathStartTime;
 	double expectedArrivalTime;
 
-	physicsObject* IT;
-	physicsObject* SPOTTED;
-	
-
-	coverObject* myCoverObject;
-
-	irr::u32 LASTUPDATE;
+	double ACCELRATE;
+	physicsObject* IT;	physicsObject* SPOTTED;	coverObject* myCoverObject;		irr::u32 LASTUPDATE;
 	
 	
 	//an object of the state machine that the agent uses to implement an FSM
@@ -64,11 +48,7 @@ double LAST_OBSTACLE_CORRECTANCE;
 	PieSensor *pie;
 
 	//list of all the agents other agents can "see"
-	 static std::vector<Agent*>* agentList;
-	 static std::vector<coverObject*>* coverObjectList;
-
-
-	//data structure representing the 3d model
+	static std::vector<Agent*>* agentList;	static std::vector<coverObject*>* coverObjectList;		//data structure representing the 3d model
 	Model model;
 
 	//engine related stuff
@@ -78,15 +58,11 @@ double LAST_OBSTACLE_CORRECTANCE;
 
 
 public:
-
+	
 	bool there;
     bool MOVING;
 
-	scene::ISceneManager* smgr;
-
-
-	irr::core::vector3df getCurrentSeekTarget(){return currentSeekTarget;}
-	void setIt(physicsObject* p){IT = p;}
+	scene::ISceneManager* smgr;	virtual void setSpeed();	irr::core::vector3df getCurrentSeekTarget(){return currentSeekTarget;}	void setIt(physicsObject* p){IT = p;}
 	void setSpotted(physicsObject* p){SPOTTED = p;}
 	physicsObject* getIt(){return IT;}
 	physicsObject* getSpottedAgent(){return SPOTTED;}
@@ -117,13 +93,7 @@ public:
 	inline static void setAgentList(std::vector<Agent*>* abc){agentList = abc;}
 	inline static std::vector<Agent*>* getAgentList(){return agentList;}
 
-	//cover node list getter/setter		
-	inline static void setCoverObjectList(std::vector<coverObject*>* abc){coverObjectList = abc;}
-	inline static std::vector<coverObject*>* getCoverObjectList(){return coverObjectList;}	
-
-	//agent type getter/setter	
-	//inline GamePlayer_Type getAgentType(){return type;}	
-	//inline void setAgentType(GamePlayer_Type T){	type = T;}	
+	//cover node list getter/setter	inline static void setCoverObjectList(std::vector<coverObject*>* abc){coverObjectList = abc;}	inline static std::vector<coverObject*>* getCoverObjectList(){return coverObjectList;}
 	//seek target getter/setter
 	inline irr::core::vector3df getSeekTarget(){return currentSeekTarget;}
 	inline void setSeekTarget(irr::core::vector3df pl){ currentSeekTarget = pl;}
@@ -179,10 +149,6 @@ public:
 	void walk(irr::core::vector3df accel);
 	void walk(){ walk(irr::core::vector3df(0,0,0)); }
 
-	coverObject* getMyCoverObject(){return myCoverObject;}
-	void setMyCoverObject(coverObject* c){myCoverObject = c;}
-
-
-};
+	coverObject* getMyCoverObject(){return myCoverObject;}	void setMyCoverObject(coverObject* c){myCoverObject = c;}};
 
 #endif

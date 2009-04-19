@@ -3,10 +3,31 @@
 using namespace irr;
 using namespace irr::scene;
 
-void player::setCameraSpeed(double ns){
+void player::gunInit(){
+	cout << "Got into gun init.\n";
+	if(type == PREY){
+		cout << "I'm prey and I don't have a gun.\n";
+		player::getGun().getSceneNode()->setVisible(false);
+	}
+	else if(type == PREDATOR){
+		cout  << "I'm a predator and I have a gun.\n";
+		player::getGun().getSceneNode()->setVisible(true);
+	}
+}
+
+void player::setSpeed(){
+	player::gunInit();
 	core::list<ISceneNodeAnimator*>::ConstIterator anims=camera->getAnimators().begin(); 
-	ISceneNodeAnimatorCameraFPS *anim=(ISceneNodeAnimatorCameraFPS*)*anims; 
-	anim->setMoveSpeed(ns);
+	ISceneNodeAnimatorCameraFPS *anim=(ISceneNodeAnimatorCameraFPS*)*anims;
+	if(type == PREY){
+		MAXSPEED = .3f;
+		anim->setMoveSpeed(MAXSPEED);
+	}
+	else{
+		MAXSPEED = .15f;
+		anim->setMoveSpeed(MAXSPEED);
+	}
+
 }
 
 void player::useSpectatorCamera(){
@@ -30,7 +51,7 @@ void player::setPosition(irr::core::vector3df n){
 }
 
 	
-player::player(irr::IrrlichtDevice* dev, irr::core::vector3df sp, Timer tim, Timer inv, GamePlayer_Type T) : pl_device(dev), camera (dev->getSceneManager()->addCameraSceneNodeFPS()) , gun (dev, camera), GamePlayer(sp, tim, inv, T){
+player::player(irr::IrrlichtDevice* dev, irr::core::vector3df sp, Timer tim, Timer inv, GamePlayer_Type T) : device(dev), camera (dev->getSceneManager()->addCameraSceneNodeFPS()) , gun (dev, camera), GamePlayer(sp, tim, inv, T){
 	ppos = camera->getPosition();
 	this->mynodep = camera;
 	lastUpdate = 0;

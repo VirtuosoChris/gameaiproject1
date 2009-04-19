@@ -4,7 +4,6 @@
 #include <algorithm>
 
 
-
 //constructor
 InputHandler::InputHandler(){
 	for(int i = 0; i < irr::KEY_KEY_CODES_COUNT;i++){
@@ -16,7 +15,7 @@ InputHandler::InputHandler(){
 }
 
 
-//Destructor
+//destructor
 InputHandler::~InputHandler(){}
 
 
@@ -88,21 +87,21 @@ bool InputHandler::OnEvent(const irr::SEvent& event1){
 
 
 //returns the instance of the InputHandler class
- InputHandler* InputHandler::getInstance(){
-static InputHandler instance;
-
-return &instance;
+InputHandler* InputHandler::getInstance(){
+	static InputHandler instance;
+	
+	return &instance;
 }
 
- //sets the device context for the InputHandler
+//sets the device context for the InputHandler
 void InputHandler::setDeviceContext(IrrlichtDevice *inDevice)
 {
 	device = inDevice;
 }
 
 
- bool InputHandler::isKeyPressed(int i){
-  return keyPressed[i];
- }
+bool InputHandler::isKeyPressed(int i){
+	return keyPressed[i];
+}
 
 
