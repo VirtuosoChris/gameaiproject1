@@ -52,20 +52,10 @@ class StateMachine{
 
 		//call this to update the FSM
 		void update(const irr::ITimer* timer)const{
-			//std::cout << "I'm in state machine update.\n";
-
-			//if a global state exists, call its execute method, else do nothing
-			if(glob_state){
-				//std::cout << "I'm in glob-state update.\n";
-				glob_state->Execute(agt_owner ,timer);
-			}
-			
+						//if a global state exists, call its execute method, else do nothing
+			if(glob_state){				//std::cout << "I'm in glob-state update.\n";				glob_state->Execute(agt_owner, timer);			}			
 			//same for the current state
-			if (cur_state){
-				//std::cout << "I'm in cur-state update.\n";
-				cur_state->Execute(agt_owner,timer);
-			}
-		}
+			if (cur_state){				//std::cout << "I'm in cur-state update.\n";				cur_state->Execute(agt_owner, timer);			}		}
 
 		//change to a new state
 		void ChangeState(State<Game_Entity_Type>* NewState){
@@ -78,9 +68,7 @@ class StateMachine{
 
 			//keep a record of the previous state
 			prev_state = cur_state;
-			
-			std::cout << "\nI'm about to exit.\n";
-			//call the exit method of the existing state
+						//call the exit method of the existing state
 			cur_state->Exit(agt_owner);
 
 			//change state to the new state
@@ -118,7 +106,6 @@ class StateMachine{
 		inline State<Game_Entity_Type>* GlobalState() const{return glob_state;}
 		inline State<Game_Entity_Type>* PreviousState() const{return prev_state;}
 };
-
 
 #endif
 

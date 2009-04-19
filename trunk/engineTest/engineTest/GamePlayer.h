@@ -14,6 +14,7 @@ protected:
 
 	irr::core::vector3df spawnPoint;
 
+	double MAXSPEED;
 
 public:
 
@@ -25,9 +26,13 @@ public:
 
 	GamePlayer(irr::core::vector3df sp = irr::core::vector3df(0,0,0) , Timer pl_t = 0, Timer pl_in = 0, GamePlayer_Type ty = PREY);
 
-	//pl_time player type getter/setter
+	//spawnPoint getter/setter
 	inline irr::core::vector3df getSpawnPoint(){ return spawnPoint; }
 	inline void setSpawnPoint(irr::core::vector3df sp){ spawnPoint = sp; }
+
+	//getter and setter for player speed
+	inline double getSpeed(){ return MAXSPEED; }
+	virtual void setSpeed() = 0;
 
 	//pl_time player type getter/setter
 	inline Timer getTimer(){ return pl_time; }

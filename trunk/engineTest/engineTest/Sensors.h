@@ -16,63 +16,56 @@ class Agent;
 
 //Wall feeler sensor
 class WallSensorData{
-
+private:
 	int numFeelers;
 	double angle;
 
-	public: 
-
-		
+public:
 	float maxRange;
-
-
-		WallSensorData();
-		WallSensorData(int nf,double a, float mr = 50//50
-			//float mr = 5000.0f
+		WallSensorData();	WallSensorData(int nf,double a, float mr = 50			//float mr = 5000.0f
 			);
-		~WallSensorData();
+	~WallSensorData();
 
-		int getNumFeelers();
-		double getAngle();
+	int getNumFeelers();
+	double getAngle();
 
-		float* feelerDistances;
-		irr::core::triangle3df* triangle ;
-
-
+	float* feelerDistances;
+	irr::core::triangle3df* triangle;
 };
 
 class ProximitySensorData{
-	public:
-		//Agent Identification Number
-		int agentID;
+public:
+	//Agent Identification Number
+	int agentID;
 
-		//Relative distance to agent
-		double relDistance;
+	//Relative distance to agent
+	double relDistance;
 
-		//Relative heading to agent
-		double relHeading;
+	//Relative heading to agent
+	double relHeading;
 		
-		ProximitySensorData();
-		ProximitySensorData(int id, double rD, double rH);
-		~ProximitySensorData();
+	ProximitySensorData();
+	ProximitySensorData(int id, double rD, double rH);
+	~ProximitySensorData();
 };
+
 class PieSensor{
-	public:
-		//Agent *pt;
-		int num_slices;
-		double range;
-		double orientation;
-		double angle;
-		double offset;
-		int *areas;
+public:
+	//Agent *pt;
+	int num_slices;
+	double range;
+	double orientation;
+	double angle;
+	double offset;
+	int *areas;
 	
-		double degreesToRadians(double degrees){return 2*3.14159*degrees/360;}
-		PieSensor();
-		PieSensor(int);
-		~PieSensor();
-		void clear();
-		void Detect(std::vector<Agent*> *);
-		void showPieSensor();
+	double degreesToRadians(double degrees){return 2*3.14159*degrees/360;}
+	PieSensor();
+	PieSensor(int);
+	~PieSensor();
+	void clear();
+	void Detect(std::vector<Agent*> *);
+	void showPieSensor();
 };
 
 #endif

@@ -1,7 +1,6 @@
-#define NUMFEELERS 6//3
+#define NUMFEELERS 6  //3
 #include "Agent.h"
 #include <iostream>
-
 
 #include "InputHandler.h"
 #include "MessageHandler.h"
@@ -11,7 +10,6 @@
 #include <string>
 #include <vector>
 #include <limits>
-
 
 #include "mapGraph.h"
 #include <iostream>
@@ -28,7 +26,16 @@ using namespace irr::video;
 std::vector<Agent*>* Agent::agentList;
 std::vector<coverObject*>* Agent::coverObjectList;
 
-
+void Agent::setSpeed(){
+	if(type == PREY){
+		MAXSPEED = .3f;
+		ACCELRATE = MAXSPEED/4;
+	}
+	else{
+		MAXSPEED = .15f;
+		ACCELRATE = MAXSPEED/4;
+	}
+}
 
 //update method
 void Agent::update(const irr::ITimer* timer){
@@ -37,32 +44,10 @@ void Agent::update(const irr::ITimer* timer){
 	TIMEELAPSED = (irr::f32)((ctime = timer->getTime()) - LASTUPDATE);
 	LASTUPDATE = ctime;
 	
-	//update sensors
-	updateWallSensor();
-	updateProximitySensor();
-	updatePieSensor();
-	
-	//running update() on the state machine
-	AgentStateMachine->update(timer);
-	
-	pl_time.update(timer);
-	pl_inv.update(timer);
-
-	if(pl_inv.getTime() >= 0){		//cout << "I'm invincible now, yay!\n";	
-	}
-
-
-static double runningAverage = 0;
-static int runs = 0;
-runs+=1;
-runningAverage += TIMEELAPSED;
-
-if(runs%100 == 0){	
-	//std::cout<< (runningAverage/ (double) runs)<<"\n" ;
-	runningAverage = runs = 0;
-}
-
-
+	static double runningAverage = 0;	static int runs = 0;
+	runs += 1;	runningAverage += TIMEELAPSED;	if(runs%100 == 0){		//std::cout<< (runningAverage/ (double) runs)<<"\n";		runningAverage = runs = 0;	}
+	//update sensors	updateWallSensor();	updateProximitySensor();	updatePieSensor();		//running update() on the state machine	AgentStateMachine->update(timer);		pl_time.update(timer);	pl_inv.update(timer);
+	if(pl_inv.getTime() >= 0){		//cout << "I'm invincible now, yay!\n";	}
 }
 
 
@@ -90,13 +75,17 @@ Agent::Agent(Model m, irr::core::vector3df sp, Timer tim, Timer inv, GamePlayer_
 
 	//setting the current state for the agent, which'll be different if the agent is a predator that if the agent is prey
 	if(type == PREDATOR){
-		//wait 5 secs 
-		AgentStateMachine->SetCurrentState(Patrol::GetInstance());
+		std::cout << "I'm a predator and i'm waiting.\n";
+		MAXSPEED = .3f;
+		//wait 10 secs 
+		AgentStateMachine->SetCurrentState(Wait::GetInstance());
 		AgentStateMachine->StartCurrentState();
 	}
 
 	if(type == PREY){
-		AgentStateMachine->SetCurrentState(Flee::GetInstance());
+		std::cout << "I'm prey and i'm waiting.\n";
+		MAXSPEED = .15f;
+		AgentStateMachine->SetCurrentState(Wait::GetInstance());
 		AgentStateMachine->StartCurrentState();
 	}
 
@@ -107,33 +96,26 @@ Agent::Agent(Model m, irr::core::vector3df sp, Timer tim, Timer inv, GamePlayer_
 	//}
 
 	if(mgr){
-	mynodep = mgr->addAnimatedMeshSceneNode(m.mesh);
+		mynodep = mgr->addAnimatedMeshSceneNode(m.mesh);
+		//std::cout<<"\nADDED MESH SCENE NODE LOL\n";
+		mynodep->setPosition(p);
+		mynodep->setMaterialTexture(0,m.texture);
+		mynodep->setMaterialFlag(video::EMF_LIGHTING, true);
+		((irr::scene::IAnimatedMeshSceneNode*)mynodep)->setMD2Animation(scene::EMAT_STAND);
+		mynodep->setRotation(irr::core::vector3df(0.0f,(irr::f32)(0.0f),0.0f));
+		mynodep->setScale(irr::core::vector3df((irr::f32)m.scale,(irr::f32)m.scale,(irr::f32)m.scale));
+		mynodep->setMaterialFlag(video::EMF_FOG_ENABLE, true);
+		//mynodep->addShadowVolumeSceneNode();
 
-//	std::cout<<"\nADDED MESH SCENE NODE LOL\n";
-	mynodep->setPosition(p);
-	mynodep->setMaterialTexture(0,m.texture);
-	mynodep->setMaterialFlag(video::EMF_LIGHTING, true);
-	((irr::scene::IAnimatedMeshSceneNode*)mynodep)->setMD2Animation(scene::EMAT_ATTACK);
-	mynodep->setRotation(irr::core::vector3df(0.0f,(irr::f32)(0.0f),0.0f));
-	mynodep->setScale(irr::core::vector3df((irr::f32)m.scale,(irr::f32)m.scale,(irr::f32)m.scale));
-	mynodep->setMaterialFlag(video::EMF_FOG_ENABLE, true);
-	//mynodep->addShadowVolumeSceneNode();
+		//extern IrrlichtDevice* device;		//if(device){			//Model SG =  createModel("../media/Marine_shotgun.md2", "../media/Gshotgun.pcx", device, 3.0f);			//smgr->addAnimatedMeshSceneNode(SG.mesh);		//}
+		//extern IrrlichtDevice* device;
+		//Model CHUCKIERAIL = createModel("../media/w_railgun.md2","../media/w_railgun.pcx",device,1.0f);
 
-//extern IrrlichtDevice* device;
-//if(device){Model SG =  createModel("../media/Marine_shotgun.md2", "../media/Gshotgun.pcx", device, 3.0f);
-///	smgr->addAnimatedMeshSceneNode(SG.mesh);
-//}
-
-//	extern IrrlichtDevice* device;
-//	Model CHUCKIERAIL = createModel("../media/w_railgun.md2","../media/w_railgun.pcx",device,1.0f);
-//
-//	mynodep->addChild( mgr->addAnimatedMeshSceneNode(CHUCKIERAIL.mesh));
-
-	
+		//mynodep->addChild( mgr->addAnimatedMeshSceneNode(CHUCKIERAIL.mesh));
 	}
 
-orientation = //360.0f - 
-0.0f;
+	orientation = //360.0f - 
+	0.0f;
 
 	LASTUPDATE = 0;
 
@@ -142,9 +124,7 @@ orientation = //360.0f -
 	
 	irr::scene::IBillboardTextSceneNode* a = 
  
-    mgr->addBillboardTextSceneNode(0,stringw(
-	"I'm it!").c_str());
-		
+    mgr->addBillboardTextSceneNode(0,stringw("I'm it!").c_str() );		
 	a->setPosition(vector3df(0.0f, 25.0f,0.0f));
 	//a->setPosition(mynodep->getPosition());
 	mynodep->addChild(a);
@@ -159,9 +139,6 @@ orientation = //360.0f -
 }
 
 
-
-
-
 Agent::~Agent(){
 	//deleting the state machine
 	delete AgentStateMachine;
@@ -171,37 +148,34 @@ Agent::~Agent(){
 
 
 void Agent::createCollisionAnimator(irr::scene::ITriangleSelector* sel ,irr::scene::ISceneManager* mgr){
-
+	
 	selector = sel;
-scene::ISceneNodeAnimator *nodeAnimator;
-	nodeAnimator = mgr->createCollisionResponseAnimator(selector, mynodep, 
-		core::vector3df((irr::f32)(30.0f*model.scale),(irr::f32)(25.0f*model.scale),(irr::f32)(30.0f*model.scale)),//collision volume radii
-	core::vector3df((irr::f32)0.0f,(irr::f32)-10.0f,(irr::f32)0.0f),//gravity 
-	model.mesh->getBoundingBox().getCenter()); //collision volume position
+	scene::ISceneNodeAnimator *nodeAnimator;
+	nodeAnimator = mgr->createCollisionResponseAnimator(selector, mynodep, core::vector3df((irr::f32)(30.0f*model.scale),(irr::f32)(25.0f*model.scale),(irr::f32)(30.0f*model.scale)),//collision volume radii
+														core::vector3df((irr::f32)0.0f,(irr::f32)-10.0f,(irr::f32)0.0f),//gravity 
+														model.mesh->getBoundingBox().getCenter() ); //collision volume position
  
- mynodep->addAnimator(nodeAnimator);
- //mynodep->setScale(core::vector3df(1.75f,1.75f,1.75f));
- nodeAnimator->drop();
+	mynodep->addAnimator(nodeAnimator);
+	//mynodep->setScale(core::vector3df(1.75f,1.75f,1.75f));
+	nodeAnimator->drop();
 
- smgr = mgr;
-
-
+	smgr = mgr;
 }
 
 
 //This finds the relative distance between two agents
-double Agent::agentProximity(Agent *nearAgent)
-{
+double Agent::agentProximity(Agent *nearAgent){
+	
 	//Calculate magnitude
 	double x,z ;
 	x = nearAgent->position.X - this->position.X ;
 	z = nearAgent->position.Z - this->position.Z ;
-	return hypo(x,z) ;	
+	return hypo(x,z);	
 }
 
 //This finds the relative bearing between X axis and agent
-double Agent::agentBearing(Agent *nearAgent)
-{
+double Agent::agentBearing(Agent *nearAgent){
+	
 	//Some variables
 	double magAdj, magHypo;
 	double diffX, diffZ;
@@ -392,12 +366,12 @@ std::string Agent::WallSensorToString(){
 	
 	std::string s("Wall Feelers:\n");
 	
- double  baseAngle = orientation - s1d->getAngle()/2.0;
- double  increment = s1d->getAngle() / s1d->getNumFeelers();
+	double  baseAngle = orientation - s1d->getAngle()/2.0;
+	double  increment = s1d->getAngle() / s1d->getNumFeelers();
 
 
- for(int i = 0; i < s1d->getNumFeelers(); i++){
-
+	for(int i = 0; i < s1d->getNumFeelers(); i++){
+		
 		double angle = i * increment + baseAngle;
 
 		char str[100];
@@ -407,56 +381,56 @@ std::string Agent::WallSensorToString(){
 		s+="\tDistance-Squared:";
 		sprintf(str,"%f",s1d->feelerDistances[i]);
 		s+= std::string(str);
-	  
 	}
- return s;
+	
+	return s;
 }
 
 
 
 void Agent::drawPieSlices(irr::video::IVideoDriver * driver){
-
+	
 	SMaterial m; 
-		m.Lighting=false; 
-		m.ZBuffer = 1;
-		driver->setMaterial(m); 	
-		//SColor col;
+	m.Lighting=false; 
+	m.ZBuffer = 1;
+	driver->setMaterial(m); 	
+	//SColor col;
 
 
-		 driver->setTransform(video::ETS_WORLD, mynodep->getAbsoluteTransformation());
-//blue is velocity
-driver->draw3DLine(vector3df(0,0,0), vector3df(500,0,0), SColor(255,0,0,255));
-//red is line to targets
+	driver->setTransform(video::ETS_WORLD, mynodep->getAbsoluteTransformation());
 
-   //irr::core::matrix4 abc = irr::core::IdentityMatrix;
-  // const float dat[16] = {1,0,0,0, 0,1,0,0, 0,0,1,0, currentSeekTarget.X, currentSeekTarget.Y, currentSeekTarget.Z, 1};
-   //abc.setM(dat);
- driver->setTransform(video::ETS_WORLD, graph->SCENE_NODE_VECTOR[ graph->getClosestNode(previousSeekTarget)]->getAbsoluteTransformation() );
- driver->draw3DLine( vector3df(0,0,0), this->currentSeekTarget-this->previousSeekTarget, SColor(255, 0, 255,0));
+	//blue is velocity
+	driver->draw3DLine(vector3df(0,0,0), vector3df(500,0,0), SColor(255,0,0,255));
+
+	//red is line to targets
+
+	//irr::core::matrix4 abc = irr::core::IdentityMatrix;
+	//const float dat[16] = {1,0,0,0, 0,1,0,0, 0,0,1,0, currentSeekTarget.X, currentSeekTarget.Y, currentSeekTarget.Z, 1};
+	//abc.setM(dat);
+	driver->setTransform(video::ETS_WORLD, graph->SCENE_NODE_VECTOR[ graph->getClosestNode(previousSeekTarget)]->getAbsoluteTransformation() );
+	driver->draw3DLine( vector3df(0,0,0), this->currentSeekTarget-this->previousSeekTarget, SColor(255, 0, 255,0));
    
    
   
 
-//green line is path
-//driver->draw3DLine(this->previousSeekTarget - mynodep->getPosition(), this->currentSeekTarget - mynodep->getPosition(), SColor(255, 0, 255,0));
+	//green line is path
+	//driver->draw3DLine(this->previousSeekTarget - mynodep->getPosition(), this->currentSeekTarget - mynodep->getPosition(), SColor(255, 0, 255,0));
 
 
-/*
-
-irr::f32 angle = (irr::f32)pie->offset;
+	/*	
+	irr::f32 angle = (irr::f32)pie->offset;
 	for(int i = 0; i < pie->num_slices*2;i++){
-		
-	driver->draw3DLine(
-			vector3df(0,0,0), 
-			vector3df(
-			(irr::f32)(250*cos( degreesToRadians(angle) )),
-						0,
-						(irr::f32)(250*sin( degreesToRadians(angle) ))), 
-						SColor(255,255,255,255));
-	angle +=(irr::f32)pie->angle;
+		driver->draw3DLine(
+				vector3df(0,0,0), 
+				vector3df(
+				(irr::f32)(250*cos( degreesToRadians(angle) )),
+							0,
+							(irr::f32)(250*sin( degreesToRadians(angle) ))), 
+							SColor(255,255,255,255));
+		angle +=(irr::f32)pie->angle;
    
-	  // core::matrix4()); 
-  //driver->draw3DLine(vector3df(0,0,0), vector3df(0,0,250));
+		//core::matrix4()); 
+		//driver->draw3DLine(vector3df(0,0,0), vector3df(0,0,250));
 		//driver->draw3DLine(mynodep->getPosition(), mynodep->getPosition()+5000*vector3df(cos(0.0f), mynodep->getAbsolutePosition().Y, sin(0.0f)),video::SColor(255,255,255,255));
 	}*/
 
@@ -468,226 +442,177 @@ irr::f32 angle = (irr::f32)pie->offset;
 
 
 void Agent::createPatrolRoute(mapGraph* mg){
-
-pathList.clear();
-
-mapGraph* minspanningtree = mg->minimumSpanningTree(0);
-//std::cout<<"got the tree\n";
-std::vector<int>* result = minspanningtree->depthFirstSearch(mg->getClosestNodeUnobstructedSpannable(mynodep->getPosition(),smgr, selector));
-//delete minspanningtree;
-//minspanningtree= 0;
-
-
-if(result->size()){
-	//pathList.resize(mg->NODE_VECTOR.size());
-	for(unsigned int i = 0; i < result->size(); i++){
 	
-		pathList.push_back( mg->nodePosition((*result)[i]));
-					
-	}
+	pathList.clear();
+	
+	mapGraph* minspanningtree = mg->minimumSpanningTree(0);
+	//std::cout<<"got the tree\n";
+	std::vector<int>* result = minspanningtree->depthFirstSearch(mg->getClosestNodeUnobstructedSpannable(mynodep->getPosition(),smgr, selector));
+	//delete minspanningtree;
+	//minspanningtree= 0;
+
+
+	if(result->size()){
+		//pathList.resize(mg->NODE_VECTOR.size());
+		for(unsigned int i = 0; i < result->size(); i++){
+			pathList.push_back( mg->nodePosition((*result)[i]));
+		}
 	//pathList.push_back(fin);
 
 
 	currentSeekTarget = pathList.front();
 	previousSeekTarget = mynodep->getPosition();
-
-	}else{
-	
+	}
+	else{
 		this->pathList.push_back(mynodep->getPosition());
 		this->velocity = vector3df(0,0,0);
 	}
-//	printf("%d %d\n", sNode1, sNode2);
-
-
-for(int i = 0; i < result->size(); i++){
-
-	std::cout<<(*result)[i]<<" ";
-}
-
-
-/*
-std::list<irr::core::vector3df>::const_iterator iter = pathList.begin();
-for(int i = 0; i < pathList.size()-1; i++){
-
-		
- core::line3d<f32> line;
- core::vector3df intersection;
- core::triangle3df triangle;
- line.start = *iter;
- iter++;
- line.end = *iter;
-
- if(smgr->getSceneCollisionManager()->getCollisionPoint(line, selector,intersection, triangle)){
-	 std::cout<<"WTF SOMEHOW THE PATH IS WRONG\n";///exit(0);
-	 std::cout<<"From node:"<< mg->getClosestNode(line.start)<<"To Node:"<<mg->getClosestNode(line.end) << std::endl;			
-
+	
+	for(int i = 0; i < result->size(); i++){
+		std::cout<<(*result)[i]<<" ";
 	}
 
-}
-std::cout<<std::endl;
-*/
 
-delete result;
+	/*
+	std::list<irr::core::vector3df>::const_iterator iter = pathList.begin();
+	for(int i = 0; i < pathList.size()-1; i++){
+		core::line3d<f32> line;
+		core::vector3df intersection;
+		core::triangle3df triangle;
+		line.start = *iter;
+		iter++;
+		line.end = *iter;
 
+		if(smgr->getSceneCollisionManager()->getCollisionPoint(line, selector,intersection, triangle)){
+			std::cout<<"WTF SOMEHOW THE PATH IS WRONG\n";///exit(0);
+		std::cout<<"From node:"<< mg->getClosestNode(line.start)<<"To Node:"<<mg->getClosestNode(line.end) << std::endl;			
+		}
+	}
+	
+	std::cout<<std::endl;
+	*/
 
+	delete result;
 }
 
 
 //this function generates a list of waypoints to seek to a target location
 void Agent::newTargetLocation(irr::core::vector3df fin){
-
+	
 	mapGraph* mg = this->graph;
 	//extern std::vector<irr::core::vector3df> NODE_VECTOR;
-
+	
 	pathList.clear();
 
 
 	//get the unobstructed node closest to the target location
- int sNode2 = mg->getClosestNodeUnobstructed(fin,smgr, selector);
+	int sNode2 = mg->getClosestNodeUnobstructed(fin,smgr, selector);
 	//get the unobstructed node closest to the agent
- int sNode1 = mg->getClosestNodeUnobstructed(mynodep->getPosition(), smgr,selector);
+	int sNode1 = mg->getClosestNodeUnobstructed(mynodep->getPosition(), smgr,selector);
 
-
-
-	std::cout<<"from "<<sNode1<<" to "<<sNode2<<" \n";
-
-
- std::vector<int>* result = mg->astarSearch(sNode1, sNode2);
+	std::vector<int>* result = mg->astarSearch(sNode1, sNode2);
 
 	if(result->size()){
-	for(unsigned int i = 0; i < result->size(); i++){
-		pathList.push_front( mg->nodePosition( (*result)[i]));
+		for(unsigned int i = 0; i < result->size(); i++){
+			pathList.push_front( mg->nodePosition( (*result)[i]));
+		}
+		pathList.push_back(fin);
 	}
-	pathList.push_back(fin);
-
-	}else{
+	else{
 		velocity = vector3df(0,0,0);
 		pathList.push_back(mynodep->getPosition());
 	}
 
-
-	
 	currentSeekTarget = pathList.front();
 	previousSeekTarget = mynodep->getPosition();
 	printf("%d %d\n", sNode1, sNode2);
-
-////
+	
 	//agent2.createPatrolRoute(&graph);
-//mg->selector = selector;
+	//mg->selector = selector;
 
+	//line.start = NODE_VECTOR[
 
-//line.start = NODE_VECTOR[
-
-//if(smgr->getSceneCollisionManager()->getCollisionPoint(line, selector,intersection, triangle)){
-//	 std::cout<<"WTF SOMEHOW THE PATH IS WRONG\n";///exit(0);
-//	}
-
+	//if(smgr->getSceneCollisionManager()->getCollisionPoint(line, selector,intersection, triangle)){
+		//std::cout<<"WTF SOMEHOW THE PATH IS WRONG\n";///exit(0);
+	//}
 
 	delete result;
 }
-
-
-
-
-
 
 //this function generates a list of waypoints to seek to a target location
 void Agent::newTargetLocationSpannablePath(irr::core::vector3df fin){
-
+	
 	mapGraph* mg = this->graph;
 	//extern std::vector<irr::core::vector3df> NODE_VECTOR;
-
+	
 	pathList.clear();
 
 
 	//get the unobstructed node closest to the target location
- int sNode2 = mg->getClosestNodeUnobstructedSpannable(fin,smgr, selector);
+	int sNode2 = mg->getClosestNodeUnobstructedSpannable(fin,smgr, selector);
 	//get the unobstructed node closest to the agent
- int sNode1 = mg->getClosestNodeUnobstructedSpannable(mynodep->getPosition(), smgr,selector);
+	int sNode1 = mg->getClosestNodeUnobstructedSpannable(mynodep->getPosition(), smgr,selector);
 
-
-
-	std::cout<<"from "<<sNode1<<" to "<<sNode2<<" \n";
-
-
- std::vector<int>* result = mg->astarSearch(sNode1, sNode2);
-
- std::cout<<"astar path is\n";
+	//std::cout<<"from "<<sNode1<<" to "<<sNode2<<" \n";		std::vector<int>* result = mg->astarSearch(sNode1, sNode2);
+	std::cout<<"astar path is\n";
 	if(result->size()){
-	for(unsigned int i = 0; i < result->size(); i++){
-		pathList.push_front( mg->nodePosition( (*result)[i]));
-
-		std::cout<<mg->getClosestNode(mg->nodePosition( (*result)[i]))<<" ";
+		for(unsigned int i = 0; i < result->size(); i++){
+			pathList.push_front( mg->nodePosition( (*result)[i]));
+			std::cout<<mg->getClosestNode(mg->nodePosition( (*result)[i]))<<" ";
+		}
+		std::cout<<"\n";
+		pathList.push_back(fin);
 	}
-
-	std::cout<<"\n";
-	pathList.push_back(fin);
-
-	}else{
+	else{
 		velocity = vector3df(0,0,0);
 		pathList.push_back(mynodep->getPosition());
 	}
-
-
 	
 	currentSeekTarget = pathList.front();
 	previousSeekTarget = mynodep->getPosition();
 	printf("%d %d\n", sNode1, sNode2);
-
-////
+	
 	//agent2.createPatrolRoute(&graph);
-//mg->selector = selector;
+	//mg->selector = selector;
 
+	//line.start = NODE_VECTOR[
 
-//line.start = NODE_VECTOR[
-
-//if(smgr->getSceneCollisionManager()->getCollisionPoint(line, selector,intersection, triangle)){
-//	 std::cout<<"WTF SOMEHOW THE PATH IS WRONG\n";///exit(0);
-//	}
-
+	//if(smgr->getSceneCollisionManager()->getCollisionPoint(line, selector,intersection, triangle)){
+	//std::cout<<"WTF SOMEHOW THE PATH IS WRONG\n";///exit(0);
+	//}
 
 	delete result;
 }
 
-
-
-
-//}
-
-
 //if the agent needs to correct its path: in the event it gets lost, eg, falls off a bridge, misses a doorway, etc, a-star to the currentSeekTarget and prepend the path to the pathlist
 void Agent::correctPath(){
+	
+	std::cout<<"correcting path\n";
+	int src = this->graph->getClosestNodeUnobstructed(this->getPosition(),smgr,selector);
+	int tgt = this->graph->getClosestNodeUnobstructed(currentSeekTarget,smgr,selector);
 
 
-	//std::cout<<"correcting path\n";
-int src = this->graph->getClosestNodeUnobstructed(this->getPosition(),smgr,selector);
-int tgt = this->graph->getClosestNodeUnobstructed(currentSeekTarget,smgr,selector);
-
-
-//when the agent is getting stuck on the torch, they're closest to the node behind the torch, so source is equal to target and no path correction is getting done
-//this makes the agent backtrack and try again, but it will prevent them from getting stuck permanently
-if(src == tgt){
-	//std::cout<<"Source equal to target in path correction, doing path correction correction\n";
-    src = this->graph->getClosestNodeUnobstructed(this->previousSeekTarget,smgr,selector);
-}
-
-
+	//when the agent is getting stuck on the torch, they're closest to the node behind the torch, so source is equal to target and no path correction is getting done
+	//this makes the agent backtrack and try again, but it will prevent them from getting stuck permanently
+	if(src == tgt){
+		//std::cout<<"Source equal to target in path correction, doing path correction correction\n";
+		src = this->graph->getClosestNodeUnobstructed(this->previousSeekTarget,smgr,selector);
+	}
 
 	std::vector<int>* result = this->graph->astarSearch( src, tgt);
 	pathList.push_front(this->currentSeekTarget);
 	if(result->size()){
-	for(unsigned int i = 0; i < result->size(); i++){
-		pathList.push_front( this->graph->nodePosition( (*result)[i]));
-	}
+		for(unsigned int i = 0; i < result->size(); i++){
+			pathList.push_front( this->graph->nodePosition( (*result)[i]));
+		}
 	}
 
 	currentSeekTarget = pathList.front();
 	previousSeekTarget = mynodep->getPosition();
 	
 
-//	std::cout<<"PATH CORRECTION IN PLACE\n";
+	//std::cout<<"PATH CORRECTION IN PLACE\n";
 	delete result;
-
 }
 
 

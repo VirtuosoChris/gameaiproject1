@@ -1,13 +1,9 @@
-
 class GameEntity;
 
 #ifndef MESSAGE
 #define MESSAGE
 
 #include "irrlicht.h"
-
-
-
 
 enum Message_Type {
 	KTC_ACTIVATE, KTC_KILL, KTC_REVIVE,	KTC_SPOTTED,
@@ -28,11 +24,11 @@ public:
 	GameEntity *receiver;
 	Message(){}
 	Message(int, Message_Type, GameEntity *, GameEntity *);
-	bool operator==( Message) const;
-	bool operator<( Message) const;
-	bool operator>( Message)const ;
-	bool operator>=( Message)const;
-	bool operator<=( Message)const;  
+	bool operator==(Message) const;
+	bool operator<(Message) const;
+	bool operator>(Message) const ;
+	bool operator>=(Message) const;
+	bool operator<=(Message) const;  
  };
 
 #endif

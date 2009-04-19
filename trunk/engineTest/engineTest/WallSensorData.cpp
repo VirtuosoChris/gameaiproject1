@@ -1,4 +1,3 @@
-
 #include "Sensors.h"
 
 WallSensorData::WallSensorData(){
@@ -11,7 +10,6 @@ WallSensorData::WallSensorData(int nf,double a, float mr){
 	numFeelers = nf;
 	feelerDistances = new float[nf];
 	triangle = new irr::core::triangle3df[nf];
-	
 }
 
 WallSensorData::~WallSensorData(){
@@ -19,11 +17,10 @@ WallSensorData::~WallSensorData(){
 }
 
 int WallSensorData::getNumFeelers(){
-return numFeelers;
+	return numFeelers;
 }
 
 
 double WallSensorData::getAngle(){
-
-return angle;
+	return angle;
 }
